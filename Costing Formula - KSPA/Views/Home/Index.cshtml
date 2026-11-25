@@ -1,0 +1,170 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-12 text-center">
+        <h1>Admin's Home</h1>
+        <p>Welcome, to the Polythene Quotationing Application - KSPA.</p>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div>
+
+<!-- Row for the cards -->
+<div class="row">
+
+    <!-- Card 0 -->
+    <div class="col-md-6 col-xxl-4 mb-2 d-flex justify-content-evenly">
+        <div class="card mb-3 kspa-shadow-border-primary" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="..." class="card-img" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">New Quotation - Corrugated</h5>
+                        <p class="card-text">Here you can create a new quotation for corrugated products, Generate a printable PDF file to share with customers and View past quotations created yourself.</p>
+                        <div class="d-flex flex-row-reverse">
+                            <a asp-action="Create" asp-controller="CorruCosting" class="btn btn-primary">Go Visit</a>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of Card 1 -->
+
+    <!-- Card 1 -->
+    <div class="col-md-6 col-xxl-4 mb-2 d-flex justify-content-evenly">
+        <div class="card mb-3 kspa-shadow-border-primary" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="..." class="card-img" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">New Quotation</h5>
+                        <p class="card-text">Here you can create a new quotation for polythene products, Generate a printable PDF file to share with customers and View past quotations created yourself.</p>
+                        <div class="d-flex flex-row-reverse">
+                            <a asp-action="Create" asp-controller="PolyCosting" class="btn btn-primary">Go Visit</a>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of Card 1 -->
+
+    <div class="col-md-6 col-xxl-4 mb-2 d-flex justify-content-evenly">
+        <!-- Card 2 -->
+        <div class="card mb-3 kspa-shadow-border-primary" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="..." class="card-img" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Daily / Monthly Exchange Rate</h5>
+                        <p class="card-text">Here you can update exchange rate daily, weekly or monthly basis for currencies. It is recommend to update the exchange rate weekly.</p>
+                        <div class="d-flex flex-row-reverse">
+                            <a asp-action="Index" asp-controller="ExchangeRate" class="btn btn-primary">Go Visit</a>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of Card 2 -->
+
+    <!-- Card 3 -->
+    <div class="col-md-6 col-xxl-4 mb-2 d-flex justify-content-evenly">
+        <div class="card mb-3 kspa-shadow-border-primary" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="..." class="card-img" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Item Category Price Update</h5>
+                        <p class="card-text">Here you can update prices for diffrent item categories as price changes such as MASTER BATCH, LOW DENSITY POLYETHYLENE RECYCLE etc.</p>
+                        <div class="d-flex flex-row-reverse">
+                            <a asp-action="Index" asp-controller="ItemCategoryPrice" class="btn btn-primary">Go Visit</a>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of Card 3 -->
+
+    <!-- Card 4 -->
+    <div class="col-md-6 col-xxl-4 mb-2 d-flex justify-content-evenly">
+        <div class="card mb-3 kspa-shadow-border-primary" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="..." class="card-img" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Over Head Cost Update</h5>
+                        <p class="card-text">Here you can update the calculated Over Head Cost per Kilogram(kg). Over Head cost has a direct impact to the finished good price pre kg.</p>
+                        <div class="d-flex flex-row-reverse">
+                            <a asp-action="Create" asp-controller="ItemCategoryPrice" asp-route-id="89" class="btn btn-primary">Go Visit</a>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of Card 4 -->
+
+    <!-- Card 5 -->
+    <div class="col-md-6 col-xxl-4 mb-2 d-flex justify-content-evenly">
+        <div class="card mb-3 kspa-shadow-border-primary" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="..." class="card-img" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Other Costs Per Kg Update</h5>
+                        <p class="card-text">Here you can update the summation of Other Costs per Kilogram(kg). Other Costs also has a direct impact to the finished good price pre kg.</p>
+                        <div class="d-flex flex-row-reverse">
+                            <a asp-action="Create" asp-controller="ItemCategoryPrice" asp-route-id="91" class="btn btn-primary">Go Visit</a>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of Card 5 -->
+
+    <!-- Card 6 -->
+    <div class="col-md-6 col-xxl-4 mb-2 d-flex justify-content-evenly">
+        <div class="card mb-3 kspa-shadow-border-primary" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="..." class="card-img" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Create New User</h5>
+                        <p class="card-text">Here you can create users with a specific username and a password. A user can be an Admin or a Sale Rep/Coordinator. Choose the role wisely.</p>
+                        <div class="d-flex flex-row-reverse">
+                            <a asp-action="CreateUser" asp-controller="Account" class="btn btn-primary">Go Visit</a>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- End of Card 6 -->
+
+</div><!-- End of the Row for the cards -->
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

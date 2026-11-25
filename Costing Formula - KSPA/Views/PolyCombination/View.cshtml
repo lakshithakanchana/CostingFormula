@@ -1,0 +1,217 @@
+﻿@model Costing_Formula___KSPA.Models.ViewModels.PolyCombinationVM;
+
+@{
+    ViewData["Title"] = "Poly Combination Master - View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Poly Combination Master - View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4 text-danger" asp-validation-summary="All">
+            <!-- Validation Summary Will Be Here -->
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <!-- Everythine Except submit button and active checkbox -->
+    <div class="col-12">
+
+        <!-- Section 1: Row for the input fields and selection boxes -->
+        <div class="row">
+
+            <!-- Col for the poly combination id input field -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="mb-3  text-white">
+                    <!-- mb-3 to add some margin between form-controls -->
+                    <label asp-for="PolyCombination.PolyCombId" class="form-label">Poly combination id</label>
+                    <input type="text" class="form-control" asp-for="PolyCombination.PolyCombId" placeholder="System will generate" disabled>
+                    <b><span class="text-danger" asp-validation-for="PolyCombination.PolyCombId"></span></b>
+                </div>
+            </div>
+
+            <!-- Col for the poly comb code input field -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="mb-3  text-white">
+                    <!-- mb-3 to add some margin between form-controls -->
+                    <label asp-for="PolyCombination.PolyCombCode" class="form-label">Poly comb. code </label>
+                    <input type="text" class="form-control" asp-for="PolyCombination.PolyCombCode" placeholder="As in Axpert" disabled>
+                    <b><span class="text-danger" asp-validation-for="PolyCombination.PolyCombCode"></span></b>
+                </div>
+            </div>
+
+            <!-- Col for the color selection box -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="mb-3 text-white">
+                    <!-- To add some margin between form-controls -->
+                    <label asp-for="PolyCombination.ColorId" class="form-label">Color</label>
+                    <select class="form-select" asp-for="PolyCombination.ColorId" asp-items="@Model.ColorDropDown" disabled>
+                        <option selected>-- select color --</option>
+                    </select>
+                    <b><span class="text-danger" asp-validation-for="PolyCombination.ColorId"></span></b>
+                </div>
+            </div>
+
+            <!-- Col for the poly material selection box -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="mb-3 text-white">
+                    <!-- To add some margin between form-controls -->
+                    <label asp-for="PolyCombination.PolyMaterialId" class="form-label">Poly material</label>
+                    <select class="form-select" asp-for="PolyCombination.PolyMaterialId" asp-items="@Model.PolyMaterialDropDown" disabled>
+                        <option selected>-- select poly material --</option>
+                    </select>
+                    <b><span class="text-danger" asp-validation-for="PolyCombination.PolyMaterialId"></span></b>
+                </div>
+            </div>
+
+        </div><!-- Section 1: End of the Row for the input fields and selection boxes -->
+        <!-- Section 2: Row for the input fields and selection boxes  -->
+        <div class="row">
+            <!-- Col for the Desc input field -->
+            <div class="col-md-12">
+                <div class="mb-3  text-white">
+                    <!-- mb-3 to add some margin between form-controls -->
+                    <label asp-for="PolyCombination.PolyCombDesc" class="form-label">Description</label>
+                    <input type="text" class="form-control" asp-for="PolyCombination.PolyCombDesc" placeholder="Description here" disabled>
+                    <b><span class="text-danger" asp-validation-for="PolyCombination.PolyCombDesc"></span></b>
+                </div>
+            </div>
+        </div><!-- Section 2: End of the Row for the input fields and selection boxes -->
+        <!-- Section 3: Row for the input fields and selection boxes  -->
+        <div class="row">
+            <!-- Col for the special ref input field -->
+            <div class="col-md-12">
+                <div class="mb-3  text-white">
+                    <!-- mb-3 to add some margin between form-controls -->
+                    <label asp-for="PolyCombination.SpecialRef" class="form-label">Special ref</label>
+                    <input type="text" class="form-control" asp-for="PolyCombination.SpecialRef" placeholder="Special ref here" disabled>
+                    <b><span class="text-danger" asp-validation-for="PolyCombination.SpecialRef"></span></b>
+                </div>
+            </div>
+        </div><!-- Section 3: End of the Row for the input fields and selection boxes -->
+        <!-- Row for the table and add new row button -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Card -->
+                <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                    <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                        <lable class="fw-bold">Combination Ratios</lable>
+                    </div>
+                    <div class="card-body text-white">
+                        <blockquote class="row">
+                            <table class="table text-white" style="min-width: 98%">
+                                <thead class="align-middle">
+                                    <tr>
+                                        <th scope="col">Item Category</th>
+                                        <th scope="col">Percentage (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                    <tr>
+                                        <td>
+                                            <select class="form-select" asp-items="@Model.ItemCategoryDropDown" asp-for="@Model.PolyCombination.PolyCombItemCatBridges[0].ItemCatId" disabled>
+                                                <option selected disabled>-- select product finishing type --</option>
+                                            </select>
+                                            <b><span class="text-danger" asp-validation-for="@Model.PolyCombination.PolyCombItemCatBridges[0].ItemCatId"></span></b>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" asp-for="@Model.PolyCombination.PolyCombItemCatBridges[0].Percentage" placeholder="Percentage" disabled>
+                                            <b><span class="text-danger" asp-validation-for="@Model.PolyCombination.PolyCombItemCatBridges[0].Percentage"></span></b>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </blockquote>
+                    </div>
+                </div> <!-- End of the card -->
+            </div>
+        </div><!-- End of the Row for the table and add new row button -->
+
+    </div><!-- End of the Everythine Except submit button and active checkbox -->
+    <!-- Section for the active checkbox -->
+    <div class="col-md-12">
+
+        <!-- Row for the active checkbox -->
+        <div class="row">
+            <div class="col-md-12">
+                <hr class="bg-primary border-2 border-primary" />
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="PolyCombination.IsActive" disabled>
+                    <label class="form-check-label" asp-for="PolyCombination.IsActive">
+                        <b>Active?</b>
+                    </label>
+                    <b><span class="text-danger" asp-validation-for="PolyCombination.IsActive"></span></b>
+                </div>
+            </div>
+        </div><!-- End of Row for the active checkbox -->
+
+    </div><!-- End of the Section for the active checkbox -->
+
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var select_items_list;
+        var poly_com_item_cat_bridges = @Html.Raw(Model.PolyCombItemCatBridgesJSONArray);
+
+        function add_a_row() {
+            //var row_count = $('#table-body').children.length; // This resulted wrong value.
+            var row_count = document.getElementById('table-body').childElementCount;
+
+            $('#table-body').append(
+                `<tr>
+                    <td>
+                                <select class="form-select" data-val="true" data-val-required="The ItemCatId field is required." id="PolyCombination_PolyCombItemCatBridges_`+ row_count + `__ItemCatId" name="PolyCombination.PolyCombItemCatBridges[` + row_count + `].ItemCatId" disabled>
+                        `
+                        + select_items_list +
+                        `
+                        </select>
+                        <b><span class="text-danger field-validation-valid" data-valmsg-for="PolyCombination.PolyCombItemCatBridges[`+ row_count + `].ItemCatId" data-valmsg-replace="true"></span></b>
+                    </td>
+                    <td>
+                                <input type="text" class="form-control" placeholder="Percentage" data-val="true" data-val-number="The field Percentage must be a number." data-val-range="Percentage is between 0% and 100%" data-val-range-max="100" data-val-range-min="0" data-val-required="The Percentage field is required." id="PolyCombination_PolyCombItemCatBridges_`+ row_count + `__Percentage" name="PolyCombination.PolyCombItemCatBridges[` + row_count + `].Percentage" value="" disabled>
+                        <b><span class="text-danger field-validation-valid" data-valmsg-for="PolyCombination.PolyCombItemCatBridges[`+ row_count + `].Percentage" data-valmsg-replace="true"></span></b>
+                    </td>
+                </tr>`
+            );
+        }
+
+        $(document).ready(function () {
+            select_items_list = $('#table-body').find('select').prop('innerHTML');
+            while (document.getElementById('table-body').childElementCount < @(Model.PolyCombination.PolyCombItemCatBridges.Count) ) {
+                add_a_row();
+            }
+
+            for (i = 0; i < poly_com_item_cat_bridges.length; i++) {
+                document.getElementById('PolyCombination_PolyCombItemCatBridges_' + i + '__ItemCatId').value = poly_com_item_cat_bridges[i].ItemCatId;
+                document.getElementById('PolyCombination_PolyCombItemCatBridges_' + i + '__Percentage').value = poly_com_item_cat_bridges[i].Percentage;
+            }
+            
+
+        });
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

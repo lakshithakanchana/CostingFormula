@@ -1,0 +1,99 @@
+﻿@model Costing_Formula___KSPA.Models.Color;
+@{
+    ViewData["Title"] = "Color Master - Add New Color";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Color Master - Add New Color</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row">
+
+        <!-- Poly color id Input Field -->
+        <div class="col-md-5">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="ColorId" class="form-label">Color id</label>
+                <input type="text" class="form-control" asp-for="ColorId" placeholder="System will generate for you" disabled>
+                <b><span class="text-danger" asp-validation-for="ColorId"></span></b>
+            </div>
+        </div>
+        <!-- Color name code Input Field -->
+        <div class="col-md-7">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="ColorName" class="form-label">Color name</label>
+                <input type="text" class="form-control" asp-for="ColorName" placeholder="Color name here">
+                <b><span class="text-danger" asp-validation-for="ColorName"></span></b>
+            </div>
+        </div>
+
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
+

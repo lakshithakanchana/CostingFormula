@@ -1,0 +1,589 @@
+﻿@model List<Costing_Formula___KSPA.Models.ViewModels.BagTypeVM>
+
+@{
+    ViewData["Title"] = "Bag Type Master - Import CSV";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Bag Tpe Master - Import CSV</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-12">
+        <label for="formFile" class="form-label">Please choose the csv file to import from...</label>&nbsp;<label>(<a href="@Url.Content("~/import-templates/BagTypes.csv")">Click here to download the import template.</a>)</label>
+    </div>
+    <div class="col-sm-8">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="upload_file" accept=".csv">
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="mb-3 d-grid gap-2">
+            <button class="btn btn-primary" id="process_button"><i class="fa-regular fa-gears"></i> <b>Process</b></button>
+        </div>
+    </div>
+    <div class="col-12">
+        <hr class="bg-primary border-2 border-primary" />
+    </div>
+</div>
+
+<div class="row">
+    <form method="post" asp-action="ImportFromCsv">
+
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">Proceed CSV...</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Bag Type Code</th>
+                                    <th class="text-nowrap" scope="col">Product Finishing Type</th>
+                                    <th class="text-nowrap" scope="col">Bag Type Desc</th>
+                                    <th class="text-nowrap" scope="col">Formula To Cal Sheet Area</th>
+                                    <th class="text-nowrap" scope="col">Print By</th>
+                                    <th class="text-nowrap" scope="col">Sheet Size Formula</th>
+                                    <th class="text-nowrap" scope="col">Printed</th>
+                                    <th class="text-nowrap" scope="col">Side Seal</th>
+                                    <th class="text-nowrap" scope="col">Side Gusset</th>
+                                    <th class="text-nowrap" scope="col">Hanger Attached</th>
+                                    <th class="text-nowrap" scope="col">Flap</th>
+                                    <th class="text-nowrap" scope="col">Hanger Bag</th>
+                                    <th class="text-nowrap" scope="col">Bottom Gusset</th>
+                                    <th class="text-nowrap" scope="col">Handle Cut</th>
+                                    <th class="text-nowrap" scope="col">Bottom Seal</th>
+                                    <th class="text-nowrap" scope="col">Punch Hole</th>
+                                    <th class="text-nowrap" scope="col">Top Seal</th>
+                                    <th class="text-nowrap" scope="col">Zipper</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].BagType.BagTypeCode" placeholder="Bag type code same as in Axpert here">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.BagTypeCode"></span></b>
+                                    </td>
+                                    <td>
+                                        <select asp-for="@Model[0].BagType.ProductFinishingTypeId" asp-items="@Model[0].ProductFinishingTypeDropDown" class="form-select">
+                                            <option selected>-- select product finishing type --</option>
+                                        </select>
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.ProductFinishingTypeId"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].BagType.BagTypeDesc" placeholder="Bag type description here">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.BagTypeDesc"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].BagType.FormulaToCalcSArea" placeholder="Formula to calculate sheet area here">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.FormulaToCalcSArea"></span></b>
+                                    </td>
+                                    <td>
+                                        <span class="text-nowrap">
+                                            <input class="form-check-input" type="radio" asp-for="@Model[0].BagType.PrintByWidthOrLength" value="true" checked />
+                                            <label class="form-check-label" asp-for="@Model[0].BagType.PrintByWidthOrLength">
+                                                Print by <b>Width</b>
+                                            </label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="radio" asp-for="@Model[0].BagType.PrintByWidthOrLength" value="false" />
+                                            <label class="form-check-label" asp-for="@Model[0].BagType.PrintByWidthOrLength">
+                                                Print by <b>Length</b>
+                                            </label>
+                                            <b><span class="text-danger" asp-validation-for="@Model[0].BagType.PrintByWidthOrLength"></span></b>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].BagType.SheetSizeFormula" placeholder="Sheet size formula here">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.SheetSizeFormula"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.Printed">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.Printed"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.SideSeal">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.SideSeal"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.SideGusset">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.SideGusset"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.HangerAttached">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.HangerAttached"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.Flap">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.Flap"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.HangerBag">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.HangerBag"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.BottomGusset">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.BottomGusset"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.HandleCut">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.HandleCut"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.BottomSeal">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.BottomSeal"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.PunchHole">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.PunchHole"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.TopSeal">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.TopSeal"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].BagType.Zipper">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.Zipper"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" asp-for="@Model[0].BagType.Isactive">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].BagType.Isactive"></span></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+        <div class="col-12">
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/papaparse/dist/papaparse.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            document.getElementById('table-body').innerHTML = '';
+        });
+
+        const process_btn = document.getElementById('process_button')
+            .addEventListener('click', () => {
+                Papa.parse(document.getElementById('upload_file').files[0], {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        document.getElementById('table-body').innerHTML = '';
+                        add_input_rows(results.data);
+                    }
+                });
+            });
+
+        function add_input_rows(bag_types) {
+            for (var i = 0; i < bag_types.length; i++) {
+
+                var bag_type = bag_types[i];
+
+                var row_count = document.getElementById('table-body').childElementCount;
+                if (typeof bag_type.Code === 'undefined') {
+                    alert('\"Code\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.FinishingType === 'undefined') {
+                    alert('\"FinishingType\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.Description === 'undefined') {
+                    alert('\"Description\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.SheetAreaF === 'undefined') {
+                    alert('\"SheetAreaF\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.PrintBy === 'undefined') {
+                    alert('\"PrintBy\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.SheetSizeF === 'undefined') {
+                    alert('\"SheetSizeF\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.Printed === 'undefined') {
+                    alert('\"Printed\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.SideSeal === 'undefined') {
+                    alert('\"SideSeal\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.SideGusset === 'undefined') {
+                    alert('\"SideGusset\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.HangerAttached === 'undefined') {
+                    alert('\"HangerAttached\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.Flap === 'undefined') {
+                    alert('\"Flap\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.HangerBag === 'undefined') {
+                    alert('\"HangerBag\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.BottomGusset === 'undefined') {
+                    alert('\"BottomGusset\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.HandleCut === 'undefined') {
+                    alert('\"HandleCut\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.BottomSeal === 'undefined') {
+                    alert('\"BottomSeal\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.PunchHole === 'undefined') {
+                    alert('\"PunchHole\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.TopSeal === 'undefined') {
+                    alert('\"TopSeal\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof bag_type.Zipper === 'undefined') {
+                    alert('\"Zipper\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_active;
+                if (bag_type.Active.toLowerCase() == 'true' || bag_type.Active == '1') {
+                    is_checked_active = 'checked';
+                } else if (bag_type.Active.toLowerCase() == 'false' || bag_type.Active == '0') {
+                    is_checked_active = '';
+                } else {
+                    alert(bag_type.Active + ' is not valid value for the column \"Active\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_printed;
+                if (bag_type.Printed.toLowerCase() == 'true' || bag_type.Printed == '1') {
+                    is_checked_printed = 'checked';
+                } else if (bag_type.Printed.toLowerCase() == 'false' || bag_type.Printed == '0') {
+                    is_checked_printed = '';
+                } else {
+                    alert(bag_type.Printed + ' is not valid value for the column \"Printed\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_side_seal;
+                if (bag_type.SideSeal.toLowerCase() == 'true' || bag_type.SideSeal == '1') {
+                    is_checked_side_seal = 'checked';
+                } else if (bag_type.SideSeal.toLowerCase() == 'false' || bag_type.SideSeal == '0') {
+                    is_checked_side_seal = '';
+                } else {
+                    alert(bag_type.SideSeal + ' is not valid value for the column \"SideSeal\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_side_gusset;
+                if (bag_type.SideGusset.toLowerCase() == 'true' || bag_type.SideGusset == '1') {
+                    is_checked_side_gusset = 'checked';
+                } else if (bag_type.SideGusset.toLowerCase() == 'false' || bag_type.SideGusset == '0') {
+                    is_checked_side_gusset = '';
+                } else {
+                    alert(bag_type.SideGusset + ' is not valid value for the column \"SideGusset\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_hanger_attached;
+                if (bag_type.HangerAttached.toLowerCase() == 'true' || bag_type.HangerAttached == '1') {
+                    is_checked_hanger_attached = 'checked';
+                } else if (bag_type.HangerAttached.toLowerCase() == 'false' || bag_type.HangerAttached == '0') {
+                    is_checked_hanger_attached = '';
+                } else {
+                    alert(bag_type.HangerAttached + ' is not valid value for the column \"HangerAttached\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_flap;
+                if (bag_type.Flap.toLowerCase() == 'true' || bag_type.Flap == '1') {
+                    is_checked_flap = 'checked';
+                } else if (bag_type.Flap.toLowerCase() == 'false' || bag_type.Flap == '0') {
+                    is_checked_flap = '';
+                } else {
+                    alert(bag_type.Flap + ' is not valid value for the column \"Flap\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_hanger_bag;
+                if (bag_type.HangerBag.toLowerCase() == 'true' || bag_type.HangerBag == '1') {
+                    is_checked_hanger_bag = 'checked';
+                } else if (bag_type.HangerBag.toLowerCase() == 'false' || bag_type.HangerBag == '0') {
+                    is_checked_hanger_bag = '';
+                } else {
+                    alert(bag_type.HangerBag + ' is not valid value for the column \"HangerBag\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_bottom_gusset;
+                if (bag_type.BottomGusset.toLowerCase() == 'true' || bag_type.BottomGusset == '1') {
+                    is_checked_bottom_gusset = 'checked';
+                } else if (bag_type.BottomGusset.toLowerCase() == 'false' || bag_type.BottomGusset == '0') {
+                    is_checked_bottom_gusset = '';
+                } else {
+                    alert(bag_type.BottomGusset + ' is not valid value for the column \"BottomGusset\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_handle_cut;
+                if (bag_type.HandleCut.toLowerCase() == 'true' || bag_type.HandleCut == '1') {
+                    is_checked_handle_cut = 'checked';
+                } else if (bag_type.HandleCut.toLowerCase() == 'false' || bag_type.HandleCut == '0') {
+                    is_checked_handle_cut = '';
+                } else {
+                    alert(bag_type.HandleCut + ' is not valid value for the column \"HandleCut\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_bottom_seal;
+                if (bag_type.BottomSeal.toLowerCase() == 'true' || bag_type.BottomSeal == '1') {
+                    is_checked_bottom_seal = 'checked';
+                } else if (bag_type.BottomSeal.toLowerCase() == 'false' || bag_type.BottomSeal == '0') {
+                    is_checked_bottom_seal = '';
+                } else {
+                    alert(bag_type.BottomSeal + ' is not valid value for the column \"BottomSeal\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_punch_hole;
+                if (bag_type.PunchHole.toLowerCase() == 'true' || bag_type.PunchHole == '1') {
+                    is_checked_punch_hole = 'checked';
+                } else if (bag_type.PunchHole.toLowerCase() == 'false' || bag_type.PunchHole == '0') {
+                    is_checked_punch_hole = '';
+                } else {
+                    alert(bag_type.PunchHole + ' is not valid value for the column \"PunchHole\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_top_seal;
+                if (bag_type.TopSeal.toLowerCase() == 'true' || bag_type.TopSeal == '1') {
+                    is_checked_top_seal = 'checked';
+                } else if (bag_type.TopSeal.toLowerCase() == 'false' || bag_type.TopSeal == '0') {
+                    is_checked_top_seal = '';
+                } else {
+                    alert(bag_type.TopSeal + ' is not valid value for the column \"TopSeal\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var is_checked_zipper;
+                if (bag_type.Zipper.toLowerCase() == 'true' || bag_type.Zipper == '1') {
+                    is_checked_zipper = 'checked';
+                } else if (bag_type.Zipper.toLowerCase() == 'false' || bag_type.Zipper == '0') {
+                    is_checked_zipper = '';
+                } else {
+                    alert(bag_type.Zipper + ' is not valid value for the column \"Zipper\"! Acceptable only \"True\" or \"False\" words. Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var product_finishing_type_id;
+                var product_finishing_type_obj = get_object_by_text(@Html.Raw(ViewBag.productFinTypesJsonStr), bag_type.FinishingType);
+                if(product_finishing_type_obj === null)
+                    product_finishing_type_id = null;
+                else
+                    product_finishing_type_id = product_finishing_type_obj.Id
+                if (product_finishing_type_id === null) {
+                    alert(bag_type.FinishingType + " is not available inside the product finishing type master or inactive! Please contact your admin...");
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                var print_by_width_checked = (bag_type.PrintBy.toLowerCase() === 'width') ? 'checked' : '';
+                var print_by_length_checked = (bag_type.PrintBy.toLowerCase() === 'length') ? 'checked' : '';
+
+                $('#table-body').append(
+                    `
+                            <tr>
+                                <td>
+                                    <input type="text" class="form-control" placeholder="Bag type code same as in Axpert here" data-val="true" data-val-required="The Bag Type Code field is required." id="z`+ row_count + `__BagType_BagTypeCode" name="[` + row_count + `].BagType.BagTypeCode" value="` + bag_type.Code + `">
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.BagTypeCode" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <select class="form-select" data-val="true" data-val-range="Please select the Product Finishing Type" data-val-range-max="2147483647" data-val-range-min="1" data-val-required="The Product Finishing Type field is required." id="z`+ row_count + `__BagType_ProductFinishingTypeId" name="[` + row_count + `].BagType.ProductFinishingTypeId" value="` + product_finishing_type_id + `">
+                                        <option value="` + product_finishing_type_id + `" selected>` + bag_type.FinishingType.toUpperCase() + `</option>
+                                    </select>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.ProductFinishingTypeId" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" placeholder="Bag type description here" data-val="true" data-val-required="The Bag Type Desc field is required." id="z`+ row_count + `__BagType_BagTypeDesc" name="[` + row_count + `].BagType.BagTypeDesc" value="` + bag_type.Description + `">
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.BagTypeDesc" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" placeholder="Formula to calculate sheet area here" data-val="true" data-val-required="The Formula To Calculate Sheet Area field is required." id="z`+ row_count + `__BagType_FormulaToCalcSArea" name="[` + row_count + `].BagType.FormulaToCalcSArea" value="` + bag_type.SheetAreaF + `">
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.FormulaToCalcSArea" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <span class="text-nowrap">
+                                        <input class="form-check-input" type="radio" value="true" data-val="true" data-val-required="The Printed by? field is required." id="z`+ row_count + `__BagType_PrintByWidthOrLength" name="[` + row_count + `].BagType.PrintByWidthOrLength" ` + print_by_width_checked + ` />
+                                        <label class="form-check-label" for="z`+ row_count + `__BagType_PrintByWidthOrLength">
+                                            Print by <b>Width</b>
+                                        </label>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <input class="form-check-input" type="radio" value="false" data-val="true" data-val-required="The Printed by? field is required." id="z`+ row_count + `__BagType_PrintByWidthOrLength" name="[` + row_count + `].BagType.PrintByWidthOrLength" ` + print_by_length_checked + ` />
+                                        <label class="form-check-label" for="z`+ row_count + `__BagType_PrintByWidthOrLength">
+                                            Print by <b>Length</b>
+                                        </label>
+                                        <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.PrintByWidthOrLength" data-valmsg-replace="true"></span></b>
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" placeholder="Sheet size formula here" data-val="true" data-val-required="The Sheet Size Formula field is required." id="z`+ row_count + `__BagType_SheetSizeFormula" name="[` + row_count + `].BagType.SheetSizeFormula" value="` + bag_type.SheetSizeF + `">
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.SheetSizeFormula" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Printed? field is required." id="z`+ row_count + `__BagType_Printed" name="[` + row_count + `].BagType.Printed" value="true" ` + is_checked_printed + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.Printed" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Side Seal? field is required." id="z`+ row_count + `__BagType_SideSeal" name="[` + row_count + `].BagType.SideSeal" value="true" ` + is_checked_side_seal + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.SideSeal" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Side Gusset? field is required." id="z`+ row_count + `__BagType_SideGusset" name="[` + row_count + `].BagType.SideGusset" value="true" ` + is_checked_side_gusset + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.SideGusset" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Hanger Attached? field is required." id="z`+ row_count + `__BagType_HangerAttached" name="[` + row_count + `].BagType.HangerAttached" value="true" ` + is_checked_hanger_attached + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.HangerAttached" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Flap? field is required." id="z`+ row_count + `__BagType_Flap" name="[` + row_count + `].BagType.Flap" value="true" ` + is_checked_flap + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.Flap" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Hanger Bag? field is required." id="z`+ row_count + `__BagType_HangerBag" name="[` + row_count + `].BagType.HangerBag" value="true" ` + is_checked_hanger_bag + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.HangerBag" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Bottom Gusset? field is required." id="z`+ row_count + `__BagType_BottomGusset" name="[` + row_count + `].BagType.BottomGusset" value="true" ` + is_checked_bottom_gusset + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.BottomGusset" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Handle Cut? field is required." id="z`+ row_count + `__BagType_HandleCut" name="[` + row_count + `].BagType.HandleCut" value="true" ` + is_checked_handle_cut + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.HandleCut" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Bottom Seal? field is required." id="z`+ row_count + `__BagType_BottomSeal" name="[` + row_count + `].BagType.BottomSeal" value="true" ` + is_checked_bottom_seal + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.BottomSeal" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Punch Hole? field is required." id="z`+ row_count + `__BagType_PunchHole" name="[` + row_count + `].BagType.PunchHole" value="true" ` + is_checked_punch_hole + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.PunchHole" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Top Seal field is required." id="z`+ row_count + `__BagType_TopSeal" name="[` + row_count + `].BagType.TopSeal" value="true" ` + is_checked_top_seal + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.TopSeal" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Zipper? field is required." id="z`+ row_count + `__BagType_Zipper" name="[` + row_count + `].BagType.Zipper" value="true" ` + is_checked_zipper + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.Zipper" data-valmsg-replace="true"></span></b>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Active? field is required." id="z`+ row_count + `__BagType_Isactive" name="[` + row_count + `].BagType.Isactive" value="true" ` + is_checked_active + `>
+                                    <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BagType.Isactive" data-valmsg-replace="true"></span></b>
+                                </td>
+                            </tr>
+                            `
+                );
+
+                $("form").removeData("validator").removeData("unobtrusiveValidation");
+                //Parse the form again
+                $.validator.unobtrusive.parse($("form"));
+            }
+        }
+
+        function get_object_by_text(json_array, text) {
+            for (i = 0; i < json_array.length; i++) {
+                if (json_array[i].Text.toLowerCase() == text.toLowerCase())
+                    return json_array[i];
+            }
+            return null;
+        }
+
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

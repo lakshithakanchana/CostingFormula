@@ -1,0 +1,149 @@
+﻿@model List<Costing_Formula___KSPA.Models.ExchangeRate>;
+
+@{
+    ViewData["Title"] = "Daily / Monthly Exchange Rate Summarized View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Daily &frasl; Monthly Exchange Rate Summarized View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+
+    IEnumerable<ExchangeRate> noEffextiveExRates = Model.Where(rec => rec.ExchangeRateId == 0);
+    IEnumerable<ExchangeRate> withEffextiveExRates = Model.Where(rec => rec.ExchangeRateId != 0);
+
+    if (noEffextiveExRates.Count() > 0)
+    {
+        //If there are 1 or more currencies do not having exchange rates to show. Because exrates inside currencies
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="bd-callout bd-callout-danger bg-dark d-md-inline-block">
+                    <h2 class="h5">There are some currencies with no exchange rate(s).</h2>
+                </div>
+                <!-- Card -->
+                <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                    <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                        <lable class="fw-bold">Please add at least one exchange rate for the following.</lable>
+                    </div>
+                    <div class="card-body text-white">
+                        <blockquote class="row">
+                            <table class="data-table table text-white" style="min-width: 98%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-nowrap" scope="col">Currency ID</th>
+                                        <th class="text-nowrap" scope="col">Currency Short Code <span class="text-warning">(As in Axpert)</span></th>
+                                        <th class="text-nowrap" scope="col">Currency Description</th>
+                                        <th class="text-nowrap" scope="col">Currency Active?</th>
+                                        <th class="text-nowrap" scope="col">Exchange Rate <span class="text-warning">In Effect</span></th>
+                                        <th class="text-nowrap" scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var exRate in noEffextiveExRates)
+                                    {
+                                        <tr>
+                                            <td class="text-nowrap">@exRate.Currency.CurrencyId</td>
+                                            <td class="text-nowrap">@exRate.Currency.CurrencyCode</td>
+                                            <td class="text-nowrap">@exRate.Currency.CurrencyDesc </td>
+                                            <td class="text-nowrap">@exRate.Currency.IsActive</td>
+                                            <td class="text-nowrap"><span class="text-warning">Not Available</span></td>
+                                            <td class="text-nowrap"><a class="btn btn-primary" asp-action="Create" asp-route-id="@exRate.Currency.CurrencyId" role="button"><i class="fa-regular fa-plus"></i> Add Exchange Rate</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </blockquote>
+                    </div>
+                </div> <!-- End of the card -->
+            </div>
+        </div>
+    }
+    if (withEffextiveExRates.Count() > 0)
+    {
+        //If there are 1 or more currencies having exchange rates to show. Because exrates inside currencies
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="bd-callout bd-callout-success bg-dark d-md-inline-block">
+                    <h2 class="h5">Currencies with system choosen exchange rate for today: @DateTime.Today.ToString("dd MMMM, yyyy")</h2>
+                </div>
+                <!-- Card -->
+                <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                    <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                        <lable class="fw-bold">Manage currency exchange rates.</lable>
+                    </div>
+                    <div class="card-body text-white">
+                        <blockquote class="row">
+                            <table class="data-table table text-white" style="min-width: 98%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-nowrap" scope="col">Currency ID</th>
+                                        <th class="text-nowrap" scope="col">Currency Short Code <span class="text-warning">(As in Axpert)</span></th>
+                                        <th class="text-nowrap" scope="col">Currency Description</th>
+                                        <th class="text-nowrap" scope="col">Effective From Date</th>
+                                        <th class="text-nowrap" scope="col">Exchange Rate <span class="text-warning">In Effect</span></th>
+                                        <th class="text-nowrap" scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var exRate in withEffextiveExRates)
+                                    {
+                                        <tr>
+                                            <td class="text-nowrap">@exRate.Currency.CurrencyId</td>
+                                            <td class="text-nowrap">@exRate.Currency.CurrencyCode</td>
+                                            <td class="text-nowrap">@exRate.Currency.CurrencyDesc </td>
+                                            <td class="text-nowrap"><span class=" @( ((DateTime.Today-exRate.EffectiveFrom).TotalDays >= 30) ? "text-nowrap text-danger fw-bold" : "text-nowrap" ) ">@exRate.EffectiveFrom.ToString("yyyy-MM-dd, MMMM")</span></td>
+                                            <td class="text-nowrap"><b class="text-warning">@exRate.RateInLKR</b></td>
+                                            <td class="text-nowrap">
+                                                <a class="btn btn-primary" asp-action="Create" asp-route-id="@exRate.Currency.CurrencyId" role="button"><i class="fa-regular fa-list"></i> List</a>
+                                                <a class="btn btn-primary" asp-action="Create" asp-route-id="@exRate.Currency.CurrencyId" role="button"><i class="fa-regular fa-pen-to-square"></i> Edit</a>
+                                                <a class="btn btn-primary" asp-action="Create" asp-route-id="@exRate.Currency.CurrencyId" role="button"><i class="fa-regular fa-plus"></i> Add Ex</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                </table>
+                        </blockquote>
+                    </div>
+                </div> <!-- End of the card -->
+            </div>
+        </div>
+    }
+}
+else
+{
+    //If there are no currencies to show
+    <div class="row">
+        <div class="col-md-12 mb-5">
+            <h2 class="h4">There are no currencies added yet&iexcl;</h2>
+            <h3 class="h5">First add currencies and then come here to add exchange rates.</h3>
+            <p>
+                Add a currency?
+                <a class="btn btn-primary" asp-controller="Currency" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @{
+    <partial name="_ValidationScriptsPartial" />
+    }
+}

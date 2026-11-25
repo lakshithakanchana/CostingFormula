@@ -1,0 +1,222 @@
+﻿@model Costing_Formula___KSPA.Models.ViewModels.CorruCombinationVM;
+
+@{
+    ViewData["Title"] = "Corru Combination Master - View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Corru Combination Master - View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4 text-danger" asp-validation-summary="All">
+            <!-- Validation Summary Will Be Here -->
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <!-- Col for the corru comb id input field -->
+    <div class="col-sm-6 col-md-3">
+        <div class="mb-3  text-white">
+            <!-- mb-3 to add some margin between form-controls -->
+            <label asp-for="CorruCombination.CorruCombId" class="form-label">Corru comb. id </label>
+            <input type="text" class="form-control" asp-for="CorruCombination.CorruCombId" placeholder="System will generate" disabled>
+            <b><span class="text-danger" asp-validation-for="CorruCombination.CorruCombId"></span></b>
+        </div>
+    </div>
+
+    <!-- Col for the corru comb code input field -->
+    <div class="col-sm-6 col-md-3">
+        <div class="mb-3  text-white">
+            <!-- mb-3 to add some margin between form-controls -->
+            <label asp-for="CorruCombination.CorruCombCode" class="form-label">Corru comb. code </label>
+            <input type="text" class="form-control" asp-for="CorruCombination.CorruCombCode" placeholder="As in Axpert" disabled>
+            <b><span class="text-danger" asp-validation-for="CorruCombination.CorruCombCode"></span></b>
+        </div>
+    </div>
+
+    <!-- Col for the color selection box -->
+    <div class="col-sm-6 col-md-3">
+        <div class="mb-3 text-white">
+            <!-- To add some margin between form-controls -->
+            <label asp-for="CorruCombination.ColorId" class="form-label">Color</label>
+            <select class="form-select" asp-for="CorruCombination.ColorId" asp-items="@Model.ColorDropDown" disabled>
+                <option selected>-- select color --</option>
+            </select>
+            <b><span class="text-danger" asp-validation-for="CorruCombination.ColorId"></span></b>
+        </div>
+    </div>
+
+    <!-- Col for the Plys input field -->
+    <div class="col-sm-6 col-md-3">
+        <div class="mb-3 text-white">
+            <!-- To add some margin between form-controls -->
+            <label asp-for="CorruCombination.NoOfPlys" class="form-label">No of plys</label>
+            <input type="number" class="form-control" asp-for="CorruCombination.NoOfPlys" placeholder="No of plys here" disabled>
+            <b><span class="text-danger" asp-validation-for="CorruCombination.NoOfPlys"></span></b>
+        </div>
+    </div>
+
+    <!-- Col for the table and add new row button -->
+    <div class="col-12">
+        <!-- Card -->
+        <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+            <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                <lable class="fw-bold">Combination Ratios</lable>
+            </div>
+            <div class="card-body text-white">
+                <blockquote class="row">
+                    <table class="table text-white" style="min-width: 98%">
+                        <thead class="align-middle">
+                            <tr>
+                                <th scope="col">Placement</th>
+                                <th scope="col">GSM</th>
+                                <th scope="col">Item Category</th>
+                                <th class="text-center" scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <tr>
+                                <td>
+                                    <select class="form-select" asp-items="@Model.PlacementDropDown" asp-for="@Model.CorruCombination.CorruCombItemCatBridges[0].PlacementId" disabled>
+                                        <option selected disabled>-- placement --</option>
+                                    </select>
+                                    <b><span class="text-danger" asp-validation-for="@Model.CorruCombination.CorruCombItemCatBridges[0].PlacementId"></span></b>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" asp-for="@Model.CorruCombination.CorruCombItemCatBridges[0].Gsm" placeholder="GSM" disabled>
+                                    <b><span class="text-danger" asp-validation-for="@Model.CorruCombination.CorruCombItemCatBridges[0].Gsm"></span></b>
+                                </td>
+                                <td>
+                                    <select class="form-select" asp-items="@Model.ItemCategoryDropDown" asp-for="@Model.CorruCombination.CorruCombItemCatBridges[0].ItemCatId" disabled>
+                                        <option selected disabled>-- item category --</option>
+                                    </select>
+                                    <b><span class="text-danger" asp-validation-for="@Model.CorruCombination.CorruCombItemCatBridges[0].ItemCatId"></span></b>
+                                </td>
+                                <td class="align-bottom">
+                                    <div>
+                                        <button type="button" class="btn btn-danger rounded del-this-row" onclick="self_remove(this)" disabled><i class="fa-regular fa-trash-can"></i> Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="border-0" colspan="3" style="text-align: right;">
+                                    Need To Add New Row?
+                                </td>
+                                <td class="border-0">
+                                    <div class="d-flex justify-content-end">
+                                        <button id="add-row" type="button" class="btn btn-primary" disabled><i class="fa-regular fa-circle-plus"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </blockquote>
+            </div>
+        </div> <!-- End of the card -->
+    </div><!-- End of the Col for the table and add new row button -->
+
+    <!-- Section for the active checkbox -->
+    <div class="col-md-12">
+
+        <!-- Row for the active checkbox -->
+        <div class="row">
+            <div class="col-md-12">
+                <hr class="bg-primary border-2 border-primary" />
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="CorruCombination.IsActive" disabled>
+                    <label class="form-check-label" asp-for="CorruCombination.IsActive">
+                        <b>Active?</b>
+                    </label>
+                    <b><span class="text-danger" asp-validation-for="CorruCombination.IsActive"></span></b>
+                </div>
+            </div>
+        </div><!-- End of Row for the active checkbox -->
+
+    </div><!-- End of the Section for the active checkbox -->
+
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var first_items_list;
+        var second_items_list;
+        var corru_com_item_cat_bridges = @Html.Raw(Model.CorruCombItemCatBridgesJSONArray);
+
+        function add_a_row() {
+            //var row_count = $('#table-body').children.length; // This resulted wrong value.
+            var row_count = document.getElementById('table-body').childElementCount;
+
+            $('#table-body').append(
+                `<tr>
+                    <td>
+                        <select class="form-select" data-val="true" data-val-required="The PlacementId field is required." id="CorruCombination_CorruCombItemCatBridges_`+ row_count + `__PlacementId" name="CorruCombination.CorruCombItemCatBridges[` + row_count + `].PlacementId" disabled>
+                        `+ first_items_list + `
+                        </select>
+                        <b><span class="text-danger field-validation-valid" data-valmsg-for="CorruCombination.CorruCombItemCatBridges[`+ row_count + `].PlacementId" data-valmsg-replace="true"></span></b>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" placeholder="GSM" data-val="true" data-val-range="The Gsm field is required." data-val-range-max="2147483647" data-val-range-min="1" data-val-required="The Gsm field is required." id="CorruCombination_CorruCombItemCatBridges_`+ row_count + `__Gsm" name="CorruCombination.CorruCombItemCatBridges[` + row_count + `].Gsm" disabled>
+                        <b><span class="text-danger field-validation-valid" data-valmsg-for="CorruCombination.CorruCombItemCatBridges[`+ row_count + `].Gsm" data-valmsg-replace="true"></span></b>
+                    </td>
+                    <td>
+                        <select class="form-select" data-val="true" data-val-range="The ItemCatId field is required." data-val-range-max="2147483647" data-val-range-min="1" data-val-required="The ItemCatId field is required." id="CorruCombination_CorruCombItemCatBridges_`+ row_count + `__ItemCatId" name="CorruCombination.CorruCombItemCatBridges[` + row_count + `].ItemCatId" disabled>
+                        `+ second_items_list + `
+                        </select>
+                        <b><span class="text-danger field-validation-valid" data-valmsg-for="CorruCombination.CorruCombItemCatBridges[`+ row_count + `].ItemCatId" data-valmsg-replace="true"></span></b>
+                    </td>
+                    <td class="align-bottom">
+                        <div>
+                            <button type="button" class="btn btn-danger rounded del-this-row" onclick="self_remove(this)" disabled><i class="fa-regular fa-trash-can"></i> Delete</button>
+                        </div>
+                    </td>
+                </tr>`
+            );
+        }
+
+        $(document).ready(function () {
+
+            first_items_list = $('#table-body').find('select:first').prop('innerHTML');
+            second_items_list = $('#table-body').find('select:last').prop('innerHTML');
+
+            while (document.getElementById('table-body').childElementCount < @(Model.CorruCombination.CorruCombItemCatBridges.Count) ) {
+                add_a_row();
+            }
+
+            console.log(corru_com_item_cat_bridges);
+
+            for (i = 0; i < corru_com_item_cat_bridges.length; i++) {
+                document.getElementById('CorruCombination_CorruCombItemCatBridges_' + i + '__ItemCatId').value = corru_com_item_cat_bridges[i].ItemCatId;
+                document.getElementById('CorruCombination_CorruCombItemCatBridges_' + i + '__PlacementId').value = corru_com_item_cat_bridges[i].PlacementId;
+                document.getElementById('CorruCombination_CorruCombItemCatBridges_' + i + '__Gsm').value = corru_com_item_cat_bridges[i].Gsm;
+            }
+
+        });
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

@@ -1,0 +1,150 @@
+﻿@model Costing_Formula___KSPA.Models.ItemCategory;
+
+@{
+    ViewData["Title"] = "Item Category Master - Add New Item Category";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Item Category Master - Add New Bag Type</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Imort From CSV</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row">
+
+        <!-- Section for the input fields -->
+        <div class="col-md-12">
+
+            <!-- Item category Id and Item category code Input Fields -->
+            <div class="row">
+
+                <!-- Item cat id -->
+                <div class="col-md-6">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ItemCatId" class="form-label">Item category id</label>
+                        <input asp-for="ItemCatId" class="form-control" type="text" placeholder="System will generate for you" disabled>
+                        <b><span class="text-danger" asp-validation-for="ItemCatId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Item cat code as in axpert -->
+                <div class="col-md-6">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ItemCategoryCode" class="form-label">Item category code <b class="text-warning">(same as in Axpert)</b></label>
+                        <input type="text" class="form-control" asp-for="ItemCategoryCode" placeholder="Item category code (same as in Axpert)">
+                        <b><span class="text-danger" asp-validation-for="ItemCategoryCode"></span></b>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Item category desc Input Field -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ItemCategoryDesc" class="form-label">Item category description</label>
+                        <input type="text" class="form-control" asp-for="ItemCategoryDesc" placeholder="Item category description here">
+                        <b><span class="text-danger" asp-validation-for="ItemCategoryDesc"></span></b>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of Section for the input fields -->
+
+        <!-- Section for Poly, Corru checkboxes -->
+        <div>
+            <!-- Row for the check boxes -->
+            <div class="row">
+
+                <!-- Poly combination checkbox -->
+                <div class="col-md-3">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" asp-for="IsPolyComb">
+                        <label class="form-check-label" asp-for="IsPolyComb">
+                            Poly combination
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsPolyComb"></span></b>
+                    </div>
+                </div>
+
+                <!-- Corru combination checkbox -->
+                <div class="col-md-9">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" asp-for="IsCorruComb">
+                        <label class="form-check-label" asp-for="IsCorruComb">
+                            Corru combination
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsCorruComb"></span></b>
+                    </div>
+                </div>
+
+            </div><!-- End of row for the check boxes -->
+        </div><!-- End of Section for Poly, Corru checkboxes -->
+
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

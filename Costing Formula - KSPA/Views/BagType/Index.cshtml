@@ -1,0 +1,127 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.BagType>;
+
+@{
+    ViewData["Title"] = "Bag Type Master - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Bag Type Master - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+            <button type="button" class="btn btn-secondary border border-2"><i class="fa-regular fa-download"></i> Download As Excel</button>
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+    //If there are 1 or more Bag Types to show
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Bag Type ID</th>
+                                    <th class="text-nowrap" scope="col">Bag Type Code <span class="text-warning">(As in Axpert)</span></th>
+                                    <th class="text-nowrap" scope="col">Product Finishing Type</th>
+                                    <th class="text-nowrap" scope="col">Bag Type Description</th>
+                                    <th class="text-nowrap" scope="col">Formula to calculate sheet area</th>
+                                    <th class="text-nowrap" scope="col">Print by <b>width</b> or <b>length</b>&quest;</th>
+                                    <th class="text-nowrap" scope="col">Sheet size formula</th>
+                                    <th class="text-nowrap" scope="col">Printed?</th>
+                                    <th class="text-nowrap" scope="col">Side Seal?</th>
+                                    <th class="text-nowrap" scope="col">Side Gusset?</th>
+                                    <th class="text-nowrap" scope="col">Hanger Attached?</th>
+                                    <th class="text-nowrap" scope="col">Flap?</th>
+                                    <th class="text-nowrap" scope="col">Hanger Bag?</th>
+                                    <th class="text-nowrap" scope="col">Bottom Gusset?</th>
+                                    <th class="text-nowrap" scope="col">Handle Cut?</th>
+                                    <th class="text-nowrap" scope="col">Bottom Seal?</th>
+                                    <th class="text-nowrap" scope="col">Punch Hole?</th>
+                                    <th class="text-nowrap" scope="col">Side Gusset?</th>
+                                    <th class="text-nowrap" scope="col">Hanger Attached?</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var bagType in Model)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap">@bagType.BagTypeId</td>
+                                        <td class="text-nowrap"><a asp-action="Update" asp-route-id="@bagType.BagTypeId">@bagType.BagTypeCode</a></td>
+                                        <td class="text-nowrap">@bagType.ProductFinishingType.ProductFinishingTypeDesc </td>
+                                        <td class="text-nowrap">@bagType.BagTypeDesc</td>
+                                        <td class="text-nowrap">@bagType.FormulaToCalcSArea</td>
+                                        <td class="text-nowrap">
+                                            @if (bagType.PrintByWidthOrLength)
+                                            {
+                                                <span>by Width</span>
+                                            }
+                                            else
+                                            {
+                                                <span>by Length</span>
+                                            }
+                                        </td>
+                                        <td class="text-nowrap">@bagType.SheetSizeFormula</td>
+                                        <td class="text-nowrap">@bagType.Printed</td>
+                                        <td class="text-nowrap">@bagType.SideSeal</td>
+                                        <td class="text-nowrap">@bagType.SideGusset</td>
+                                        <td class="text-nowrap">@bagType.HangerAttached</td>
+                                        <td class="text-nowrap">@bagType.Flap</td>
+                                        <td class="text-nowrap">@bagType.HangerBag</td>
+                                        <td class="text-nowrap">@bagType.BottomGusset</td>
+                                        <td class="text-nowrap">@bagType.HandleCut</td>
+                                        <td class="text-nowrap">@bagType.BottomSeal</td>
+                                        <td class="text-nowrap">@bagType.PunchHole</td>
+                                        <td class="text-nowrap">@bagType.SideGusset</td>
+                                        <td class="text-nowrap">@bagType.HangerAttached</td>
+                                        <td class="text-nowrap">@bagType.Isactive</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+}
+else
+{
+                //If there are no Bag Types to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no bag types added yet!</h2>
+            <p>
+                Add one?
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

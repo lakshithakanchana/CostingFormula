@@ -1,0 +1,117 @@
+﻿@model Costing_Formula___KSPA.Models.Currency;
+
+@{
+    ViewData["Title"] = "Currency Master - Edit";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Currency Master - Edit</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Update">
+    <div class="row">
+
+        <!-- Section EXCEPT for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for input fields -->
+            <div class="row">
+                <!-- Currency id -->
+                <div class="col-md-2">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CurrencyId" class="form-label">Currency Id</label>
+                        <input type="text" class="form-control" asp-for="CurrencyId" placeholder="System will generate" readonly>
+                        <b><span class="text-danger" asp-validation-for="CurrencyId"></span></b>
+                    </div>
+                </div>
+                <!-- Currency code -->
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CurrencyCode" class="form-label">Currency Short code</label>
+                        <input type="text" class="form-control" asp-for="CurrencyCode" placeholder="Currency code here" oninput="this.value = this.value.toUpperCase()">
+                        <b class="text-warning">LKR, USD, GBP ...</b>
+                        <br />
+                        <b><span class="text-danger" asp-validation-for="CurrencyCode"></span></b>
+                    </div>
+                </div>
+                <!-- Currency Desc -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CurrencyDesc" class="form-label">Currency description</label>
+                        <input type="text" class="form-control" asp-for="CurrencyDesc" placeholder="Currency description here" oninput="this.value = this.value.toUpperCase()">
+                        <b class="text-warning">Sri Lankan Rupee, Australian Dollar ...</b>
+                        <br />
+                        <b><span class="text-danger" asp-validation-for="CurrencyDesc"></span></b>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of Section EXCEPT for the active checkbox and the submit button -->
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

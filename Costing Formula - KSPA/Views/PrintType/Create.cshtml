@@ -1,0 +1,133 @@
+﻿@model Costing_Formula___KSPA.Models.PrintType;
+@{
+    ViewData["Title"] = "Print Type Master - Add New";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Print Type Master - Add New</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row">
+
+        <!-- Print type id Input Field -->
+        <div class="col-md-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PrintTypeId" class="form-label">Print type id</label>
+                <input type="text" class="form-control" asp-for="PrintTypeId" placeholder="System will generate for you" disabled>
+                <b><span class="text-danger" asp-validation-for="PrintTypeId"></span></b>
+            </div>
+        </div>
+        <!-- Print type code Input Field -->
+        <div class="col-md-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PrintTypeCode" class="form-label">Print type code <span class="text-warning fw-bold">(As in Axpert)</span></label>
+                <input type="text" class="form-control" asp-for="PrintTypeCode" placeholder="Axpert print type code">
+                <b><span class="text-danger" asp-validation-for="PrintTypeCode"></span></b>
+            </div>
+        </div>
+        <!-- Print Percentage Input Field -->
+        <div class="col-md-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PrintPercentage" class="form-label">Print percentage (%)</label>
+                <input type="text" class="form-control" asp-for="PrintPercentage" placeholder="Print percentage here">
+                <b><span class="text-danger" asp-validation-for="PrintPercentage"></span></b>
+            </div>
+        </div>
+        <!-- Print Typ Desc Input Field -->
+        <div class="col-md-8">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PrintTypeDesc" class="form-label">Print type description</label>
+                <input type="text" class="form-control" asp-for="PrintTypeDesc" placeholder="Description">
+                <b><span class="text-danger" asp-validation-for="PrintTypeDesc"></span></b>
+            </div>
+        </div>
+        <!-- Consumption ltr per sqr cm id Input Field -->
+        <div class="col-md-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="ConsumptionLitrePerSqrCm" class="form-label">Consumption litere per square cm</label>
+                <input type="text" class="form-control" asp-for="ConsumptionLitrePerSqrCm" placeholder="Consumption l cm^(-2)">
+                <b><span class="text-danger" asp-validation-for="ConsumptionLitrePerSqrCm"></span></b>
+            </div>
+        </div>
+        <!-- Without cylinder base? checkbox -->
+        <div class="col-12">
+            <div class="mb-1">
+                <!-- To add some margin between form-controls -->
+                <input class="form-check-input" asp-for="WithoutCylinderBase">
+                <label class="form-check-label" asp-for="WithoutCylinderBase">&nbsp;Without cylinder base?</label>
+                <b><span class="text-danger" asp-validation-for="WithoutCylinderBase"></span></b>
+            </div>
+        </div>
+
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive">&nbsp;<b>Active?</b></label>
+                        <b><span class="text-danger" asp-validation-for="IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
+

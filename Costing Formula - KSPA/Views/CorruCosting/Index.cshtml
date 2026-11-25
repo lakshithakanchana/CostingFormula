@@ -1,0 +1,169 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.CorruCosting>;
+
+@{
+    ViewData["Title"] = "Corru Costing - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Corrugated Quotations - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-primary btn-outline-light border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@* @if (Model.Count() > 0)
+{
+    //If there are 1 or more Corru Costings to show *@
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table id="costingsTable" class="table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Quotation No</th>
+                                    <th>Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Cus. Code</th>
+                                    <th>Item Name</th>
+                                    <th>Qty</th>
+                                    <th>Weight (With Wastages)</th>
+                                    <th>Currency</th>
+                                    <th>Rate (Native)</th>
+                                    <th>Rate (LKR)</th>
+                                    <th>Sales Price (Native)</th>
+                                    <th>Sales Price (LKR)</th>
+                                    <th>Sales Rep.</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+@* } *@
+@* else
+{
+    //If there are no Corru Costings to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no corru costings added yet!</h2>
+            <p>
+                Add one?
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+} *@
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+                $('#costingsTable').DataTable({
+                    scrollX: true,
+                    processing: true,
+                    serverSide: true,
+                    filter: true,
+                    order: [[0, 'desc']],
+
+                    // 1. Tell DataTables to show Length (l), Buttons (B), Filter (f), Processing (r), Table (t), Info (i), and Pagination (p)
+                    dom: 'lBfrtip',
+
+                    // 2. Set your custom page sizes (Value sent to server vs. Text shown to user)
+                    lengthMenu: [
+                        [10, 100, 500, 1000, 2000, 10000],
+                        ['10', '100', '500', '1,000', '2,000', '10,000']
+                    ],
+
+                    // 3. Configure the Excel and ColVis buttons
+                    buttons: [
+                        {
+                            extend: 'colvis',
+                            text: 'Show/Hide Columns',
+                            className: 'btn btn-secondary btn-sm ms-4 mb-2'
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: 'Export Visible to Excel',
+                            className: 'btn btn-success btn-sm ms-3 mb-2',
+                            exportOptions: {
+                                modifier: {
+                                    page: 'current'
+                                },
+                                // Export ALL 14 columns (indices 0 through 13)
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                            }
+                        }
+                    ],
+
+                    ajax: {
+                        url: '/CorruCosting/GetCostingsData',
+                        type: 'POST',
+                        datatype: 'json'
+                    },
+
+                    columns: [
+                        { data: 'id', name: 'ID', autoWidth: true },
+                        {
+                            data: 'quotationNo',
+                            name: 'QuotationNo',
+                            autoWidth: true,
+                            render: function (data, type, row) {
+                                return `<a href="/CorruCosting/View/${row.id}">${data}</a>`;
+                            }
+                        },
+                        { data: 'docDate', name: 'DocDate', autoWidth: true },
+                        { data: 'customerName', name: 'CustomerName', autoWidth: true },
+                        { data: 'customerCode', name: 'CustomerCode', autoWidth: true },
+                        { data: 'itemName', name: 'ItemName' },
+                        { data: 'orderQty', name: 'OrderQty', autoWidth: true, className: "text-end" },
+                        { data: 'weight', name: 'Weight', autoWidth: true, className: "text-end", orderable: false }, // NEW COLUMN
+                        { data: 'currencyCode', name: 'CurrencyCode', autoWidth: true },
+                        { data: 'rateNative', name: 'RateNative', autoWidth: true, className: "text-end" },
+                        { data: 'rateLkr', name: 'RateLkr', autoWidth: true, className: "text-end", orderable: false },
+                        { data: 'salesPriceNative', name: 'SalesPriceNative', autoWidth: true, className: "text-end" },
+                        { data: 'salesPriceLkr', name: 'SalesPriceLkr', autoWidth: true, className: "text-end", orderable: false },
+                        { data: 'salesRep', name: 'SalesRep', autoWidth: true }
+                    ],
+
+                    // 1. Hide columns AFTER Currency Code by default (Indices 5, 9, 10, 11, 12)
+                    columnDefs: [
+                        {
+                            targets: [5, 9, 10, 11, 12, 13],
+                            visible: false
+                        }
+                    ],
+
+                    initComplete: function() {
+                        $('label > input').addClass("text-light bg-dark");
+                        $('label > select').addClass("text-light bg-dark");
+                    }
+                });
+
+            });
+        </script>
+    }
+}

@@ -1,0 +1,3005 @@
+﻿@model Costing_Formula___KSPA.Models.ViewModels.CorruCostingVM
+
+@{
+    ViewData["Title"] = "View Quotation(Read-Only) - Corrugation";
+    ViewData["StypeHRef1"] = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css";
+    ViewData["StypeHRef2"] = "https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>View Quotation(Read-Only) - Corrugation</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-primary btn-outline-light border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-primary btn-outline-light border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <a class="btn btn-primary btn-outline-light border border-2" asp-action="Create" asp-route-id="@Model.CorruCosting!.CorruCostingId"><i class="fa-solid fa-user-group"></i> Clone</a>
+            <Button class="btn btn-primary btn-outline-light border border-2" id="printButton"><i class="fa-regular fa-print"></i> Print</Button>
+            <Button class="btn btn-primary btn-outline-light border border-2" id="downloadButton"><i class="fa-solid fa-download"></i> Download PDF</Button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Modal -->
+        <div class="modal fade" id="printPreviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-body overflow-hidden" style="display: flex; width: 100%; height: 100%; flex-direction: column; overflow: hidden;">
+                        <iframe id="pdfIFrame" class="ratio" style="flex-grow: 1; border: none; margin: 0; padding: 0;"></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form>
+    <div class="row">
+
+        <div class="col-md-12 mt-3">
+            <h2 class="h5"><u>Document Specification Section</u></h2>
+        </div>
+
+        <input type="hidden" asp-for="CorruCosting.CorruCostingId" disabled />
+
+        <!-- Doc date -->
+        <div class="col-6 col-md-3">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="CorruCosting.DateCreated" class="form-label">Doc date &ast;</label>
+                <input type="date" class="form-control" asp-for="CorruCosting.DateCreated" placeholder="Doc date" min=@(DateTime.Today.ToString("yyyy-MM-dd")) max=@(DateTime.Today.ToString("yyyy-MM-dd")) disabled>
+                <b><span class="text-danger" asp-validation-for="CorruCosting.DateCreated"></span></b>
+            </div>
+        </div>
+
+        <!-- Quotation No -->
+        <div class="col-6 col-md-3">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="CorruCosting.CorruCostingCode" class="form-label">Quatation No</label>
+                <input type="text" class="form-control" asp-for="CorruCosting.CorruCostingCode" placeholder="System will generate for you" disabled>
+                <b><span class="text-danger" asp-validation-for="CorruCosting.CorruCostingCode"></span></b>
+            </div>
+        </div>
+
+        <!-- Company Name -->
+        <div class="col-md-6">
+            <div class="mb-3 text-white">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="CorruCosting.CompanyId" class="form-label">Company name &ast;</label>
+                <select class="form-select"
+                        asp-for="CorruCosting.CompanyId"
+                        asp-items="@Model.CompanyDropDown"
+                        tabindex="1"
+                        disabled>
+                    <option selected>-- select company --</option>
+                </select>
+                <b><span class="text-danger" asp-validation-for="CorruCosting.CompanyId"></span></b>
+            </div>
+        </div>
+
+        <!-- Item Name -->
+        <div class="col-12">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="CorruCosting.ItemName" class="form-label">Item Name</label>
+                <input type="text" class="form-control" asp-for="CorruCosting.ItemName" placeholder="System will generate for you" disabled>
+                <b><span class="text-danger" asp-validation-for="CorruCosting.ItemName"></span></b>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <hr class="bg-primary border-2 border-primary" />
+        </div>
+
+        <div class="col-md-12 mt-3">
+            <h2 class="h5"><u>Customer Detail Section</u></h2>
+        </div>
+
+        <div class="col-12">
+            <div class="row">
+                <!-- customer detail except address -->
+                <div class="col-md-6">
+                    <div class="row">
+                        <!-- Customer Name -->
+                        <div class="col-md-12">
+                            <div class="mb-3 text-white">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="CorruCosting.CustomerId" class="form-label">Customer name &ast;</label>
+                                <select class="select2 form-select"
+                                        asp-for="CorruCosting.CustomerId"
+                                        asp-items="@Model.CustomerDropDown"
+                                        tabindex="2"
+                                        disabled>
+                                    <option selected>-- select customer --</option>
+                                </select>
+                                <b><span class="text-danger" asp-validation-for="CorruCosting.CustomerId"></span></b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Customer Type -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="cusTypeInputF" class="form-label">Cus. type</label>
+                                <input type="text" class="form-control" id="cusTypeInputF" placeholder="Customer type" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Customer Currency (Code) -->
+                        <div class="col-6 col-md-4">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="cusCurrencyInputF" class="form-label">Cus. currency</label>
+                                <input type="text" class="form-control" id="cusCurrencyInputF" placeholder="Customer currency" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Exchange rate in LKR (Code) -->
+                        <div class="col-6 col-md-4">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="exRateInputF" class="form-label">Exchange rate</label>
+                                <input type="text" class="form-control" id="exRateInputF" placeholder="Exchange rate" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End of customer derail except address -->
+                <!-- Customer Address Text Area -->
+                <div class="col-md-6">
+                    <div class="row">
+                        <!-- Delivery address -->
+                        <div class="col-12">
+                            <div class="form-group mb-3 text-white">
+                                <label asp-for="CorruCosting.DeliveryAddress" class="form-label">Delivery address &ast;</label>
+                                <textarea class="form-control" asp-for="CorruCosting.DeliveryAddress" rows="4" tabindex="3" disabled></textarea>
+                                <b><span class="text-danger" asp-validation-for="CorruCosting.DeliveryAddress"></span></b>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End of Customer Address Text Area -->
+            </div>
+        </div>
+
+        <!-- Corru Combination Section -->
+        <div class="col-md-12">
+            <div class="row">
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Corru Combination Section</u></h2>
+                </div>
+
+                <!-- Color -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label for="colorsSelectBx" class="form-label"><span class="text-warning">Filter by</span> color</label>
+                        <select class="form-select"
+                                id="colorsSelectBx"
+                                asp-items="@Model.ColorDropDown"
+                                tabindex="4"
+                                disabled>
+                            <option value="0">-- ALL --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Ply -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label for="plysSelectBx" class="form-label"><span class="text-warning">Filter by</span> ply</label>
+                        <select class="form-select"
+                                id="plysSelectBx"
+                                asp-items="@Model.PlysDropDown"
+                                tabindex="5"
+                                disabled>
+                            <option value="0">-- ALL --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Combination Code -->
+                <div class="col-sm-6">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.CorruCombId" class="form-label">Corru-comb code &ast;</label>
+                        <select class="form-select select2"
+                                asp-for="CorruCosting.CorruCombId"
+                                asp-items="@Model.CorruCombinationDropDown"
+                                tabindex="6"
+                                disabled>
+                            <option value="0" selected>-- select --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.CorruCombId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Corru combination desc -->
+                <div class="col-12 d-none">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label for="corruCombInputF" class="form-label">Corru combination</label>
+                        <input type="text" class="form-control" id="corruCombInputF" placeholder="Corru combination" disabled>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Box Type Details Section</u></h2>
+                </div>
+
+                <!-- Box type -->
+                <div class="col-6">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.BoxTypeId" class="form-label">Box type code &ast;</label>
+                        <select class="select2-adv-search form-select"
+                                asp-for="CorruCosting.BoxTypeId"
+                                asp-items="@Model.BoxTypeDropDown"
+                                tabindex="7"
+                                disabled>
+                            <option value="0" selected>-- select --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.BoxTypeId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Design Box? -->
+                <div class="col-6">
+                    <div class="form-check mt-4 mb-3">
+                        <input type="checkbox" class="form-check-input" id="designBoxCheckB" tabindex="17" style="width: 1.5em; height: 1.5em;" disabled>
+                        <label class="form-check-label" for="designBoxCheckB" style="font-size: 1.5em;">
+                            &nbsp;&nbsp;Design Box?
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Order Specification Section</u></h2>
+                </div>
+
+                <!-- UOM for QTY -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.OrderUomId" class="form-label">UOM <span class="text-warning">(for Qty)</span> &ast;</label>
+                        <select class="form-select"
+                                id="uomQtyOrKgSelectB"
+                                asp-items="@Model.OrderUomDropDown"
+                                disabled>
+                            <option value="0" selected>-- Unit --</option>
+                        </select>
+                        <input type="hidden" asp-for="CorruCosting.OrderUomId" />
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.OrderUomId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Order Qty -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-6">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.OrderQty" class="form-label">Order Qty &ast;</label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.OrderQty" placeholder="Qty in the selected UOM" tabindex="16" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.OrderQty"></span></b>
+                    </div>
+                </div>
+
+                <!-- Special Instructions -->
+                <div class="col-12 col-sm-6">
+                    <div class="form-group mb-3 text-white">
+                        <label asp-for="CorruCosting.SpecialInstructions" class="form-label">Special instructions</label>
+                        <textarea class="form-control" asp-for="CorruCosting.SpecialInstructions" rows="1"
+                                  placeholder="If any, special instructions can be put here." tabindex="9" disabled></textarea>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.SpecialInstructions"></span></b>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- End of Procuct Specification Section -->
+
+        <!-- Product Messurement Section -->
+        <div class="col-12">
+            <div class="row">
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Product Measurement Section</u></h2>
+                </div>
+
+                <div class="col-12">
+                    <!-- Row: product measurement -->
+                    <div class="row">
+
+                        <!-- Selected UOM -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3 text-white">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="CorruCosting.MeasurementUomId" class="form-label text-warning fw-bold">Select UOM</label>
+                                <select class="form-select fw-bold"
+                                        asp-for="CorruCosting.MeasurementUomId"
+                                        asp-items="@Model.MeasurementUomDropDown"
+                                        tabindex="10"
+                                        disabled>
+                                </select>
+                                <b><span class="text-danger" asp-validation-for="CorruCosting.MeasurementUomId"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- System UOM -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label class="form-label text-warning fw-bold">System UOM</label>
+                                <input type="text" class="form-control text-warning fw-bold" value="cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Selected UOM -->
+                        <div class="col-6 col-md-3 d-none d-md-block">
+                            <!-- d-none d-md-block -->
+                            <div class="mb-3 text-white">
+                                <!-- To add some margin between form-controls -->
+                                <label for="selected_uom" class="form-label text-warning fw-bold">Selected UOM</label>
+                                <input type="text" class="form-control text-warning fw-bold" id="selected_uom" disabled>
+                            </div>
+                        </div>
+
+                        <!-- System UOM -->
+                        <div class="col-6 col-md-3 d-none d-md-block">
+                            <!-- d-none d-md-block -->
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label class="form-label text-warning fw-bold">System UOM</label>
+                                <input type="text" class="form-control text-warning fw-bold" value="cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Length -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="CorruCosting.Length" class="form-label">Length &ast;</label>
+                                <input type="text" class="form-control" asp-for="CorruCosting.Length" placeholder="Length in selected UOM" tabindex="11" disabled>
+                                <b><span class="text-danger" asp-validation-for="CorruCosting.Length"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Length -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="lengthCmInputF" class="form-label">Length (cm)</label>
+                                <input type="text" class="form-control" id="lengthCmInputF" placeholder="Length" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Bredth -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="CorruCosting.Bredth" class="form-label">Bredth (UOM) &ast;</label>
+                                <input type="text" class="form-control" asp-for="CorruCosting.Bredth" placeholder="Bredth in selected UOM" tabindex="12" disabled>
+                                <b><span class="text-danger" asp-validation-for="CorruCosting.Bredth"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Bredth -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="bredthCmInputF" class="form-label">Bredth (cm)</label>
+                                <input type="text" class="form-control" id="bredthCmInputF" placeholder="Bredth in cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Height -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="CorruCosting.Height" class="form-label">Height (UOM)</label>
+                                <input type="text" class="form-control" asp-for="CorruCosting.Height" placeholder="Heigth in selected UOM" tabindex="13" disabled>
+                                <b><span class="text-danger" asp-validation-for="CorruCosting.Height"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Height -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="heightCmInputF" class="form-label">Height (cm)</label>
+                                <input type="text" class="form-control" id="heightCmInputF" placeholder="Height in cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- External / Internal -->
+                        <div class="col-6 col-md-3">
+                            <div class="mb-3 text-white">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="CorruCosting.AreExternalMeasurements" class="form-label text-warning fw-bold">INT / EXT</label>
+                                <select class="form-select fw-bold"
+                                        asp-for="CorruCosting.AreExternalMeasurements"
+                                        tabindex="10"
+                                        disabled>
+                                    <option value="1" selected>External Measurements</option>
+                                    <option value="0">Internal Measurements</option>
+                                </select>
+                                <b><span class="text-danger" asp-validation-for="CorruCosting.AreExternalMeasurements"></span></b>
+                            </div>
+                        </div>
+
+                    </div><!-- End of Row: product measurement -->
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Printing Detail Section</u></h2>
+                </div>
+
+                <!-- Printed? checkbox -->
+                <div class="col-sm-3">
+                    <div class="form-check mt-4 mb-3">
+                        <input class="form-check-input" asp-for="CorruCosting.Printed" tabindex="17" style="width: 1.5em; height: 1.5em;" disabled>
+                        <label class="form-check-label" asp-for="CorruCosting.Printed" style="font-size: 1.5em;">
+                            &nbsp;&nbsp;Printed?
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.Printed"></span></b>
+                    </div>
+                </div>
+
+                <!-- Laminated? checkbox -->
+                <div class="col-sm-3">
+                    <div class="form-check mt-4 mb-3">
+                        <input class="form-check-input" asp-for="CorruCosting.Laminated" tabindex="17" style="width: 1.5em; height: 1.5em;" disabled>
+                        <label class="form-check-label" asp-for="CorruCosting.Laminated" style="font-size: 1.5em;">
+                            &nbsp;&nbsp;Laminated?
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.Laminated"></span></b>
+                    </div>
+                </div>
+
+                <!-- Die cut? checkbox -->
+                <div class="col-sm-3">
+                    <div class="form-check mt-4 mb-3">
+                        <input class="form-check-input" asp-for="CorruCosting.DieCut" tabindex="17" style="width: 1.5em; height: 1.5em;" disabled>
+                        <label class="form-check-label" asp-for="CorruCosting.DieCut" style="font-size: 1.5em;">
+                            &nbsp;&nbsp;Die&nbsp;Cut?
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.DieCut"></span></b>
+                    </div>
+                </div>
+
+                <div class="col-sm-3"></div>
+
+                <!-- No of colors -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.NoOfColors" class="form-label">No of colors</label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.NoOfColors" placeholder="No of colors" tabindex="18" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.NoOfColors"></span></b>
+                        <b><span class="text-danger" id="noOfColsErrorSpan">No of colors can't be 0 when "Printed?" is checked.</span></b>
+                    </div>
+                </div>
+
+                <!-- Printing side -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.NoOfPrintingSides" class="form-label">Printing sides count</label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.NoOfPrintingSides" placeholder="Printing side" tabindex="19" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.NoOfPrintingSides"></span></b>
+                        <b><span class="text-danger" id="printSidesCountErrorSpan">Printing sides count can't be 0 when "Printed?" is checked.</span></b>
+                    </div>
+                </div>
+
+                <!-- Print Type -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.PrintTypeId" class="form-label">Print type</label>
+                        <select class="select2 form-select"
+                                asp-for="CorruCosting.PrintTypeId"
+                                asp-items="@Model.PrintTypeDropDown"
+                                tabindex="20"
+                                disabled>
+                            <option value="" selected>-- select print type --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.PrintTypeId"></span></b>
+                        <b><span class="text-danger" id="printTypeErrorSpan">A Print type must be selected when "Printed?" is checked.</span></b>
+                    </div>
+                </div>
+
+                <!-- Print Area % -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label for="printAreaPercentInputF" class="form-label">Print Area %</label>
+                        <input type="text" class="form-control" id="printAreaPercentInputF" placeholder="Print Area %" disabled>
+                    </div>
+                </div>
+
+                <!-- Block -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.BlockAvailability" class="form-label">Block</label>
+                        <select class="form-select"
+                                asp-for="CorruCosting.BlockAvailability"
+                                tabindex="24"
+                                disabled>
+                            <option value="0" selected>-- select Block --</option>
+                            <option value="1">New</option>
+                            <option value="2">Available</option>
+                            <option value="3">Balance Cut</option>
+                            <option value="4">Digital Printed</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.BlockAvailability"></span></b>
+                        <b><span class="text-danger" id="blockErrorSpan">A block must be selected when "Printed?" is checked.</span></b>
+                    </div>
+                </div>
+
+                <!-- Laminate Type -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.LaminateTypeId" class="form-label">Laminate type</label>
+                        <select class="form-select"
+                                asp-for="CorruCosting.LaminateTypeId"
+                                asp-items="@Model.LaminateTypeDropDown"
+                                tabindex="24"
+                                disabled>
+                            <option value="" selected>-- laminate type --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.LaminateTypeId"></span></b>
+                        <b><span class="text-danger" id="laminateTypeErrorSpan">A laminate type must be selected when "Laminated?" is checked.</span></b>
+                    </div>
+                </div>
+
+                <!-- Die cut type -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.DieCutTypeId" class="form-label">Die cut type</label>
+                        <select class="form-select"
+                                asp-for="CorruCosting.DieCutTypeId"
+                                asp-items="@Model.DieCutTypeDropDown"
+                                tabindex="24"
+                                disabled>
+                            <option value="" selected>-- die cut type --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.DieCutTypeId"></span></b>
+                        <b><span class="text-danger" id="dieCutTypeErrorSpan">A die cut type must be selected when "Die Cut?" is checked.</span></b>
+                    </div>
+                </div>
+
+                <!-- Finishing type -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.CorruProductFinishingTypeId" class="form-label">Product finishing type</label>
+                        <select class="form-select"
+                                asp-for="CorruCosting.CorruProductFinishingTypeId"
+                                asp-items="@Model.FinishingTypeDropDown"
+                                tabindex="24"
+                                disabled>
+                            <option value="0" selected>-- finishing type --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.CorruProductFinishingTypeId"></span></b>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Calculations</u></h2>
+                </div>
+
+                <!-- Checkbox: Exceed Max Sheet Length -->
+                <div class="col-12">
+                    <label class="form-label mb-3">&nbsp;</label>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" tabindex="17" disabled>
+                                <label class="form-check-label text-nowrap">
+                                    Max L. Exceed?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sheet Length -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.SheetLength" class="form-label">Sheet length &ast;</label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.SheetLength" placeholder="Sheet length" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.SheetLength"></span></b>
+                    </div>
+                </div>
+
+                <!-- Sheet Width -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.SheetWidth" class="form-label">Sheet Width &ast;</label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.SheetWidth" placeholder="Sheet Width" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.SheetWidth"></span></b>
+                    </div>
+                </div>
+
+                <!-- Area -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.Area" class="form-label">Area &ast;</label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.Area" placeholder="Area" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.Area"></span></b>
+                    </div>
+                </div>
+
+                <!-- Printed Area -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label for="printAreaInputF" class="form-label">Printed Area</label>
+                        <input type="text" class="form-control" id="printAreaInputF" placeholder="Printed Area" disabled>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Reel Selection</u></h2>
+                </div>
+
+                <!-- Trim -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.Trim">
+                            Trim &ast;
+                        </label>
+                        <input type="number" class="form-control" placeholder="Trim" tabindex="25" value="3" asp-for="CorruCosting.Trim" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.Trim"></span></b>
+                    </div>
+                </div>
+
+                <!-- Adjustable sheet length -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.AdjSheetLength">
+                            Adj sheet length(CM) &ast;
+                        </label>
+                        <input type="text" class="form-control" placeholder="Adjustable" tabindex="25" asp-for="CorruCosting.AdjSheetLength" style="border-color: yellow" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.AdjSheetLength"></span></b>
+                    </div>
+                </div>
+
+                <!-- Adjustable sheet width -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.AdjSheetWidth">
+                            Adj sheet width(CM) &ast;
+                        </label>
+                        <input type="text" class="form-control" placeholder="Adjustable" tabindex="25" asp-for="CorruCosting.AdjSheetWidth" style="border-color: yellow" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.AdjSheetWidth"></span></b>
+                    </div>
+                </div>
+
+                <!-- Area after adjusting -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.AreaAfterAdj">
+                            Area after adj &ast;
+                        </label>
+                        <input type="text" class="form-control" tabindex="25" asp-for="CorruCosting.AreaAfterAdj" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.AreaAfterAdj"></span></b>
+                    </div>
+                </div>
+
+                <!-- No of boards -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.NoOfBoards">
+                            No of boards
+                        </label>
+                        <input type="text" class="form-control" placeholder="No of boards" tabindex="25" asp-for="CorruCosting.NoOfBoards" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.NoOfBoards"></span></b>
+                    </div>
+                </div>
+
+                <!-- Best reel -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.BestReelSize">
+                            Best reel
+                        </label>
+                        <input type="text" class="form-control" placeholder="Best reel size" tabindex="25" asp-for="CorruCosting.BestReelSize" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.BestReelSize"></span></b>
+                    </div>
+                </div>
+
+                <!-- No of ups -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.Ups" class="form-label">
+                            No. Ups &ast;
+                        </label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.Ups" placeholder="Ups" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.Ups"></span></b>
+                    </div>
+                </div>
+
+                <!-- Pre costing wastage % -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.PreCostingWastePercentage" class="form-label">
+                            Pre.C waste <span class="text-warning">&percnt;</span>
+                        </label>
+                        <input type="text" class="form-control" asp-for="CorruCosting.PreCostingWastePercentage" placeholder="&percnt; of PC wastage" tabindex="25" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.PreCostingWastePercentage"></span></b>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Route Selection</u></h2>
+                </div>
+
+                <!-- Production Route -->
+                <div class="col-md-6">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.RouteId" class="form-label">Production route</label>
+                        <select class="select2 form-select"
+                                asp-for="CorruCosting.RouteId"
+                                asp-items="@Model.RouteDropDown"
+                                tabindex="20"
+                                disabled>
+                            <option value="" selected>-- select route --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.RouteId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Fixed Excess -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label">Fixed excess</label>
+                        <input type="text" id="fixedExcessInputF" class="form-control" placeholder="Fixed Excess" disabled>
+                    </div>
+                </div>
+
+                <!-- Handling Waste Percent -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label">Handling waste %</label>
+                        <input type="text" id="handlingWastePercentInputF" class="form-control" placeholder="Handling waste percentage" disabled>
+                    </div>
+                </div>
+
+                <!-- Total Sheet Req -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.TotalSheetReq">Total sheet req</label>
+                        <input type="text" class="form-control" placeholder="Total Sheet Req." asp-for="CorruCosting.TotalSheetReq" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.TotalSheetReq"></span></b>
+                    </div>
+                </div>
+
+                <!-- Total Sheet Length -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.TotalSheetlength">Total sheet length</label>
+                        <input type="text" class="form-control" placeholder="Total Sheet Length" asp-for="CorruCosting.TotalSheetlength" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.TotalSheetlength"></span></b>
+                    </div>
+                </div>
+
+                <!-- Total Boards Req. -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="CorruCosting.TotalBoardReq">Total boards req.</label>
+                        <input type="text" class="form-control" placeholder="Total Boards Req." asp-for="CorruCosting.TotalBoardReq" disabled>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.TotalBoardReq"></span></b>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt-3 d-none">
+                    <h2 class="h5"><u>Shipment Terms Selection</u></h2>
+                </div>
+
+                <!-- Shipment Terms -->
+                <div class="col-md-12 d-none">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="CorruCosting.ShipmentTermId" class="form-label">Shipment Terms &ast;</label>
+                        <select class="form-select"
+                                asp-for="CorruCosting.ShipmentTermId"
+                                asp-items="@Model.ShipmentTermDropDown"
+                                tabindex="26"
+                                disabled>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="CorruCosting.ShipmentTermId"></span></b>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- End of Product Messurement Section -->
+
+        <div class="col-12">
+            <hr class="bg-primary border-2 border-primary" />
+        </div>
+
+        <!-- Tabs for combination raw material, summary -->
+        <div class="col-md-12">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-white active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                            type="button" role="tab" aria-controls="profile" aria-selected="true" tabindex="27">
+                        Summary
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-white" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                            type="button" role="tab" aria-controls="home" aria-selected="false" tabindex="28">
+                        Raw Materials
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content border border-1 border-primary p-4" id="myTabContent">
+                <!-- Summary Tab -->
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="overflow-auto">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap text-center" style="min-width: 14em; width: 20%" scope="col">
+                                        <!-- Section Desc -->
+                                    </th>
+                                    <th class="text-nowrap" style="min-width: 12em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Unit</label>
+                                    </th>
+                                    <th class="text-nowrap text-center" style="min-width: 8em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Per Unit</label>
+                                    </th>
+                                    <th class="text-nowrap text-center" style="min-width: 8em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Total</label>
+                                    </th>
+                                    <th class="text-nowrap text-center" style="min-width: 8em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Per KG</label>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Weight Section -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Weight</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">kg</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="weightPerUnitInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="weightTotalInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="weightPerKgInputF" value="1.0000" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Meterial Cost Section -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Material Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="matCostPerUnitInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="matCostTotalInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="matCostPerKgInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Over Head Cost -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Over Head Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="overHeadCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="overHeadCostTotalInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="overHeadCostPerKgInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Block Cost -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Block Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="blockCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="CorruCosting.BlockCostTotal" style="border-color: yellow" tabindex="29" disabled>
+                                        <b><span class="text-danger" asp-validation-for="CorruCosting.BlockCostTotal"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="blockCostPerKgInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Laminate Cost -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Laminate Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="laminateCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="CorruCosting.LaminateCostTotal" style="border-color: yellow" tabindex="29" disabled>
+                                        <b><span class="text-danger" asp-validation-for="CorruCosting.LaminateCostTotal"></span></b>
+                                        <div class="text-center"><b><span class="text-danger" id="laminateCostTotalRequiredErrorSpan">Total laminate cost is required when "Laminated?" checkbox is checked.</span></b></div>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="laminateCostPerKgInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Die Cut Cost -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Die Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="dieCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="CorruCosting.DieCostTotal" style="border-color: yellow" tabindex="29" disabled>
+                                        <b><span class="text-danger" asp-validation-for="CorruCosting.DieCostTotal"></span></b>
+                                        <div class="text-center"><b><span class="text-danger" id="dieCostTotalRequiredErrorSpan">Total die cost is required when "Die Cut?" checkbox is checked.</span></b></div>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="dieCostPerKgInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Other Costs -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Other Costs</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="otherCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="CorruCosting.OtherCostTotal" style="border-color: yellow" tabindex="30" disabled>
+                                        <b><span class="text-danger" asp-validation-for="CorruCosting.OtherCostTotal"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="otherCostsInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Total -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Total Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="totalPerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="totalTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="totalPerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Profit Percentage -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Profit</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">&percnt;</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" value="25.00&percnt;" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" value="25.00&percnt;" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" value="25.00&percnt;" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Suggested sales price in LKR -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (Suggested)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="salesPricePerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="salesPriceTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="salesPricePerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Suggested sales price in Native Currency -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (Suggested)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold native-currency">Native Currency</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="CorruCosting.PerUnitSuggestedUnitPrice" disabled>
+                                        <b><span class="text-danger" asp-validation-for="CorruCosting.PerUnitSuggestedUnitPrice"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="nativeSalesPriceTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="nativeSalesPricePerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Adjustable sales price in Native Currency -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (Adjustable)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold native-currency">Native Currency</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="CorruCosting.PerUnitAdjustableUnitPrice" style="border-color: yellow" tabindex="31" disabled>
+                                        <b><span class="text-danger" asp-validation-for="CorruCosting.PerUnitAdjustableUnitPrice"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPricePerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Adjustable sales price in LKR -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (in LKR)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceLkrPerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceLkrTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceLkrPerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Profit after adjusting -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Profit (Adjustable)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold native-currency">Native Currency</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjProfitPercentPerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjProfitPercentTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjProfitPercentPerKg" disabled>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!-- Overflow auto div -->
+                </div><!-- End of Summary Tab -->
+                <!-- Combination row material tab -->
+                <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="overflow-auto">
+                        <table id="rawMaterialsTable" class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 12%;">Material&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 12%;">GSM</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 12%;">Placement</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 12%;">Factor</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 12%;">Reel Size</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Latest Updated Price</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Duty</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Total Price</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Sheet Width Waste</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Std. Consumption</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Std. Waste</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Pre Costng Waste</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Conversion Waste</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Costing Weight</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">No Of Board</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Cost Per Board</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Unit Weight</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Unit Cost</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Total Weight</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Total Cost</label></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div><!-- End of Combination row material tab -->
+            </div>
+
+        </div><!-- End of Tabs for combination row material, summary -->
+        
+    </div>
+</form>
+
+@section Scripts{
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript" src="~/js/pdf-lib.min.js"></script>
+
+    <script type="text/javascript">
+
+        // Global Variables
+        const customersJsonArr = @Html.Raw(ViewBag.customersJsonStr);
+        const boxTypeJsonArr = @Html.Raw(ViewBag.boxTypeJsonStr);
+        const corruCombinationJsonArr = @Html.Raw(ViewBag.corruCombinationJsonStr);
+        const uomJsonArr = @Html.Raw(ViewBag.uomJsonStr);
+        const printTypeJsonArr = @Html.Raw(ViewBag.printTypeJsonStr);
+        const routeJsonArr = @Html.Raw(ViewBag.routeJsonStr);
+        const itemCategoryJsonArr = @Html.Raw(ViewBag.itemCategoryJsonStr);
+        const placementJsonArr = @Html.Raw(ViewBag.placementJsonStr);
+        const reelSizeJsonArr = @Html.Raw(ViewBag.reelSizeJsonStr);
+        const MAX_SHEET_LENGTH_CM = 250;
+
+        // Common Functions...........................................................................
+        function getObjectByIdProp(json_array, Id) {
+            for (i = 0; i < json_array.length; i++) {
+                if (json_array[i].Id == Id)
+                    return json_array[i];
+            }
+            return null;
+        }
+
+        function getObjectsByColorIdAndPlyIdProps(json_array, colorId, plys) {
+            var sub_json_array = [];
+            if (plys === "0") {
+                for (i = 0; i < json_array.length; i++) {
+                    if (json_array[i].ColorId == colorId)
+                        sub_json_array.push(json_array[i]);
+                }
+                return sub_json_array;
+            } else if (colorId === "0") {
+                for (i = 0; i < json_array.length; i++) {
+                    if (json_array[i].NoOfPlys == plys)
+                        sub_json_array.push(json_array[i]);
+                }
+                return sub_json_array;
+            }
+            for (i = 0; i < json_array.length; i++) {
+                if (json_array[i].ColorId == colorId && json_array[i].NoOfPlys == plys)
+                    sub_json_array.push(json_array[i]);
+            }
+            return sub_json_array;
+        }
+            
+        function getSheetLengthAfterSettingNoOfBoards() {
+
+            var boxTypeInputF = $('#CorruCosting_BoxTypeId'); // 1
+            var isExternal = $('#CorruCosting_AreExternalMeasurements').val() === '1'
+                || $('#CorruCosting_AreExternalMeasurements').val() === 'true' ? true : false; // 2
+            var lengthCmInputF = $('#lengthCmInputF'); // 3
+            var bredthCmInputF = $('#bredthCmInputF'); // 4
+            var heightCmInputF = $('#heightCmInputF'); // 5
+            var noOfBoardsInputF = $('#CorruCosting_NoOfBoards'); // 6
+            var submitButton = $('#submitButton');
+            var submitButtonMaxLengthOverflowErrorSpan = $('#submitButtonMaxLengthOverflowErrorSpan');
+
+            if (boxTypeInputF.val() !== "0") {
+
+                var boxTypeObj = getObjectByIdProp(boxTypeJsonArr, boxTypeInputF.val());
+                var sheetLengthFormula, sheetLengthFormulaIfSLExceeds;
+
+                if (isExternal) {
+                    sheetLengthFormula = boxTypeObj.ESheetLengthFormula;
+                    sheetLengthFormulaIfSLExceeds = boxTypeObj.ESheetLengthFormulaIfSLExceeds;
+                }
+                else {
+                    sheetLengthFormula = boxTypeObj.ISheetLengthFormula;
+                    sheetLengthFormulaIfSLExceeds = boxTypeObj.ISheetLengthFormulaIfSLExceeds;
+                }
+                
+                if(sheetLengthFormula === null || sheetLengthFormula === undefined || sheetLengthFormula.trim() === '') {
+                    sheetLengthFormula = '';
+                }
+                if (sheetLengthFormulaIfSLExceeds === null || sheetLengthFormulaIfSLExceeds === undefined || sheetLengthFormulaIfSLExceeds.trim() === '') {
+                    sheetLengthFormulaIfSLExceeds = '';
+                }
+                
+                if (sheetLengthFormula.includes("Le")) {
+                    if (lengthCmInputF.val() === "") {
+                        sheetLengthFormula = "";
+                    } else {
+                        sheetLengthFormula = sheetLengthFormula.replace("Le", lengthCmInputF.val());
+                    }
+                }
+                if (sheetLengthFormulaIfSLExceeds.includes("Le")) {
+                    if (lengthCmInputF.val() === "") {
+                        sheetLengthFormulaIfSLExceeds = "";
+                    } else {
+                        sheetLengthFormulaIfSLExceeds = sheetLengthFormulaIfSLExceeds.replace("Le", lengthCmInputF.val());
+                    }
+                }
+                if (sheetLengthFormula.includes("Br")) {
+                    if (bredthCmInputF.val() === "") {
+                        sheetLengthFormula = "";
+                    } else {
+                        sheetLengthFormula = sheetLengthFormula.replace("Br", bredthCmInputF.val());
+                    }
+                }
+                if (sheetLengthFormulaIfSLExceeds.includes("Br")) {
+                    if (bredthCmInputF.val() === "") {
+                        sheetLengthFormulaIfSLExceeds = "";
+                    } else {
+                        sheetLengthFormulaIfSLExceeds = sheetLengthFormulaIfSLExceeds.replace("Br", bredthCmInputF.val());
+                    }
+                }
+                if (sheetLengthFormula.includes("He")) {
+                    if (heightCmInputF.val() === "") {
+                        sheetLengthFormula = "";
+                    } else {
+                        sheetLengthFormula = sheetLengthFormula.replace("He", heightCmInputF.val());
+                    }
+                }
+                if (sheetLengthFormulaIfSLExceeds.includes("He")) {
+                    if (heightCmInputF.val() === "") {
+                        sheetLengthFormulaIfSLExceeds = "";
+                    } else {
+                        sheetLengthFormulaIfSLExceeds = sheetLengthFormulaIfSLExceeds.replace("He", heightCmInputF.val());
+                    }
+                }
+
+                if (sheetLengthFormula === "") {
+
+                    noOfBoardsInputF.val('');
+                    setTotalBoardsReq_onChange();
+                    updateRawMaterialGrid_onChange();
+
+                    if (sheetLengthFormula === undefined || sheetLengthFormula === null || sheetLengthFormula === '') {
+                        iziToast.warning({
+                            title: 'Warinig',
+                            message: 'Sheet length is empty in the box type master. Try changin Int/Ext or the Box Type!',
+                            position: 'topRight',
+                            timeout: 15000
+                        });
+                    }
+
+                    return "";
+
+                } else {
+                    var sheetLength = eval(sheetLengthFormula);
+                    if (sheetLength <= MAX_SHEET_LENGTH_CM) {
+
+                        noOfBoardsInputF.val('1');
+                        setTotalBoardsReq_onChange();
+                        updateRawMaterialGrid_onChange();
+
+                        return sheetLength;
+
+                    }
+                    else {
+
+                        if (sheetLengthFormulaIfSLExceeds === undefined || sheetLengthFormulaIfSLExceeds === null || sheetLengthFormulaIfSLExceeds === '') {
+                            iziToast.warning({
+                                title: 'Warinig',
+                                message: 'Sheet length(> Max Sheet Length) is empty in the box type master. Try changin Int/Ext or the Box Type!',
+                                position: 'topRight',
+                                timeout: 15000
+                            });
+                        }
+
+                        noOfBoardsInputF.val('2');
+                        setTotalBoardsReq_onChange();
+                        updateRawMaterialGrid_onChange();
+
+                        var sheetLengthIfSLExceeds = eval(sheetLengthFormulaIfSLExceeds);
+                        if (sheetLengthIfSLExceeds > MAX_SHEET_LENGTH_CM) {
+                            // Disable submit button
+                            submitButton.prop('disabled', true);
+                            // Show submit button error message
+                            submitButtonMaxLengthOverflowErrorSpan.show();
+                            // Give a notification
+                            iziToast.warning({
+                                title: 'Warinig',
+                                message: 'Sheet length exceeds the standared sheet size!',
+                                position: 'topRight',
+                                timeout: 15000
+                            });
+
+                            return sheetLengthIfSLExceeds;
+                        } else {
+                            // Enable submit button
+                            submitButton.prop('disabled', false);
+                            // Show submit button error message
+                            submitButtonMaxLengthOverflowErrorSpan.hide();
+
+                            return sheetLengthIfSLExceeds;
+                        }
+
+                    }
+                }
+
+            } else {
+
+                noOfBoardsInputF.val('');
+                setTotalBoardsReq_onChange();
+                updateRawMaterialGrid_onChange();
+
+                return "";
+
+            }
+        }
+
+        function getSheetWidth() {
+            var boxTypeInputF = $('#CorruCosting_BoxTypeId');
+            var isExternal = $('#CorruCosting_AreExternalMeasurements').val() === '1'
+            || $('#CorruCosting_AreExternalMeasurements').val() === 'true' ? true : false;
+            var lengthCmInputF = $('#lengthCmInputF');
+            var bredthCmInputF = $('#bredthCmInputF');
+            var heightCmInputF = $('#heightCmInputF');
+
+            if (boxTypeInputF.val() !== "0") {
+
+                var boxTypeObj = getObjectByIdProp(boxTypeJsonArr, boxTypeInputF.val());
+                var sheetWidthFormula;
+
+                if (isExternal) {
+                    sheetWidthFormula = boxTypeObj.ESheetWidthFormula;
+                }
+                else {
+                    sheetWidthFormula = boxTypeObj.ISheetWidthFormula;
+                }
+
+                if(sheetWidthFormula === null || sheetWidthFormula === undefined || sheetWidthFormula.trim() === '') {
+                    sheetWidthFormula = '';
+                    iziToast.warning({
+                        title: 'Warinig',
+                        message: 'Sheet width is empty in the box type master. Try changin Int/Ext or the Box Type!',
+                        position: 'topRight',
+                        timeout: 15000
+                    });
+                }
+
+                if (sheetWidthFormula.includes("Le")) {
+                    if (lengthCmInputF.val() === "") {
+                        sheetWidthFormula = "";
+                    } else {
+                        sheetWidthFormula = sheetWidthFormula.replace("Le", lengthCmInputF.val());
+                    }
+                }
+                if (sheetWidthFormula.includes("Br")) {
+                    if (bredthCmInputF.val() === "") {
+                        sheetWidthFormula = "";
+                    } else {
+                        sheetWidthFormula = sheetWidthFormula.replace("Br", bredthCmInputF.val());
+                    }
+                }
+                if (sheetWidthFormula.includes("He")) {
+                    if (heightCmInputF.val() === "") {
+                        sheetWidthFormula = "";
+                    } else {
+                        sheetWidthFormula = sheetWidthFormula.replace("He", heightCmInputF.val());
+                    }
+                }
+
+                if (sheetWidthFormula === "") {
+                    return "";
+                } else {
+                    return eval(sheetWidthFormula);
+                }
+
+            } else {
+                return "";
+            }
+        }
+
+        function makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange() {
+
+            var submitButton = $('#submitButton');
+            var printedCheckBox = $('#CorruCosting_Printed');
+            var laminatedCheckBox = $('#CorruCosting_Laminated');
+            var dieCutCheckBox = $('#CorruCosting_DieCut');
+            var noOfColsInputF = $('#CorruCosting_NoOfColors');
+            var printSidesCountInputF = $('#CorruCosting_NoOfPrintingSides');
+            var printTypeSelectB = $('#CorruCosting_PrintTypeId');
+            var blockSelectB = $('#CorruCosting_BlockAvailability');
+            var laminateTypeSelectB = $('#CorruCosting_LaminateTypeId');
+            var dieCutTypeSelectB = $('#CorruCosting_DieCutTypeId');
+            var laminateCostTotalInputF = $('#CorruCosting_LaminateCostTotal');
+            var dieCostTotalInputF = $('#CorruCosting_DieCostTotal');
+
+            var noOfColsErrorSpan = $('#noOfColsErrorSpan');
+            var printSidesCountErrorSpan = $('#printSidesCountErrorSpan');
+            var printTypeErrorSpan = $('#printTypeErrorSpan');
+            var blockErrorSpan = $('#blockErrorSpan');
+            var laminateTypeErrorSpan = $('#laminateTypeErrorSpan');
+            var dieCutTypeErrorSpan = $('#dieCutTypeErrorSpan');
+            var laminateCostTotalRequiredErrorSpan = $('#laminateCostTotalRequiredErrorSpan');
+            var dieCostTotalRequiredErrorSpan = $('#dieCostTotalRequiredErrorSpan');
+
+            var submitButtonRequiredFieldErrorSpan = $('#submitButtonRequiredFieldErrorSpan');
+
+            var isPrinted = printedCheckBox.is(":checked");
+            var isLaminated = laminatedCheckBox.is(":checked");
+            var isDieCut = dieCutCheckBox.is(":checked");
+
+            var printedError = false;
+            var laminateTypeError = false;
+            var dieCutTypeError = false;
+            var laminateTotalCostError = false;
+            var dieTotalCostError = false;
+
+            if (isPrinted) {
+                var noOfColsError = noOfColsInputF.val().trim() === '' || Number(noOfColsInputF.val()) < 1;
+                var printSidesCountError = printSidesCountInputF.val().trim() === '' || Number(printSidesCountInputF.val()) < 1;
+                var printTypeError = printTypeSelectB.val().trim() === '' || printTypeSelectB.val() === '0';
+                var blockError = blockSelectB.val().trim() === '' || blockSelectB.val() === '0';
+
+                if (noOfColsError) {
+                    noOfColsErrorSpan.show();
+                    printedError = true;
+                }
+                else
+                    noOfColsErrorSpan.hide();
+
+                if (printSidesCountError) {
+                    printSidesCountErrorSpan.show();
+                    printedError = true;
+                }
+                else
+                    printSidesCountErrorSpan.hide();
+
+                if (printTypeError) {
+                    printTypeErrorSpan.show();
+                    printedError = true;
+                }
+                else
+                    printTypeErrorSpan.hide();
+
+                if (blockError) {
+                    blockErrorSpan.show();
+                    printedError = true;
+                }
+                else
+                    blockErrorSpan.hide();
+            } else {
+                noOfColsErrorSpan.hide();
+                printSidesCountErrorSpan.hide();
+                printTypeErrorSpan.hide();
+                blockErrorSpan.hide();
+            }
+
+            if (isLaminated) {
+                if (laminateTypeSelectB.val().trim() === '' || laminateTypeSelectB.val() === '0') {
+                    laminateTypeErrorSpan.show();
+                    laminateTypeError = true;
+                }
+                else
+                    laminateTypeErrorSpan.hide();
+                if (laminateCostTotalInputF.val() === '' || Number(laminateCostTotalInputF.val()) === 0) {
+                    laminateCostTotalRequiredErrorSpan.show();
+                    laminateTotalCostError = true;
+                } else
+                    laminateCostTotalRequiredErrorSpan.hide();
+            } else {
+                laminateTypeErrorSpan.hide();
+                laminateCostTotalRequiredErrorSpan.hide();
+            }
+
+            if (isDieCut) {
+                if (dieCutTypeSelectB.val().trim() === '' || dieCutTypeSelectB.val() === '0') {
+                    dieCutTypeErrorSpan.show();
+                    dieCutTypeError = true;
+                }
+                else
+                    dieCutTypeErrorSpan.hide();
+                if (dieCostTotalInputF.val() === '' || Number(dieCostTotalInputF.val()) === 0) {
+                    dieCostTotalRequiredErrorSpan.show();
+                    dieTotalCostError = true;
+                } else
+                    dieCostTotalRequiredErrorSpan.hide();
+            } else {
+                dieCutTypeErrorSpan.hide();
+                dieCostTotalRequiredErrorSpan.hide();
+            }
+
+            if (printedError || laminateTypeError || dieCutTypeError || laminateTotalCostError || dieTotalCostError) {
+                submitButton.prop('disabled', true);
+                submitButtonRequiredFieldErrorSpan.show();
+            }
+            else {
+                submitButton.prop('disabled', false);
+                submitButtonRequiredFieldErrorSpan.hide();
+            }
+        
+        }
+
+        function setSheetLengthWidthAndAreaInputFs_onChange() {
+            
+            var sheetLengthInputF = $('#CorruCosting_SheetLength');
+            var sheetWidthInputF  = $('#CorruCosting_SheetWidth');
+            var areaInputF        = $('#CorruCosting_Area');
+            var adjSheetLengthInputF = $('#CorruCosting_AdjSheetLength');
+            var adjSheetWidthInputF = $('#CorruCosting_AdjSheetWidth');
+            var adjAreaInputF = $('#CorruCosting_AreaAfterAdj');
+            var sheetLength = getSheetLengthAfterSettingNoOfBoards();
+            var sheetWidth = getSheetWidth();
+
+            if(sheetLength === undefined || sheetLength === '') {
+                sheetLengthInputF.val('');
+                adjSheetLengthInputF.val('');
+            }
+            else {
+                sheetLengthInputF.val(sheetLength.toFixed(4));
+                adjSheetLengthInputF.val(sheetLength.toFixed(4));
+            }
+
+            if(sheetWidth === undefined || sheetWidth === '') {
+                sheetWidthInputF.val('');
+                adjSheetWidthInputF.val('');
+            }
+            else {
+                sheetWidthInputF.val(sheetWidth.toFixed(4));
+                adjSheetWidthInputF.val(sheetWidth.toFixed(4));
+            }
+
+            if (sheetLength === '' || sheetWidth === '' || sheetLength === undefined || sheetWidth === undefined) {
+                areaInputF.val('');
+                adjAreaInputF.val('');
+            }
+            else {
+                var area = Number(sheetLength) * Number(sheetWidth);
+                areaInputF.val(area.toFixed(4));
+                adjAreaInputF.val(area.toFixed(4));
+            }
+
+            setPrintedArea_onChange();
+            setBestReelAndUps_onChange();
+            setTotalSheetLength_onChange();
+            updateRawMaterialGrid_onChange();
+                
+        }
+
+        function setPrintedArea_onChange() {
+
+            var printAreaInputF = $('#printAreaInputF');
+            var printAreaPercentInputF = $('#printAreaPercentInputF');
+            var areaInputF = $('#CorruCosting_Area');
+
+            if (printAreaPercentInputF.val() === '' || areaInputF.val() === '')
+                printAreaInputF.val('');
+            else
+                printAreaInputF.val(
+                    ( Number(printAreaPercentInputF.val()) * Number(areaInputF.val()) / 100 ).toFixed(4)
+                );
+
+        }
+
+        function setBestReelAndUps_onChange() {
+
+            //reelSizeJsonArr
+            var bestReelInputF = $('#CorruCosting_BestReelSize');
+            var upsInputF = $('#CorruCosting_Ups');
+            var adjSheetWidthInputF = $('#CorruCosting_AdjSheetWidth');
+            var trimInputF = $('#CorruCosting_Trim');
+
+            var bestReel = '';
+            var noOfUps = '';
+            var minWastePerUp = undefined;
+
+            if(adjSheetWidthInputF.val() !== '' && trimInputF.val() !== '') {
+                for (var u = 3; u >= 1; u--) {// Ups ElementOf {1, 2, 3, 4, 5, 6}
+
+                    reelSizeJsonArr.forEach((reelSizeJM) => {
+                        var requiredWidth = (Number(adjSheetWidthInputF.val()) * u) + Number(trimInputF.val());
+                        if (requiredWidth !== NaN) {
+                            if (minWastePerUp === undefined) {
+                                if (reelSizeJM.Size >= requiredWidth) {
+                                    minWastePerUp = (reelSizeJM.Size - requiredWidth) / u;
+                                    bestReel = reelSizeJM.Size;
+                                    noOfUps = u;
+                                }
+                            } else {
+                                if (reelSizeJM.Size >= requiredWidth) {
+                                    var wastePerUp = (reelSizeJM.Size - requiredWidth) / u;
+                                    if (minWastePerUp > wastePerUp) {
+                                        minWastePerUp = wastePerUp;
+                                        bestReel = reelSizeJM.Size;
+                                        noOfUps = u;
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                }
+            }
+
+            if(minWastePerUp === undefined) {
+                bestReelInputF.val('');
+                upsInputF.val('');
+            } else {
+                bestReelInputF.val(
+                    bestReel
+                );
+                upsInputF.val(
+                    noOfUps
+                );
+            }
+
+            setTotalBoardsReq_onChange();
+            updateRawMaterialGrid_onChange();
+            // setTotalSheetReq_onChange();
+
+        }
+
+        function setTotalSheetReq_onChange() {
+
+            var totalSheetReqInputF = $('#CorruCosting_TotalSheetReq');
+            var orderQtyInputF = $('#CorruCosting_OrderQty'); // 1: On Ord Qty Change
+            var fixedExcessInputF = $('#fixedExcessInputF'); // 2: Route change
+            var handlingWastePercentInputF = $('#handlingWastePercentInputF'); // 2: Route change
+            var noOfBoardsInputF = $('#CorruCosting_NoOfBoards'); //3: OnSetNoOfBoards
+            var upsInputF = $('#CorruCosting_Ups'); // 4: On set ups
+
+            var orderQty = Number(orderQtyInputF.val());
+            var ups = Number(upsInputF.val());
+
+            var totalSheetReq = (
+                orderQty + Number(fixedExcessInputF.val()) + (orderQty * Number(handlingWastePercentInputF.val()) / 100)
+            ) * Number(noOfBoardsInputF.val());
+
+            if (totalSheetReq !== NaN) {
+
+                // Round to celling
+                totalSheetReq = Math.ceil(totalSheetReq);
+
+                if(ups === 0)
+                    totalSheetReq = '';
+                else if (ups !== NaN) {
+                    // Make divicable by ups
+                    while (totalSheetReq % ups !== 0) {
+                        totalSheetReq++;
+                    }
+                }
+
+            }
+
+            totalSheetReqInputF.val(totalSheetReq);
+
+            setTotalSheetLength_onChange();
+            setTotalBoardsReq_onChange();
+
+        }
+
+        function setTotalSheetLength_onChange() {
+
+            var totalSheetLengthInputF = $('#CorruCosting_TotalSheetlength');
+            var adjSheetLengthInputF = $('#CorruCosting_AdjSheetLength'); // 1: AdjSheetLength On Set
+            var totalSheetReqInputF = $('#CorruCosting_TotalSheetReq'); // 2: TotalSheetReq On Set
+
+            totalSheetLengthInputF.val(
+                ( Number(adjSheetLengthInputF.val()) * Number(totalSheetReqInputF.val()) ).toFixed(4)
+            );
+
+        }
+
+        function setTotalBoardsReq_onChange() {
+
+            var totalBoardsReqInputF = $('#CorruCosting_TotalBoardReq');
+            var noOfBoards = $('#CorruCosting_NoOfBoards'); // 1: noOfBoards On Set
+            var totalSheetReqInputF = $('#CorruCosting_TotalSheetReq'); //2: totalSheetReqInputF On Set
+            var upsInputF = $('#CorruCosting_Ups'); // 3: upsInputF On Set
+
+            var ups = Number(upsInputF.val());
+
+            if(ups !== 0 || ups !== '') {
+                totalBoardsReqInputF.val(
+                    Number(noOfBoards.val()) * Number(totalSheetReqInputF.val()) / Number(upsInputF.val())
+                );
+            } else {
+                totalBoardsReqInputF.val('')
+            }
+
+        }
+
+        function updateRawMaterialGrid_onChange() {
+
+            var rawMaterialsTable = $('#rawMaterialsTable');
+            var corruCombinationSelectB = $('#CorruCosting_CorruCombId'); // 1: CorruCombination On Change
+            var reelSizeInputF = $('#CorruCosting_BestReelSize'); // 2: Reel Size On Set
+            var noOfBoardsInputF = $('#CorruCosting_NoOfBoards'); // 3: No Of Boards On Set
+            var customerTypeInputF = $('#cusTypeInputF'); // 4: Customer On Change
+            var adjSheetWidthInputF = $('#CorruCosting_AdjSheetWidth'); // 5: AdjSheetWidth On Set + 6: AdjSheetWidth On Change
+            var adjSheetLengthInputF = $('#CorruCosting_AdjSheetLength'); // 7: AdjSheetWidth On Set + 8: AdjSheetWidth On Change
+            var upsInputF = $('#CorruCosting_Ups'); // 9: Ups On Set
+            var preCWastePercentInputF = $('#CorruCosting_PreCostingWastePercentage'); // 10: Pre-Costing Waste On Change
+            var fixedExcessInputF = $('#fixedExcessInputF'); // 11: Route On Change
+            var handlingWastePercentInputF = $('#handlingWastePercentInputF');// 11: Route On Change
+            var ordQtyInputF = $('#CorruCosting_OrderQty'); // 12: Ord Qty On Change
+
+            if (corruCombinationSelectB.val() !== "0") {
+                var corruCombObj = getObjectByIdProp(corruCombinationJsonArr, corruCombinationSelectB.val());
+                var corruCombItemCatBridgesArr = corruCombObj.CorruCombItemCatBridges; // Contains {Id: ItemCatIdHere, Gsm: GsmHere, UnitPrice: price, UnitDuty: duty} array
+                rawMaterialsTable.find('tbody').empty();
+                for (var i = 0; i < corruCombItemCatBridgesArr.length; i++) {
+                    var itemCatObjet = getObjectByIdProp(itemCategoryJsonArr, corruCombItemCatBridgesArr[i].Id);
+                    var placement = getObjectByIdProp(placementJsonArr, corruCombItemCatBridgesArr[i].PlacementId)
+                    var cmbUnitPrice = Math.round(Number(corruCombItemCatBridgesArr[i].UnitPrice) * 10000) / 10000;
+                    var cmbUnitDuty = Math.round(Number(corruCombItemCatBridgesArr[i].UnitDuty) * 10000) / 10000;
+                    var customerType = customerTypeInputF.val().toUpperCase();
+                    var adjSheetWidth = Number(adjSheetWidthInputF.val());
+                    var adjSheetLength = Number(adjSheetLengthInputF.val());
+                    var gsm = Number(corruCombItemCatBridgesArr[i].Gsm);
+                    var factor = Math.round(Number(placement.Factor) * 10000) / 10000;
+                    var unitPrice;
+                    if (customerType.valueOf() === 'LOCAL') {
+                        unitPrice = cmbUnitPrice + cmbUnitDuty;
+                    } else {
+                        unitPrice = cmbUnitPrice;
+                    }
+                    var ups = Number(upsInputF.val());
+                    var reelSize = Math.round(Number(reelSizeInputF.val()) * 10000) / 10000;
+                    var sheetWasteWidth = Math.round(((reelSize - adjSheetWidth * ups) / ups) * 10000) / 10000;
+                    var stdConsumption = Math.round((adjSheetWidth * adjSheetLength * gsm * factor / 10000000) * 10000) / 10000;
+                    var stdWaste = Math.round((sheetWasteWidth * adjSheetLength * gsm * factor / 10000000) * 10000) / 10000;
+                    var preCostingWaste = Math.round(((stdConsumption + stdWaste) * Number(preCWastePercentInputF.val()) / 100) * 10000) / 10000;
+                    var noOfBoards = Number(noOfBoardsInputF.val());
+                    var ordQty = Number(ordQtyInputF.val());
+                    var conversionWaste = Math.round(((
+                        (stdConsumption + stdWaste + preCostingWaste)
+                        * Math.round(Number(fixedExcessInputF.val()) + ordQty * Number(handlingWastePercentInputF.val()) / 10000)
+                        / ordQty
+                    ) / noOfBoards) * 10000) / 10000;
+                    var costingWeight = Math.round((stdConsumption + stdWaste + preCostingWaste + conversionWaste) * 10000) / 10000;
+                    var costPerBoard = Math.round(costingWeight * unitPrice * 10000) / 10000;
+                    var unitWeight = Math.round(costingWeight * noOfBoards * 10000) / 10000;
+                    var unitCost = costPerBoard * noOfBoards;
+                    var totalWeight = Math.round(unitWeight * ordQty * 10000) / 10000;
+                    var totalCost = Math.round(unitCost * ordQty * 10000) / 10000;
+
+                            // give alert if item category price has not updated
+                    if (cmbUnitPrice === 0) {
+                        alert("Unit Price Per Unit is 0 of the item category: " + itemCatObjet.ItemCategoryDesc +
+                            "\nFirst update the Item Category Price transaction!");
+                    }
+
+                    rawMaterialsTable.find('tbody').append(
+                        `
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" value="` + itemCatObjet.ItemCategoryDesc + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + corruCombItemCatBridgesArr[i].Gsm + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + placement.PlacementCode + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + (placement.Factor).toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + reelSize.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + cmbUnitPrice.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + cmbUnitDuty + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + unitPrice + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + sheetWasteWidth.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + stdConsumption.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + stdWaste.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + preCostingWaste.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + conversionWaste.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + costingWeight.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + noOfBoards + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + costPerBoard.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + unitWeight.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" value="` + unitCost.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control iCatWiseTotalWeightInputFs" value="` + totalWeight.toFixed(4) + `" disabled/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control iCatWiseTotalCostInputFs" value="` + totalCost.toFixed(4) + `" disabled/>
+                            </td>
+                        </tr>`
+                    );
+                }
+            } else {
+                // set grid = ""
+                rawMaterialsTable.find('tbody').empty();
+            }
+            updateSummaryGrid_onChange();
+        }
+
+        function updateSummaryGrid_onChange() {
+
+            // Weight section.......................................................................................
+            var weightTotalInputF = $('#weightTotalInputF');
+            var weightPerUnitInputF = $('#weightPerUnitInputF');
+            var orderQtyInputF = $('#CorruCosting_OrderQty'); // 1: OrdQty On Change
+            var iCatWiseTotalWeightInputFs = $('.iCatWiseTotalWeightInputFs'); // 2: iCatWiseTotalWeightInputF(s) On Set
+            
+            var iCatWiseTotalWeight = 0;
+            var iCatWiseUnitWeight = 0;
+            var orderQty = Number(orderQtyInputF.val());
+
+            if (iCatWiseTotalWeightInputFs.length !== 0) {
+                for (var i = 0; i < iCatWiseTotalWeightInputFs.length; i++) {
+                    if (!isNaN(parseFloat($(iCatWiseTotalWeightInputFs[i]).val())))
+                        iCatWiseTotalWeight += Number($(iCatWiseTotalWeightInputFs[i]).val());
+                }
+            }
+            if (iCatWiseTotalWeight === 0) {
+                weightTotalInputF.val('');
+                weightPerUnitInputF.val('');
+            }
+            else {
+                weightTotalInputF.val(iCatWiseTotalWeight.toFixed(4));
+                if(orderQty !== 0)
+                    iCatWiseUnitWeight = iCatWiseTotalWeight / orderQty;
+                weightPerUnitInputF.val(iCatWiseUnitWeight.toFixed(4));
+            }
+
+            // Material cost section.................................................................................
+            var matCostTotalInputF = $('#matCostTotalInputF');
+            var matCostPerUnitInputF = $('#matCostPerUnitInputF');
+            var matCostPerKgInputF = $('#matCostPerKgInputF');
+            var iCatWiseTotalCostInputFs = $('.iCatWiseTotalCostInputFs');// 3: iCatWiseTotalCostInputF(s) On Set
+
+            var iCatWiseTotalCost = 0;
+            var iCatWiseUnitCost = 0;
+            var iCatWiseCostPerKg = 0
+
+            if (iCatWiseTotalCostInputFs.length !== 0) {
+                // set mat cost per unit
+                for (var i = 0; i < iCatWiseTotalCostInputFs.length; i++) {
+                    if (!isNaN(parseFloat($(iCatWiseTotalCostInputFs[i]).val())))
+                        iCatWiseTotalCost += Number($(iCatWiseTotalCostInputFs[i]).val());
+                }
+            }
+            if (iCatWiseTotalCost === 0) {
+                matCostTotalInputF.val('');
+                matCostPerUnitInputF.val('');
+                matCostPerKgInputF.val('');
+            } else {
+                matCostTotalInputF.val(iCatWiseTotalCost.toFixed(4));
+                if (orderQty !== 0)
+                    iCatWiseUnitCost = iCatWiseTotalCost / orderQty;
+                matCostPerUnitInputF.val(iCatWiseUnitCost.toFixed(4));
+                if (iCatWiseTotalWeight !== 0)
+                    iCatWiseCostPerKg = iCatWiseTotalCost / iCatWiseTotalWeight;
+                matCostPerKgInputF.val(iCatWiseCostPerKg.toFixed(4));
+            }
+
+            // Overhead cost section.................................................................................
+            var overHeadCostPerKgInputF = $('#overHeadCostPerKgInputF');
+            var ohcPerKg = Number(overHeadCostPerKgInputF.val());
+            var ohcTotal = ohcPerKg * iCatWiseTotalWeight;
+            var ohcPerUnit = ohcTotal / orderQty;
+            $('#overHeadCostTotalInputF').val(
+                ohcTotal.toFixed(4)
+            );
+            $('#overHeadCostPerUnitInpurF').val(
+                ohcPerUnit.toFixed(4)
+            );
+
+            // Block cost section....................................................................................
+            var blockCostTotalInputF = $('#CorruCosting_BlockCostTotal');
+            var blockCostTotal = Number(blockCostTotalInputF.val());
+            var blockCostPerUnit = blockCostTotal / orderQty;
+            var blockCostPerKg = blockCostTotal / iCatWiseTotalWeight;
+            $('#blockCostPerUnitInpurF').val(
+                blockCostPerUnit.toFixed(4)
+            );
+            $('#blockCostPerKgInputF').val(
+                blockCostPerKg.toFixed(4)
+            );
+
+            // Laminate cost section....................................................................................
+            var laminateCostTotalInputF = $('#CorruCosting_LaminateCostTotal');
+            var laminateCostTotal = Number(laminateCostTotalInputF.val());
+            var laminateCostPerUnit = laminateCostTotal / orderQty;
+            var laminateCostPerKg = laminateCostTotal / iCatWiseTotalWeight;
+            $('#laminateCostPerUnitInpurF').val(
+                laminateCostPerUnit.toFixed(4)
+            );
+            $('#laminateCostPerKgInputF').val(
+                laminateCostPerKg.toFixed(4)
+            );
+
+            // Die cost section....................................................................................
+            var dieCostTotalInputF = $('#CorruCosting_DieCostTotal');
+            var dieCostTotal = Number(dieCostTotalInputF.val());
+            var dieCostPerUnit = dieCostTotal / orderQty;
+            var dieCostPerKg = dieCostTotal / iCatWiseTotalWeight;
+            $('#dieCostPerUnitInpurF').val(
+                dieCostPerUnit.toFixed(4)
+            );
+            $('#dieCostPerKgInputF').val(
+                dieCostPerKg.toFixed(4)
+            );
+
+            // Other cost section....................................................................................
+            var otherCostTotalInputF = $('#CorruCosting_OtherCostTotal');
+            var otherCostTotal = Number(otherCostTotalInputF.val());
+            var otherCostPerUnit = otherCostTotal / orderQty;
+            var otherCostPerKg = otherCostTotal / iCatWiseTotalWeight;
+            $('#otherCostPerUnitInpurF').val(
+                otherCostPerUnit.toFixed(4)
+            );
+            $('#otherCostsInputF').val(
+                otherCostPerKg.toFixed(4)
+            );
+
+            // Total section.........................................................................................
+            var totalPerUnit = iCatWiseUnitCost + ohcPerUnit + blockCostPerUnit + laminateCostPerUnit + dieCostPerUnit + otherCostPerUnit;
+            $('#totalPerUnit').val(
+                totalPerUnit.toFixed(4)
+            );
+
+            var totalTotal = iCatWiseTotalCost + ohcTotal + blockCostTotal + laminateCostTotal + dieCostTotal + otherCostTotal;
+            $('#totalTotal').val(
+                totalTotal.toFixed(4)
+            );
+
+            var totalPerKg = iCatWiseCostPerKg + ohcPerKg + blockCostPerKg + laminateCostPerKg + dieCostPerKg + otherCostPerKg;
+            $('#totalPerKg').val(
+                totalPerKg.toFixed(4)
+            );
+
+            var salesPricePerUnit = totalPerUnit * 125 / 100;
+            $('#salesPricePerUnit').val(salesPricePerUnit.toFixed(4));
+            var salesPriceTotal = totalTotal * 125 / 100;
+            $('#salesPriceTotal').val(salesPriceTotal.toFixed(4));
+            var salesPricePerKg = totalPerKg * 125 / 100;
+            $('#salesPricePerKg').val(salesPricePerKg.toFixed(4));
+
+            // new start: sales price in native currency
+            var exRateInputF = $('#exRateInputF');
+
+            var salesPricePerUnitInNativeC = salesPricePerUnit / Number(exRateInputF.val());
+            $('#CorruCosting_PerUnitSuggestedUnitPrice').val(
+                salesPricePerUnitInNativeC.toFixed(4)
+            );
+            var salesPriceTotalInNativeC = salesPriceTotal / Number(exRateInputF.val());
+            $('#nativeSalesPriceTotal').val(
+                salesPriceTotalInNativeC.toFixed(4)
+            );
+            var salesPricePerKgInNativeC = salesPricePerKg / Number(exRateInputF.val());
+            $('#nativeSalesPricePerKg').val(
+                salesPricePerKgInNativeC.toFixed(4)
+            );
+
+            // Adjustable sales price (in native currency)
+            $('#CorruCosting_PerUnitAdjustableUnitPrice').val(salesPricePerUnitInNativeC.toFixed(4));
+            $('#adjSalesPriceTotal').val(salesPriceTotalInNativeC.toFixed(4));
+            $('#adjSalesPricePerKg').val(salesPricePerKgInNativeC.toFixed(4));
+
+            $('#adjProfitPercentPerUnit').val("25.00%");
+            $('#adjProfitPercentTotal').val("25.00%");
+            $('#adjProfitPercentPerKg').val("25.00%");
+
+            updateAdjSalesPrice_onKeyup();
+        }
+
+        function updateAdjSalesPrice_onKeyup() {
+            var totalWeight = 0;
+            var iCatWiseTotalWeightInputFs = $('.iCatWiseTotalWeightInputFs'); // 1: updateSummaryGrid_onChange()
+            var adjSalesPricePerUnit = $('#CorruCosting_PerUnitAdjustableUnitPrice'); // 1: updateSummaryGrid_onChange() + 2: adjSalesPricePerUnit On Change
+            var orderQtyInputF = $('#CorruCosting_OrderQty'); // 3: orderQty On Change
+            var totalPerUnit = $('#totalPerUnit'); // 1: updateSummaryGrid_onChange()
+            var exRateInputF = $('#exRateInputF'); // 4: Customer On Change
+            var adjSalesPricePerKgInputF = $('#adjSalesPricePerKg'); // 1: updateSummaryGrid_onChange()
+            var adjSalesPriceTotalInputF = $('#adjSalesPriceTotal'); // 1: updateSummaryGrid_onChange()
+
+            // Calculating the total weight
+            if (iCatWiseTotalWeightInputFs.length !== 0) {
+                for (var i = 0; i < iCatWiseTotalWeightInputFs.length; i++) {
+                    if (!isNaN(parseFloat($(iCatWiseTotalWeightInputFs[i]).val())))
+                        totalWeight += Number($(iCatWiseTotalWeightInputFs[i]).val());
+                }
+            }
+
+            var adjSalesPriceTotal = Number(adjSalesPricePerUnit.val()) * Number(orderQtyInputF.val());
+            adjSalesPriceTotalInputF.val(
+                adjSalesPriceTotal.toFixed(4)
+            );
+
+            var adjSalesPricePerKg = adjSalesPriceTotal / totalWeight;
+            adjSalesPricePerKgInputF.val(
+                adjSalesPricePerKg.toFixed(4)
+            );
+
+            if (!isNaN(parseFloat(exRateInputF.val()))) {
+                var totalPerUnitInNativeC = Number(totalPerUnit.val()) / Number(exRateInputF.val());
+                var percentageAfterAdj = (((Number(adjSalesPricePerUnit.val()) - totalPerUnitInNativeC) / totalPerUnitInNativeC) * 100).toFixed(2);
+                if (Number(percentageAfterAdj) < 15.00 && (Number($('#CorruCosting_CorruCostingId').val()) === 0 || $('#CorruCosting_CorruCostingId').val() === '') && @(User.IsInRole(Costing_Formula___KSPA.Utility.Helper.Admin) ? "false" : "true")) {
+                    var adjSalesPricePerUnit_Val = (Math.trunc(115 * totalPerUnitInNativeC * 10000 / 100) / 10000).toString();
+                    $('#saveBtnErrorSpan').show();
+                    $('#submitButton').prop("disabled", true);
+                    iziToast.warning({
+                        title: 'Warinig',
+                        message: 'Profit percentage is less than 15%. Please increase the unit price!',
+                        position: 'topRight',
+                        timeout: 15000
+                    });
+                } else if (Number(percentageAfterAdj) < 10.00 && (Number($('#CorruCosting_CorruCostingId').val()) === 0 || $('#CorruCosting_CorruCostingId').val() === '')) {
+                    var adjSalesPricePerUnit_Val = (Math.trunc(110 * totalPerUnitInNativeC * 10000 / 100) / 10000).toString();
+                    $('#saveBtnErrorSpan').show();
+                    $('#submitButton').prop("disabled", true);
+                    iziToast.warning({
+                        title: 'Warinig',
+                        message: 'Profit percentage is less than 10%. Please increase the unit price!',
+                        position: 'topRight',
+                        timeout: 15000
+                    });
+                } else {
+                    $('#saveBtnErrorSpan').hide();
+                    $('#submitButton').prop("disabled", false);
+                }
+                $('#adjProfitPercentPerUnit').val(
+                    percentageAfterAdj + "%"
+                );
+                $('#adjProfitPercentTotal').val(
+                    percentageAfterAdj + "%"
+                );
+                $('#adjProfitPercentPerKg').val(
+                    percentageAfterAdj + "%"
+                );
+
+                $('#adjSalesPriceLkrPerUnit').val(
+                    (adjSalesPricePerUnit.val() * exRateInputF.val()).toFixed(4)
+                );
+                $('#adjSalesPriceLkrTotal').val(
+                    (adjSalesPriceTotalInputF.val() * exRateInputF.val()).toFixed(4)
+                );
+                $('#adjSalesPriceLkrPerKg').val(
+                    (adjSalesPricePerKgInputF.val() * exRateInputF.val()).toFixed(4)
+                );
+            } else {
+                $('#adjProfitPercentPerUnit').val("");
+                $('#adjProfitPercentTotal').val("");
+                $('#adjProfitPercentPerKg').val("");
+
+                $('#adjSalesPriceLkrPerUnit').val("");
+                $('#adjSalesPriceLkrTotal').val("");
+                $('#adjSalesPriceLkrPerKg').val("");
+            }
+
+        }
+
+        async function generatePdf() {
+            var companyId = Number($('#CorruCosting_CompanyId').val());
+            var url = '/print-templates/cquot-template.pdf';
+            if (companyId === 2)
+                url = '/print-templates/cquot-template-printing-sol.pdf';
+            const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
+
+            // Creating a document
+            const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+            pdfDoc.setTitle($('#CorruCosting_CorruCostingCode').val());
+            pdfDoc.setSubject($('#CorruCosting_CorruCostingCode').val());
+
+            // Creating the first page, Otherwise null
+            const pages = pdfDoc.getPages();
+            const firstPage = pages[0];
+
+            // Customer name
+            var customerName = $('#CorruCosting_CustomerId').children("option:selected").text();
+            firstPage.drawText(customerName, {
+                x: 10.5 * 9,
+                y: 77 * 9,
+                size: 10,
+                maxWidth: 28 * 9,
+                lineHeight: 1.5 * 9
+            });
+
+            // Currency short code
+            var currencyShortCode = $('#cusCurrencyInputF').val();
+            firstPage.drawText(currencyShortCode, {
+                x: 10.5 * 9,
+                y: 74 * 9,
+                size: 10
+            });
+
+            // Quotation date
+            var quotationDate = '@Model.CorruCosting.DateCreated.ToString("dd-MMM-yyyy")';
+            firstPage.drawText(quotationDate, {
+                x: 49 * 9,
+                y: 77 * 9,
+                size: 10
+            });
+
+            // Valid Till
+            var validTillDate = '@Model.CorruCosting.DateCreated.AddDays(14).ToString("dd-MMM-yyyy")';
+            firstPage.drawText(validTillDate, {
+                x: 49 * 9,
+                y: 75.5 * 9,
+                size: 10
+            });
+
+            // Quotation NO
+            var quotationNo = $('#CorruCosting_CorruCostingCode').val();
+            firstPage.drawText(quotationNo, {
+                x: 49 * 9,
+                y: 74 * 9,
+                size: 10
+            });
+
+            var itemName = $('#CorruCosting_ItemName').val();
+            // Item name
+            firstPage.drawText(itemName, {
+                x: 5 * 9,
+                y: 68 * 9,
+                size: 10,
+                maxWidth: 31 * 9,
+                lineHeight: 2 * 9
+            });
+
+            // Qty
+            var qty = '@Model.CorruCosting.OrderQty.ToString("N")'; // Adding thousand seperators
+            firstPage.drawText(qty, {
+                x: 37 * 9,
+                y: 68 * 9,
+                size: 10
+            });
+
+            // "nos." or "kg"
+            var nosOrKg = ($('#uomQtyOrKgSelectB').children("option:selected").text().toUpperCase() === 'QTY') ? '(nos.)' : '(kg)';
+            firstPage.drawText(nosOrKg, {
+                x: 37 * 9,
+                y: 66 * 9,
+                size: 10
+            });
+
+            // Rate
+            var rate = '@Model.CorruCosting.PerUnitAdjustableUnitPrice.ToString("N4")';
+            firstPage.drawText(rate, {
+                x: 45.5 * 9,
+                y: 68 * 9,
+                size: 10
+            });
+
+            // Net Value
+            var netVal = '@(Math.Round(Model.CorruCosting.PerUnitAdjustableUnitPrice * Model.CorruCosting.OrderQty, 4).ToString("N4"))';
+            firstPage.drawText(netVal, {
+                x: 54.5 * 9,
+                y: 68 * 9,
+                size: 10
+            });
+
+            // Coordinator, Rep, Contact
+            var cName = '@Model.CorruCosting.Customer.SCoordinator.SrocName';
+            var cContact = '@Model.CorruCosting.Customer.SCoordinator.SrocContact';
+            var rName = '@Model.CorruCosting.Customer.SRep.SrocName';
+            var rContact = '@Model.CorruCosting.Customer.SRep.SrocContact';
+            firstPage.drawText(capitalizeName(rName) + ' on ' + rContact + ' or ' + capitalizeName(cName) + ' on ' + cContact + '.', {
+                x: 22 * 9,
+                y: 21.1 * 9,
+                size: 10
+            });
+
+            return pdfDoc;
+        }
+
+        async function showPdfInTheIFrame() {
+            var pdfDocPromise = generatePdf();
+            pdfDocPromise.then(async function (pdfDoc) {
+                const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+                document.getElementById('pdfIFrame').src = pdfDataUri;
+            });
+            $('#printPreviewModal').modal('toggle');
+        }
+
+        async function downloadPdfDirect() {
+            var pdfDocPromise = generatePdf();
+            pdfDocPromise.then(async function (pdfDoc) {
+                const pdfBytes = await pdfDoc.save();
+                var blob = new Blob([pdfBytes], { type: "application/pdf" });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'Q-' + $('#CorruCosting_CorruCostingId').val(); // Doc ID
+                link.click();
+            });
+        }
+
+        function capitalizeName(name) {
+            return name.replace(/\b(\w)/g, s => s.toUpperCase());
+        }
+
+        // On document ready..........................................................................
+        $(document).ready(function () {
+
+            const TRIM_VAL = $('#CorruCosting_Trim').val();
+            const ADJ_SHEET_LENGTH_VAL = $('#CorruCosting_AdjSheetLength').val();
+            const ADJ_SHEET_WIDTH_VAL = $('#CorruCosting_AdjSheetWidth').val();
+            const ADJ_UNIT_PRICE_VAL = $('#CorruCosting_PerUnitAdjustableUnitPrice').val();
+
+            $('select.select2').select2({
+                theme: 'bootstrap-5'
+            });
+
+            $("select.select2-adv-search").select2({
+                matcher: matchCustom,
+                theme: 'bootstrap-5'
+            });
+            $('#CorruCosting_OrderUomId').val("1");
+            $('#submitButtonMaxLengthOverflowErrorSpan').hide();
+
+            function matchCustom(params, data) {
+                // If there are no search terms, return all of the data
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+
+                var paramWordArray = params.term.split(" ");
+                var atleastOneWordPercent = false;
+                var allWordsPercent = true;
+
+                for (var i = 0; i < paramWordArray.length; i++) {
+                    if (paramWordArray[i] !== '') {
+                        if (data.text.toUpperCase().indexOf(paramWordArray[i].toUpperCase()) > -1) {
+                            atleastOneWordPercent = true;
+                            allWordsPercent = allWordsPercent && true;
+                        } else {
+                            allWordsPercent = false;
+                        }
+                    }
+                }
+
+                if (atleastOneWordPercent && allWordsPercent) {
+                    return data;
+                }
+
+                // Return `null` if the term should not be displayed
+                return null;
+            }
+
+            // Customer Detail Section................................................................
+            var cusTypeInputF = $('#cusTypeInputF');
+            var cusCurrencyInputF = $('#cusCurrencyInputF');
+            var nativeCurrencyLabels = $('.native-currency');
+            var exRateInputF = $('#exRateInputF');
+            var deliAddressTextA = $('#CorruCosting_DeliveryAddress');
+
+            // Set UOM for Qty to Qty
+            $('#uomQtyOrKgSelectB').val('1');
+
+            $("#CorruCosting_CustomerId").change(function () {
+                var customer = getObjectByIdProp(customersJsonArr, $(this).val());
+                if (customer !== null) {
+                    cusTypeInputF.val(customer.CustomerTypeDesc);
+                    cusCurrencyInputF.val(customer.CurrencyCode);
+                    nativeCurrencyLabels.html(customer.CurrencyCode);
+                    exRateInputF.val(customer.RateInLKR);
+                    deliAddressTextA.val(customer.CustomerAddress);
+                } else {
+                    cusTypeInputF.val('');
+                    cusCurrencyInputF.val('');
+                    nativeCurrencyLabels.html('Native Currency')
+                    exRateInputF.val('');
+                    deliAddressTextA.val('');
+                }
+                updateRawMaterialGrid_onChange(); // #UnComment
+                updateAdjSalesPrice_onKeyup(); // #UnComment
+            });
+            // run once above onChangeBody
+            var customer = getObjectByIdProp(customersJsonArr, $("#CorruCosting_CustomerId").val());
+            if (customer !== null) {
+                cusTypeInputF.val(customer.CustomerTypeDesc);
+                cusCurrencyInputF.val(customer.CurrencyCode);
+                nativeCurrencyLabels.html(customer.CurrencyCode);
+                exRateInputF.val(customer.RateInLKR);
+                deliAddressTextA.val(customer.CustomerAddress);
+            } else {
+                cusTypeInputF.val('');
+                cusCurrencyInputF.val('');
+                nativeCurrencyLabels.html('Native Currency');
+                exRateInputF.val('');
+                deliAddressTextA.val('');
+            }
+            updateRawMaterialGrid_onChange(); // #UnComment
+            updateAdjSalesPrice_onKeyup(); // #UnComment
+
+            // Corru Combination Detail Section.........................................................
+            var corruCombInputF = $('#corruCombInputF');
+
+            $("#CorruCosting_CorruCombId").change(function () {
+                var corruCombination = getObjectByIdProp(corruCombinationJsonArr, $(this).val());
+                if (corruCombination !== null) {
+                    corruCombInputF.val(corruCombination.CorruCombCode);
+                } else {
+                    corruCombInputF.val('');
+                }
+                updateRawMaterialGrid_onChange(); // #UnComment
+            });
+            // run once above onChangeBody
+            var corruCombination = getObjectByIdProp(corruCombinationJsonArr, $("#CorruCosting_CorruCombId").val());
+            if (corruCombination !== null) {
+                corruCombInputF.val(corruCombination.CorruCombCode);
+            } else {
+                corruCombInputF.val('');
+            }
+            updateRawMaterialGrid_onChange(); // #UnComment
+
+            // Filters For Corru Combination.............................................................
+            var colorsSelectBx = $('#colorsSelectBx');
+            var plysSelectBx = $('#plysSelectBx');
+            // A. On color select box change filder.
+            colorsSelectBx.change(function () {
+                var optionsString = '';
+                var partialCorruCombJsonArr;
+                if ($(this).val() === "0" && plysSelectBx.val() === "0") {
+                    $("#CorruCosting_CorruCombId").html(function () {
+                        corruCombinationJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.CorruCombCode + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--Update masters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                } else {
+                    partialCorruCombJsonArr = getObjectsByColorIdAndPlyIdProps(corruCombinationJsonArr, colorsSelectBx.val(), plysSelectBx.val());
+                    $("#CorruCosting_CorruCombId").html(function () {
+                        partialCorruCombJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.CorruCombCode + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--check filters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                }
+            });
+            // B. On plys select box change filder.
+            plysSelectBx.change(function () {
+                var optionsString = '';
+                if ($(this).val() === "0" && colorsSelectBx.val() === "0") {
+                    $("#CorruCosting_CorruCombId").html(function () {
+                        corruCombinationJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.CorruCombCode + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--Update masters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                } else {
+                    partialCorruCombJsonArr = getObjectsByColorIdAndPlyIdProps(corruCombinationJsonArr, colorsSelectBx.val(), plysSelectBx.val());
+                    $("#CorruCosting_CorruCombId").html(function () {
+                        partialCorruCombJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.CorruCombCode + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--check filters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                }
+            });
+
+            // Box Type Detail Section.................................................................
+            var boxTypeDescInputF = $('#boxTypeDescInputF'); //Box type description
+            var designBoxCheckB = $('#designBoxCheckB'); //Design boc check box
+
+            $("#CorruCosting_BoxTypeId").change(function () {
+                var boxType = getObjectByIdProp(boxTypeJsonArr, $(this).val());
+                if (boxType !== null) {
+                    if (boxType.DesignBox) {
+                        designBoxCheckB.prop("checked", true);
+                    } else {
+                        designBoxCheckB.prop("checked", false);
+                    }
+                    // boxTypeDescInputF.val(boxType.BoxTypeDesc);
+                    // setWeightInputFs_onChange(); // #UnComment
+                } else {
+                    designBoxCheckB.prop("checked", false);
+                    // boxTypeDescInputF.val('');
+                    // setWeightInputFs_onChange(); // #UnComment
+                }
+                // setTurnsInputF_onChange(); // #UnComment
+                setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+                // setNoOfMetersInputF_onChange(); // #UnComment
+                // setWeightInputFs_onChange(); // #UnComment
+                // setCylinderAndFilterCylinderOptionsList_onChange(); // #UnComment
+            });
+            // run once above onChangeBody
+            var boxType = getObjectByIdProp(boxTypeJsonArr, $("#CorruCosting_BoxTypeId").val());
+            if (boxType !== null) {
+                if (boxType.DesignBox) {
+                        designBoxCheckB.prop("checked", true);
+                } else {
+                    designBoxCheckB.prop("checked", false);
+                }
+                // boxTypeDescInputF.val(boxType.BoxTypeDesc);
+                // setWeightInputFs_onChange(); // #UnComment
+            } else {
+                designBoxCheckB.prop("checked", false);
+                // boxTypeDescInputF.val('');
+                // setWeightInputFs_onChange(); // #UnComment
+            }
+            // setTurnsInputF_onChange(); // #UnComment
+            setSheetLengthWidthAndAreaInputFs_onChange; // #UnComment
+            // setNoOfMetersInputF_onChange(); // #UnComment
+            // setWeightInputFs_onChange(); // #UnComment
+
+            // Order Specification Section.............................................................
+            $('#CorruCosting_OrderQty').change(function () {
+                // setNoOfMetersInputF_onChange(); // #UnComment
+                // setWeightInputFs_onChange(); // #UnComment
+                // setTotalSheetReq_onChange();
+                updateRawMaterialGrid_onChange(); // #UnComment
+                updateSummaryGrid_onChange();
+                updateAdjSalesPrice_onKeyup();
+            });
+            // run once above onChangeBody
+            // setNoOfMetersInputF_onChange(); // #UnComment
+            // setWeightInputFs_onChange(); // #UnComment
+            // setTotalSheetReq_onChange();
+            updateRawMaterialGrid_onChange(); // #UnComment
+            updateSummaryGrid_onChange();
+            updateAdjSalesPrice_onKeyup();
+
+            // Product Measurement Section..............................................................
+            var measurementUomSelectB = $('#CorruCosting_MeasurementUomId');
+            var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+            var lengthInputF = $('#CorruCosting_Length');
+            var lengthCmInputF = $('#lengthCmInputF');
+            var heightInputF = $('#CorruCosting_Height');
+            var heightCmInputF = $('#heightCmInputF');
+            var bredthInputF = $('#CorruCosting_Bredth');
+            var bredthCmInputF = $('#bredthCmInputF');
+            var intExtSelectB = $('#CorruCosting_AreExternalMeasurements');
+
+            // Uom for product mesurement on change
+            measurementUomSelectB.change(function () {
+                var uom = getObjectByIdProp(uomJsonArr, $(this).val());
+                $('#selected_uom').val(
+                    $(this).children("option:selected").text()
+                );
+                if (uom !== null) {
+                    if (bredthInputF.val() !== '') {
+                        bredthCmInputF.val(
+                            (Number(bredthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (heightInputF.val() !== '') {
+                        heightCmInputF.val(
+                            (Number(heightInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (lengthInputF.val() !== '') {
+                        lengthCmInputF.val(
+                            (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                } else {
+                    bredthCmInputF.val('');
+                    heightCmInputF.val('');
+                    lengthCmInputF.val('');
+                }
+                // When heightCmInputF, lengthCmInputF onchange
+                // setTurnsInputF_onChange(); // #UnComment
+                // When bredthCmInputF, flapCmInputF, heightCmInputF, lengthCmInputF, bottomGussetCmInputF onchange
+                setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+                // setNoOfMetersInputF_onChange(); // #UnComment
+                // setWeightInputFs_onChange(); // #UnComment
+
+            });
+            // run once above onChangeBody
+            var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+            $('#selected_uom').val(
+                measurementUomSelectB.children("option:selected").text()
+            );
+            if (uom !== null) {
+                if (bredthInputF.val() !== '') {
+                    bredthCmInputF.val(
+                        (Number(bredthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+                if (heightInputF.val() !== '') {
+                    heightCmInputF.val(
+                        (Number(heightInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+                if (lengthInputF.val() !== '') {
+                    lengthCmInputF.val(
+                        (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+            } else {
+                bredthCmInputF.val('');
+                heightCmInputF.val('');
+                lengthCmInputF.val('');
+            }
+            // When bredthCmInputF, flapCmInputF, heightCmInputF, lengthCmInputF, bottomGussetCmInputF onchange
+            setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+            // setNoOfMetersInputF_onChange(); // #UnComment
+            // setWeightInputFs_onChange(); // #UnComment
+            // When heightCmInputF, lengthCmInputF onchange
+            // setTurnsInputF_onChange(); // #UnComment
+
+            // Length (UOM)
+            lengthInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if (uom !== null) {
+                    lengthCmInputF.val(
+                        (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    lengthCmInputF.val('');
+                }
+                // setTurnsInputF_onChange(); // #UnComment
+                setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+                // setNoOfMetersInputF_onChange(); // #UnComment
+                // setWeightInputFs_onChange(); // #UnComment
+                // setCylinderAndFilterCylinderOptionsList_onChange(); // #UnComment
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#CorruCosting_Length').val()))) {
+                $('#CorruCosting_Length').val(parseFloat($('#CorruCosting_Length').val()).toFixed(4));
+            } else {
+                $('#CorruCosting_Length').val("0.0000");
+            }
+            if (uom !== null) {
+                lengthCmInputF.val(
+                    (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                lengthCmInputF.val('');
+            }
+            // setTurnsInputF_onChange(); // #UnComment
+            setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+            // setNoOfMetersInputF_onChange(); // #UnComment
+            // setWeightInputFs_onChange(); // #UnComment
+
+            // Height (UOM)
+            heightInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if (uom !== null) {
+                    heightCmInputF.val(
+                        (Number(heightInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    heightCmInputF.val('');
+                }
+                // setTurnsInputF_onChange(); // #UnComment
+                setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+                // setNoOfMetersInputF_onChange(); // #UnComment
+                // setWeightInputFs_onChange(); // #UnComment
+                // setCylinderAndFilterCylinderOptionsList_onChange // #UnComment
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#CorruCosting_Height').val()))) {
+                $('#CorruCosting_Height').val(parseFloat($('#CorruCosting_Height').val()).toFixed(4));
+            } else {
+                $('#CorruCosting_Height').val("0.0000");
+            }
+            if (uom !== null) {
+                heightCmInputF.val(
+                    (Number(heightInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                heightCmInputF.val('');
+            }
+            // setTurnsInputF_onChange(); // #UnComment
+            setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+            // setNoOfMetersInputF_onChange(); // #UnComment
+            // setWeightInputFs_onChange(); // #UnComment
+            // setCylinderAndFilterCylinderOptionsList_onChange(); // #UnComment
+
+            // Bredth (UOM)
+            bredthInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if (uom !== null) {
+                    bredthCmInputF.val(
+                        (Number(bredthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    bredthCmInputF.val('');
+                }
+                setSheetLengthWidthAndAreaInputFs_onChange();; // #UnComment
+                // setNoOfMetersInputF_onChange(); // #UnComment
+                // setWeightInputFs_onChange(); // #UnComment
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#CorruCosting_Bredth').val()))) {
+                $('#CorruCosting_Bredth').val(parseFloat($('#CorruCosting_Bredth').val()).toFixed(4));
+            } else {
+                $('#CorruCosting_Bredth').val("0.0000");
+            }
+            if (uom !== null) {
+                bredthCmInputF.val(
+                    (Number(bredthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                bredthCmInputF.val('');
+            }
+            setSheetLengthWidthAndAreaInputFs_onChange(); // #UnComment
+            // setNoOfMetersInputF_onChange(); // #UnComment
+            // setWeightInputFs_onChange(); // #UnComment
+
+            // INT /EXT
+            intExtSelectB.change(function() {
+                setSheetLengthWidthAndAreaInputFs_onChange();
+            });
+            // run once above onChangeBody
+            setSheetLengthWidthAndAreaInputFs_onChange();
+
+            // Printing Detail Section.................................................................
+            //Printed? checkbox on change
+            $('#CorruCosting_Printed').change(function () {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+
+            //Laminated? checkbox on change
+            $('#CorruCosting_Laminated').change(function () {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+
+            //Printed? checkbox on change
+            $('#CorruCosting_DieCut').change(function () {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+
+            // No of colors onChange
+            $('#CorruCosting_NoOfColors').change(function () {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+
+            // Printing sides count onChange
+            $('#CorruCosting_NoOfPrintingSides').change(function () {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange()
+                // setCylinderAndFilterCylinderOptionsList_onChange(); // #UnComment
+            });
+            // run once above onChangeBody
+            makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+
+            var printAreaPercentInputF = $('#printAreaPercentInputF');
+            // Print type select box on change
+            $('#CorruCosting_PrintTypeId').change(function () {
+                var printType = getObjectByIdProp(printTypeJsonArr, $(this).val());
+                if (printType !== null) {
+                    printAreaPercentInputF.val(printType.PrintPercentage);
+                } else {
+                    printAreaPercentInputF.val('');
+                }
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+                setPrintedArea_onChange();
+                // setNoOfMetersInputF_onChange(); // #UnComment
+            });
+            // run once above onChangeBody
+            var printType = getObjectByIdProp(printTypeJsonArr, $('#CorruCosting_PrintTypeId').val());
+            if (printType !== null) {
+                printAreaPercentInputF.val(printType.PrintPercentage);
+            } else {
+                printAreaPercentInputF.val('');
+            }
+            makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            setPrintedArea_onChange();
+            // setNoOfMetersInputF_onChange(); // #UnComment
+
+            $('#CorruCosting_BlockAvailability').change(function() {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+
+            // Laminate Type On Change
+            $('#CorruCosting_LaminateTypeId').change(() => {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+
+            // Die Cut Type On Change
+            $('#CorruCosting_DieCutTypeId').change(() => {
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+            // run once above onChangeBody
+            makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+
+            // Reel Selection Section..................................................................
+            $('#CorruCosting_AdjSheetWidth').change(function() {
+                setBestReelAndUps_onChange();
+                updateRawMaterialGrid_onChange();
+            });
+            // run once above onChangeBody
+            setBestReelAndUps_onChange();
+            updateRawMaterialGrid_onChange();
+
+            $('#CorruCosting_PreCostingWastePercentage').change(() => {
+                updateRawMaterialGrid_onChange();
+            });
+            // run once above onChangeBody
+            updateRawMaterialGrid_onChange();
+            
+            // Reel Selection Section..................................................................
+            $('#CorruCosting_AdjSheetLength').change(function() {
+                setTotalSheetLength_onChange();
+                updateRawMaterialGrid_onChange();
+            });
+            // run once above onChangeBody
+            updateRawMaterialGrid_onChange();
+
+            // Route Selection Section.................................................................
+            var fixedExcessInputF = $('#fixedExcessInputF');
+            var handlingWastePercentInputF = $('#handlingWastePercentInputF');
+            // Route select box on change
+            $('#CorruCosting_RouteId').change(function () {
+                var route = getObjectByIdProp(routeJsonArr, $(this).val());
+                if (route !== null) {
+                    fixedExcessInputF.val(route.FixedExcess);
+                    handlingWastePercentInputF.val(route.HandlingWastePercent);
+                } else {
+                    fixedExcessInputF.val('');
+                    handlingWastePercentInputF.val('');
+                }
+                // setNoOfMetersInputF_onChange(); // #UnComment
+                setTotalSheetReq_onChange();
+                updateRawMaterialGrid_onChange();
+            });
+            // run once above onChangeBody
+            var route = getObjectByIdProp(routeJsonArr, $('#CorruCosting_RouteId').val());
+            if (route !== null) {
+                fixedExcessInputF.val(route.FixedExcess);
+                handlingWastePercentInputF.val(route.HandlingWastePercent);
+            } else {
+                fixedExcessInputF.val('');
+                handlingWastePercentInputF.val('');
+            }
+            // setNoOfMetersInputF_onChange(); // #UnComment
+            setTotalSheetReq_onChange();
+            updateRawMaterialGrid_onChange();
+
+            // Summary Tab Grid Section ...............................................................
+            var overHeadCost = @(ViewBag.OverHeadCost);
+            if (overHeadCost === 0) {
+                alert("Overhead cost have not updated! Please update it using the \"Item Category Price Update\" Transaction.\nItem Category Code = \"OHC\".");
+                $('#submitButton').prop("disabled", true);
+            }
+            $('#overHeadCostPerKgInputF').val(overHeadCost.toFixed(4));
+
+            var blockCost = @(ViewBag.BlockCost);
+            $('#blockCostInputF').val(blockCost.toFixed(4));
+
+            var otherCosts = @(ViewBag.OtherCosts);
+            $('#otherCostsInputF').val(otherCosts.toFixed(4));
+
+            // Block Cost Total onKeyUp
+            $('#CorruCosting_BlockCostTotal').keyup(() => {
+                updateSummaryGrid_onChange();
+            });
+            // Laminate Cost Total onKeyUp
+            $('#CorruCosting_LaminateCostTotal').keyup(() => {
+                updateSummaryGrid_onChange();
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+            // Die Cost Total onKeyUp
+            $('#CorruCosting_DieCostTotal').keyup(() => {
+                updateSummaryGrid_onChange();
+                makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+            });
+            // Other Cost Total onKeyUp
+            $('#CorruCosting_OtherCostTotal').keyup(() => {
+                updateSummaryGrid_onChange();
+            });
+            // run once above onChangeBody
+            updateSummaryGrid_onChange();
+            makePrintingLaminatingDieCutSpecificationsRequiredConditionally_onChange();
+
+            $('#CorruCosting_PerUnitAdjustableUnitPrice').keyup(() => {
+                updateAdjSalesPrice_onKeyup();
+            });
+            // run once above onChangeBody
+            updateAdjSalesPrice_onKeyup();
+
+            // Print Buttons Section ...............................................................
+            $('#printButton').click(function() {
+                showPdfInTheIFrame();
+            });
+
+            $('#downloadButton').click(function () {
+                downloadPdfDirect();
+            });
+
+            // TO RUN AFTER ALL OTHER CODE________________________________________________________________________________________________________________________
+            $('#CorruCosting_Trim').val(TRIM_VAL);                                                                                                             //|
+            $('#CorruCosting_AdjSheetLength').val(ADJ_SHEET_LENGTH_VAL);                                                                                       //|
+            setTotalSheetLength_onChange();                                                                                                                    //|
+            updateRawMaterialGrid_onChange();                                                                                                                  //|
+            $('#CorruCosting_AdjSheetWidth').val(ADJ_SHEET_WIDTH_VAL);                                                                                         //|
+            setBestReelAndUps_onChange();                                                                                                                      //|
+            updateRawMaterialGrid_onChange();                                                                                                                  //|
+            $('#CorruCosting_PerUnitAdjustableUnitPrice').val(ADJ_UNIT_PRICE_VAL);                                                                             //|
+            updateAdjSalesPrice_onKeyup();                                                                                                                     //|
+            //----------------------------------------------------------------------------------------------------------------------------------------------------
+
+        });
+
+    </script>
+
+    @{
+    <partial name="_ValidationScriptsPartial" />
+    }
+}

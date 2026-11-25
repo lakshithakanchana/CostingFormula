@@ -1,0 +1,147 @@
+﻿@model Costing_Formula___KSPA.Models.ViewModels.ExchangeRateVM;
+
+@{
+    ViewData["Title"] = "Daily / Monthly Exchange Rates - Add New";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Daily &frasl; Monthly Exchange Rates - Add New</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <button type="button" class="btn btn-secondary border border-2"><i class="fa-regular fa-upload"></i> Upload An Excel</button>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="ExchangeRate.Currency.CurrencyCode" class="form-label">Currency short code</label>
+                        <input type="text" class="form-control text-warning" asp-for="ExchangeRate.Currency.CurrencyCode" disabled>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ExchangeRate.Currency.CurrencyDesc" class="form-label">Currency description</label>
+                        <input type="text" class="form-control text-warning" asp-for="ExchangeRate.Currency.CurrencyDesc" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active input filds area -->
+            <div class="row">
+                <input type="hidden" asp-for="ExchangeRate.CurrencyId" /> <!-- Hidden Input -->
+                <div class="col-md-4">
+                    <div class="mb-3 text-white">
+                        <label asp-for="ExchangeRate.ExchangeRateId" class="form-label">Ex.Rate id</label>
+                        <input type="text" class="form-control" asp-for="ExchangeRate.ExchangeRateId" placeholder="System will generate" disabled>
+                        <b><span class="text-danger" asp-validation-for="ExchangeRate.ExchangeRateId"></span></b>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3 text-white">
+                        <label asp-for="ExchangeRate.RateInLKR" class="form-label">Ex.Rate in LKR</label>
+                        <input type="text" class="form-control" asp-for="ExchangeRate.RateInLKR">
+                        <b><span class="text-danger" asp-validation-for="ExchangeRate.RateInLKR"></span></b>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3 text-white">
+                        <label asp-for="ExchangeRate.EffectiveFrom" class="form-label">Effective from date</label>
+                        <input type="date" class="form-control" min="@(DateTime.Today.ToString("yyyy-MM-dd"))" max="@(DateTime.Today.ToString("yyyy-MM-dd"))" asp-for="ExchangeRate.EffectiveFrom"><!-- Max, Min date validation limited only to gui. Because App can handle multiple effective days. -->
+                        <b><span class="text-danger" asp-validation-for="ExchangeRate.EffectiveFrom"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Active input filds area -->
+
+            <hr class="bg-primary border-2 border-primary" />
+
+            <h2 class="h5"><u>Records history</u></h2>
+            <!-- the datatable -->
+            <table class="data-table-sort-by-col-3 table table-dark table-hover mb-3" style="min-width:98%">
+                <thead>
+                    <tr>
+                        <th class="text-nowrap" scope="col">Ex.Rate ID</th>
+                        <th class="text-nowrap" scope="col">Rate In LKR</th>
+                        <th class="text-nowrap" scope="col">Effected From Date</th>
+                        <th class="text-nowrap" scope="col">Active&quest; (Ex.Rate)</th>
+                        <th class="text-nowrap text-center" scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var exchangeRate in Model.ExchangeRateList)
+                    {
+                        <tr>
+                            <td class="text-nowrap">@exchangeRate.ExchangeRateId</td>
+                            <td class="text-nowrap">@exchangeRate.RateInLKR</td>
+                            <td class="text-nowrap">@exchangeRate.EffectiveFrom.ToString("yyyy-MM-dd, MMMM")</td>
+                            <td class="text-nowrap">@exchangeRate.IsActive</td>
+                            <td class="text-nowrap text-center"><a class="btn btn-primary" role="button" asp-action="Update" asp-route-id="@exchangeRate.ExchangeRateId"><i class="fa-regular fa-pen-to-square"></i> Edit</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="ExchangeRate.IsActive">
+                        <label class="form-check-label" asp-for="ExchangeRate.IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="ExchangeRate.IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save As New</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+    <partial name="_ValidationScriptsPartial" />
+    }
+}

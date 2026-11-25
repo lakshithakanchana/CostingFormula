@@ -1,0 +1,420 @@
+﻿@model Costing_Formula___KSPA.Models.ViewModels.BagTypeVM;
+
+@{
+    ViewData["Title"] = "Bag Type Master - Edit";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Bag Type Master - Edit</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Update">
+    <div class="row">
+
+        <!-- Left side area for input fields and selection boxes -->
+        <div class="col-md-8">
+
+            <!-- Bag type id Input Field -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="BagType.BagTypeId" class="form-label">Bag type id</label>
+                        <input type="text" class="form-control" asp-for="BagType.BagTypeId" placeholder="System will generate for you" readonly>
+                        <b><span class="text-danger" asp-validation-for="BagType.BagTypeId"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bag type code same as in Axpert Input Field -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="BagType.BagTypeCode" class="form-label">Bag type code <b class="text-warning">(same as in Axpert)</b></label>
+                        <input type="text" class="form-control" asp-for="BagType.BagTypeCode" placeholder="Bag type code same as in Axpert here">
+                        <b><span class="text-danger" asp-validation-for="BagType.BagTypeCode"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Finishing Type Selection Box -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="BagType.ProductFinishingTypeId" class="form-label">Product finishing type</label>
+                        <select asp-for="BagType.ProductFinishingTypeId" asp-items="@Model.ProductFinishingTypeDropDown" class="form-select">
+                            <option selected>-- select product finishing type --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="BagType.ProductFinishingTypeId"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bag type Description Input Field -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="BagType.BagTypeDesc" class="form-label">Bag type description</label>
+                        <input type="text" class="form-control" asp-for="BagType.BagTypeDesc" placeholder="Bag type description here">
+                        <b><span class="text-danger" asp-validation-for="BagType.BagTypeDesc"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formula To Calculate Sheet Area Input Field -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="BagType.FormulaToCalcSArea" class="form-label">Formula to calculate sheet area</label>
+                        <input type="text" class="form-control" asp-for="BagType.FormulaToCalcSArea" placeholder="Formula to calculate sheet area here">
+                        <b><span class="text-danger" asp-validation-for="BagType.FormulaToCalcSArea"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raio group section -->
+            <div class="row">
+                <!-- Print by width radio button -->
+                <div class="col-sm-4">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" asp-for="BagType.PrintByWidthOrLength" value="true" checked />
+                        <label class="form-check-label" asp-for="BagType.PrintByWidthOrLength">
+                            Print by <b>Width</b>
+                        </label>
+                    </div>
+                </div>
+                <!-- Print by length radio button -->
+                <div class="col-sm-4">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" asp-for="BagType.PrintByWidthOrLength" value="false" />
+                        <label class="form-check-label" asp-for="BagType.PrintByWidthOrLength">
+                            Print by <b>Length</b>
+                        </label>
+                    </div>
+                    <b><span class="text-danger" asp-validation-for="BagType.PrintByWidthOrLength"></span></b>
+                </div>
+                <div class="col-sm-4 mb-3">
+                    <!-- Right empty area after radio group -->
+                </div>
+            </div>
+
+            <!-- Sheet size formula Input Field -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label class="form-label" asp-for="BagType.SheetSizeFormula">Sheet size formula</label>
+                        <input type="text" class="form-control" asp-for="BagType.SheetSizeFormula" placeholder="Sheet size formula here">
+                        <b><span class="text-danger" asp-validation-for="BagType.SheetSizeFormula"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row for the card to display formula variables at sm and below screen sizes -->
+            <div class="row d-block d-sm-block d-md-none">
+                <!-- class="d-none d-sm-none d-md-block" --><!-- Will hide above sm size -->
+                <div class="col-md-12">
+                    <!-- Card -->
+                    <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                        <div class="card-header text-bg-primary border-primary">
+                            Costing Variables
+                        </div>
+                        <div class="card-body text-white">
+                            <blockquote class="row">
+                                <!-- class="blockquote mb-0" -->
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">L</b> - Length</label>
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">G</b> - Gusset</label>
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">F</b> - Flap</label>
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">W</b> - Width</label>
+                                <label class="col-sm-8 col-md-12 col-xl-8"><b class="text-danger">B</b> - Bottom Gusset</label>
+                                <!-- <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer> -->
+                            </blockquote>
+                        </div>
+                    </div> <!-- End of the card -->
+                </div>
+            </div><!-- End of the row for the card to display formula variables at sm and below screen sizes -->
+
+        </div><!-- End of left side area for input fields and selection boxes -->
+        <!-- Right side area to display check boxes and the card -->
+        <div class="col-md-4">
+
+            <!-- The checkbox area row-->
+            <div class="row">
+                <!-- Check box area -->
+                <div class="col-md-12">
+
+                    <div class="row">
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Left: Row for printed checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.Printed">
+                                        <label class="form-check-label" asp-for="BagType.Printed">
+                                            Printed
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Right: Row for side seal checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.SideSeal">
+                                        <label class="form-check-label" asp-for="BagType.SideSeal">
+                                            Side seal
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Left: Row for side gusset checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.SideGusset">
+                                        <label class="form-check-label" asp-for="BagType.SideGusset">
+                                            Side gusset
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Right: Row for hanger attached checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.HangerAttached">
+                                        <label class="form-check-label" asp-for="BagType.HangerAttached">
+                                            Hanger attached
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Left: Row for flap checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.Flap">
+                                        <label class="form-check-label" asp-for="BagType.Flap">
+                                            Flap
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Right: Row for hanger bag checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.HangerBag">
+                                        <label class="form-check-label" asp-for="BagType.HangerBag">
+                                            Hanger bag
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Left: Row for bottom gusset checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.BottomGusset">
+                                        <label class="form-check-label" asp-for="BagType.BottomGusset">
+                                            Bottom gusset
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Right: Row for handle cut checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.HandleCut">
+                                        <label class="form-check-label" asp-for="BagType.HandleCut">
+                                            Handle cut
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Left: Row for bottom seal checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.BottomSeal">
+                                        <label class="form-check-label" asp-for="BagType.BottomSeal">
+                                            Bottom seal
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Right: Row for punch hole checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.PunchHole">
+                                        <label class="form-check-label" asp-for="BagType.PunchHole">
+                                            Punch hole
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Left: Row for top seal checkbox -->
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.TopSeal">
+                                        <label class="form-check-label" asp-for="BagType.TopSeal">
+                                            Top Seal
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <!-- Right: Row for zipper checkbox -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" asp-for="BagType.Zipper">
+                                        <label class="form-check-label" asp-for="BagType.Zipper">
+                                            Zipper
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- End of check box area -->
+            </div><!-- End of the checkbox area row-->
+            <!-- Row for the card to display formula variables at md and above screen sizes -->
+            <div class="row d-none d-sm-none d-md-block">
+                <!-- class="d-block d-sm-block d-md-none" --><!-- Will hide below sm size -->
+                <div class="col-md-12">
+                    <!-- Card -->
+                    <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                        <div class="card-header text-bg-primary border-primary">
+                            Costing Variables
+                        </div>
+                        <div class="card-body text-white">
+                            <blockquote class="row">
+                                <!-- class="blockquote mb-0" -->
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">L</b> - Length</label>
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">G</b> - Gusset</label>
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">F</b> - Flap</label>
+                                <label class="col-sm-4 col-md-6 col-xl-4"><b class="text-danger">W</b> - Width</label>
+                                <label class="col-sm-8 col-md-12 col-xl-8"><b class="text-danger">B</b> - Bottom Gusset</label>
+                            </blockquote>
+                        </div>
+                    </div> <!-- End of the card -->
+                </div>
+            </div><!-- End of the row for the card to display formula variables at md and above screen sizes -->
+
+        </div><!-- End of right side area to display check boxes and the card -->
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="BagType.Isactive">
+                        <label class="form-check-label" asp-for="BagType.Isactive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="BagType.Isactive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.ReelSize>
+
+@{
+    ViewData["Title"] = "Reel Size Master - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Reel Size Master - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <button type="button" class="btn btn-secondary border border-2"><i class="fa-regular fa-download"></i> Download As Excel</button>
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+    //If there are 1 or more ReelSizes to show
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Reel Size ID</th>
+                                    <th class="text-nowrap" scope="col">Reel Size</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var reelSize in Model)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap">@reelSize.ReelSizeId</td>
+                                        <td class="text-nowrap"><a asp-action="Update" asp-route-id="@reelSize.ReelSizeId">@reelSize.Size</a></td>
+                                        <td class="text-nowrap">@reelSize.IsActive</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+}
+else
+{
+    //If there are no ReelSizes to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no reel sizes added yet!</h2>
+            <p>
+                Add one?
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

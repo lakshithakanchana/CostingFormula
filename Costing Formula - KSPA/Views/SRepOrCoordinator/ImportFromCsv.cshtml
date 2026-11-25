@@ -1,0 +1,239 @@
+﻿@model List<Costing_Formula___KSPA.Models.SRepOrCoordinator>
+
+@{
+    ViewData["Title"] = "Sales Rep / Coordinator Master - Import CSV";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Sales Rep &frasl; Coordinator Master - Import CSV</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <label for="formFile" class="form-label">Please choose the csv file to import from...</label>&nbsp;<label>(<a href="@Url.Content("~/import-templates/RepOrCoord.csv")">Click here to download the import template.</a>)</label>
+    </div>
+    <div class="col-sm-8">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="upload_file" accept=".csv">
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="mb-3 d-grid gap-2">
+            <button class="btn btn-primary" id="process_button"><i class="fa-regular fa-gears"></i> <b>Process</b></button>
+        </div>
+    </div>
+    <div class="col-12">
+        <hr class="bg-primary border-2 border-primary" />
+    </div>
+</div>
+
+<div class="row">
+    <form method="post" asp-action="ImportFromCsv">
+
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">Proceed CSV...</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Name</th>
+                                    <th class="text-nowrap" scope="col">Contact</th>
+                                    <th class="text-nowrap" scope="col">Rep&quest;</th>
+                                    <th class="text-nowrap" scope="col">Coordinator&quest;</th>
+                                    <th class="text-nowrap" scope="col">Email</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].SrocName">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].SrocName"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="tel" class="form-control" asp-for="@Model[0].SrocContact">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].SrocContact"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="email" class="form-control" asp-for="@Model[0].SrocEmail">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].SrocEmail"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].IsReprecentative">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].IsReprecentative"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].IsCoordinator">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].IsCoordinator"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" asp-for="@Model[0].IsActive">
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].IsActive"></span></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+        <div class="col-12">
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/papaparse/dist/papaparse.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //document.getElementById('table-body').innerHTML = '';
+        });
+
+        const process_btn = document.getElementById('process_button')
+            .addEventListener('click', () => {
+                Papa.parse(document.getElementById('upload_file').files[0], {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        document.getElementById('table-body').innerHTML = '';
+                        add_input_rows(results.data);
+                    }
+                });
+            });
+
+        function add_input_rows(srocs) {
+            for (var i = 0; i < srocs.length; i++) {
+
+                var sroc = srocs[i];
+
+                var row_count = document.getElementById('table-body').childElementCount;
+                
+                if (typeof sroc.Name === 'undefined') {
+                    alert('\"Name\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof sroc.Contact === 'undefined') {
+                    alert('\"Contact\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof sroc.Email === 'undefined') {
+                    alert('\"Email\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof sroc.Rep === 'undefined') {
+                    alert('\"Rep\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof sroc.Coordinator === 'undefined') {
+                    alert('\"Coordinator\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof sroc.Active === 'undefined') {
+                    alert('\"Active\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                
+                var is_rep_checked;
+                if (sroc.Active.toLowerCase() == 'true' || sroc.Active == '1') {
+                    is_rep_checked = 'checked';
+                } else if (sroc.Active.toLowerCase() == 'false' || sroc.Active == '0') {
+                    is_rep_checked = '';
+                } else {
+                    alert(sroc.Active + ' is not valid value for the column \"Rep\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_coord_checked;
+                if (sroc.Active.toLowerCase() == 'true' || sroc.Active == '1') {
+                    is_coord_checked = 'checked';
+                } else if (sroc.Active.toLowerCase() == 'false' || sroc.Active == '0') {
+                    is_coord_checked = '';
+                } else {
+                    alert(sroc.Active + ' is not valid value for the column \"Coordinator\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_active_checked;
+                if (sroc.Active.toLowerCase() == 'true' || sroc.Active == '1') {
+                    is_active_checked = 'checked';
+                } else if (sroc.Active.toLowerCase() == 'false' || sroc.Active == '0') {
+                    is_active_checked = '';
+                } else {
+                    alert(sroc.Active + ' is not valid value for the column \"Active\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+
+                $('#table-body').append(
+                    `
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" data-val="true" data-val-required="The SrocName field is required." id="z` + row_count + `__SrocName" name="[` + row_count + `].SrocName" value="` + sroc.Name + `">
+                                <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].SrocName" data-valmsg-replace="true"></span></b>
+                            </td>
+                            <td>
+                                <input type="tel" class="form-control" data-val="true" data-val-phone="The SrocContact field is not a valid phone number." data-val-regex="Entered contact number format is not valid." data-val-regex-pattern="^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$" data-val-required="The SrocContact field is required." id="z`+ row_count + `__SrocContact" name="[` + row_count + `].SrocContact" value="` + sroc.Contact + `">
+                                <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].SrocContact" data-valmsg-replace="true"></span></b>
+                            </td>
+                            <td>
+                                <input type="email" class="form-control" data-val="true" data-val-email="The SrocEmail field is not a valid e-mail address." data-val-required="The SrocEmail field is required." id="z`+ row_count + `__SrocEmail" name="[` + row_count + `].SrocEmail" value="` + sroc.Email + `">
+                                <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].SrocEmail" data-valmsg-replace="true"></span></b>
+                            </td>
+                            <td>
+                                <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The IsReprecentative field is required." id="z`+ row_count + `__IsReprecentative" name="[` + row_count + `].IsReprecentative" value="true" ` + is_rep_checked + `>
+                                <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].IsReprecentative" data-valmsg-replace="true"></span></b>
+                            </td>
+                            <td>
+                                <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The IsCoordinator field is required." id="z`+ row_count + `__IsCoordinator" name="[` + row_count + `].IsCoordinator" value="true" ` + is_coord_checked + `>
+                                <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].IsCoordinator" data-valmsg-replace="true"></span></b>
+                            </td>
+                            <td>
+                                <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The IsActive field is required." id="z`+ row_count + `__IsActive" name="[` + row_count + `].IsActive" value="true" ` + is_active_checked + `>
+                                <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].IsActive" data-valmsg-replace="true"></span></b>
+                            </td>
+                        </tr>
+                    `
+                );
+                $("form").removeData("validator").removeData("unobtrusiveValidation");
+                //Parse the form again
+                $.validator.unobtrusive.parse($("form"));
+            }
+        }
+
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

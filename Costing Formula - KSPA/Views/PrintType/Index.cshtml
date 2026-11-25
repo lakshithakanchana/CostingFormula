@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.PrintType>
+
+@{
+    ViewData["Title"] = "Print Type Master - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Print Type Master - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+            <buatton type="button" class="btn btn-secondary border border-2"><i class="fa-regular fa-download"></i> Download As Excel</buatton>
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+    //If there are 1 or more Colors to show
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Print Type Id</th>
+                                    <th class="text-nowrap" scope="col">Print Type Code</th>
+                                    <th class="text-nowrap" scope="col">Print Type Description</th>
+                                    <th class="text-nowrap" scope="col">Print Percentage</th>
+                                    <th class="text-nowrap" scope="col">Comsumption l.cm^(-2)</th>
+                                    <th class="text-nowrap" scope="col">Without cylinder base?</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var printType in Model)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap">@printType.PrintTypeId</td>
+                                        <td class="text-nowrap"><a asp-action="Update" asp-route-id="@printType.PrintTypeId">@printType.PrintTypeCode</a></td>
+                                        <td class="text-nowrap">@printType.PrintTypeDesc</td>
+                                        <td class="text-nowrap">@printType.PrintPercentage.ToString("0.0") &percnt;</td>
+                                        <td class="text-nowrap">@printType.ConsumptionLitrePerSqrCm.ToString("0.000000") <i>l.cm<sup>-2</sup></i></td>
+                                        <td class="text-nowrap">@printType.WithoutCylinderBase</td>
+                                        <td class="text-nowrap">@printType.IsActive</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+}
+else
+{
+    //If there are no Print Types to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no print types added yet!</h2>
+            <p>
+                Add one?
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

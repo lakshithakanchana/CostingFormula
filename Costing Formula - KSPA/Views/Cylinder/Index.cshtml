@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.Cylinder>
+
+@{
+    ViewData["Title"] = "Cylinder Master - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Cylinder Master - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+            <button type="button" class="btn btn-secondary border border-2"><i class="fa-regular fa-download"></i> Download As Excel</button>
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+    //If there are 1 or more cylinders to show
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Cylinder ID</th>
+                                    <th class="text-nowrap" scope="col">Cylinder Code <span class="text-warning">(As in Axpert)</span></th>
+                                    <th class="text-nowrap" scope="col">Cylinder Description</th>
+                                    <th class="text-nowrap" scope="col">No Of Colors</th>
+                                    <th class="text-nowrap" scope="col">Cylinder Size in CM</th>
+                                    <th class="text-nowrap" scope="col">No Of Pieces</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cylinder in Model)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap">@cylinder.CylinderId</td>
+                                        <td class="text-nowrap"><a asp-action="Update" asp-route-id="@cylinder.CylinderId">@cylinder.CylinderCode</a></td>
+                                        <td class="text-nowrap">@cylinder.CylinderDesc</td>
+                                        <td class="text-nowrap">@cylinder.NoOfColors</td>
+                                        <td class="text-nowrap">@cylinder.CylinderSizeCm <i>cm</i></td>
+                                        <td class="text-nowrap">@cylinder.NoOfPieces</td>
+                                        <td class="text-nowrap">@cylinder.IsActive</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+} else
+{
+    //If there are no cylinders to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no cylinders added yet!</h2>
+            <p>Add one? 
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+

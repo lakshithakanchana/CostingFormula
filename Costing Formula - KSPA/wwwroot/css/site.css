@@ -1,0 +1,323 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/*Datatable alignment of head and body bug fix */
+.dataTables_scrollHeadInner {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2px;
+}
+
+button.dt-button.buttons-excel,
+a.dt-button.buttons-excel,
+div.dt-button.buttons-excel,
+button.dt-button.buttons-colvis,
+a.dt-button.buttons-colvis,
+div.dt-button.buttons-colvis {
+    color: #fff !important;
+    background-image: none !important;
+    background-color: transparent !important;
+    /* No solid background */
+    border: 1px solid #6c757d !important;
+    /* Gray border like your search box */
+    border-radius: 4px !important;
+    padding: 5px 12px !important;
+}
+
+button.dt-button.buttons-excel:hover,
+a.dt-button.buttons-excel:hover,
+div.dt-button.buttons-excel:hover,
+button.dt-button.buttons-colvis:hover,
+a.dt-button.buttons-colvis:hover,
+div.dt-button.buttons-colvis:hover {
+    background-color: #343a40 !important;
+    /* Slight dark gray fill on hover */
+    color: #fff !important;
+}
+
+.kspa-shadow-primary {
+    box-shadow: 0px 10px 15px #0275d8;
+}
+
+/** Black Theme */
+.form-control {
+    color: white;
+    background-color: #3b3d4781;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+}
+
+/** Black Theme */
+.form-control:focus {
+    border-color: #3b3d4781;
+    box-shadow: 0 0 0 .25rem #0275d8;
+}
+
+/** Black Theme */
+.form-select {
+    color: white;
+    background-color: #3b3d4781;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+}
+
+/** Black Theme */
+.form-select:focus {
+    color: black;
+    background-color: white;
+    border-color: #3b3d4781;
+    box-shadow: 0 0 0 .25rem #0275d8;
+}
+
+.select2-search__field {
+    box-shadow: none !important;
+}
+
+/** Black Theme */
+.select2-selection {
+    color: white;
+    background-color: #3b3d4781 !important;
+    border-color: #86b7fe !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/** Black Theme */
+.select2-selection:focus {
+    border-color: #3b3d4781;
+    box-shadow: 0 0 0 .25rem rgba(2, 117, 216, 0.75) !important;
+}
+
+/** Black Theme */
+.select2-selection__rendered {
+    color: white !important;
+}
+
+.select2 {
+    width: auto !important;
+}
+
+/** Black Theme */
+.form-control:disabled {
+    color: rgb(255, 193, 7);
+    font-weight: bold;
+    background-color: #3b3d4781;
+    border-color: #6083b8;
+    box-shadow: 0 0 0 .25rem rgba(5, 38, 87, 0.25);
+}
+
+/** Black Theme */
+.form-select:disabled {
+    color: rgb(255, 193, 7);
+    font-weight: bold;
+    background-color: #3b3d4781;
+    border-color: #6083b8;
+    box-shadow: 0 0 0 .25rem rgba(5, 38, 87, 0.25);
+}
+
+/** Black Theme */
+.form-control:read-only {
+    color: rgb(255, 193, 7);
+    font-weight: bold;
+    background-color: #3b3d4781;
+    border-color: #6083b8;
+    box-shadow: 0 0 0 .25rem rgba(5, 38, 87, 0.25);
+}
+
+/* ******************** */
+
+/** Black Theme */
+.form-select.option:focus {
+    color: black;
+    background-color: white;
+}
+
+/** Black Theme */
+.form-check-input {
+    background-color: #3b3d4781;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+}
+
+/** Black Theme */
+.form-check-input:focus {
+    border-color: #3b3d4781;
+    box-shadow: 0 0 0 .25rem #0275d8;
+}
+
+/** Black Theme */
+.card-body {
+    background-color: #3b3d4781;
+    outline: 0;
+}
+
+/** Black Theme */
+.dropdown-menu {
+    background-color: #3b3d47d8;
+}
+
+/** Black Theme */
+.dropdown-item:hover {
+    background-color: #0275d8;
+}
+
+/** Black Theme */
+.kspa-shadow-border-primary {
+    color: white;
+    background-color: #3b3d4781;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+}
+
+/** Black Theme */
+.kspa-shadow-border-primary:focus {
+    border-color: #3b3d4781;
+    box-shadow: 0 0 0 .25rem #0275d8;
+}
+
+.kspa-shadow-border-primary:hover {
+    box-shadow: 0 0 0 .25rem #0275d8;
+}
+
+/** Black Theme */
+.kspa-bg-light-gray {
+    background-color: rgba(169, 169, 169, 0.15);
+}
+
+.bd-callout {
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #3b3d4778;
+    border-left-width: .25rem;
+    border-radius: .25rem
+}
+
+.bd-callout h4 {
+    margin-bottom: .25rem
+}
+
+.bd-callout p:last-child {
+    margin-bottom: 0
+}
+
+.bd-callout code {
+    border-radius: .25rem
+}
+
+.bd-callout+.bd-callout {
+    margin-top: -.25rem
+}
+
+/** Black Theme */
+.bd-callout-info {
+    border-left-color: #5bc0de
+}
+
+/** Black Theme */
+.bd-callout-warning {
+    border-left-color: #f0ad4e
+}
+
+/** Black Theme */
+.bd-callout-danger {
+    border-left-color: #d9534f
+}
+
+/** Black Theme */
+.bd-callout-success {
+    border-left-color: #198754
+}
+
+/** Black Theme */
+.nav-tabs .nav-item .nav-link.active {
+    background-color: #0d6efd;
+}
+
+/** Black Theme */
+.nav-tabs {
+    border-bottom-color: #0d6efd;
+    border-bottom-width: 1px;
+}
+
+/** Black Theme */
+.nav-tabs .nav-link.active {
+    border-color: #0d6efd;
+}
+
+/** Black Theme */
+.nav-tabs .nav-link:hover {
+    border-color: #0d6dfd7e;
+}
+
+.validation-summary ul li {
+    list-style-type: decimal;
+}
+
+/* Google Sign-In Button Material Design (Dark Theme) */
+.google-btn-dark {
+    display: flex;
+    align-items: stretch;
+    background-color: #131314;
+    color: #e3e3e3;
+    border: 1px solid #8e918f;
+    border-radius: 4px;
+    font-family: 'Roboto', arial, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    max-width: 250px;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.google-btn-dark:hover {
+    background-color: #1e1f20;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+}
+
+.google-btn-icon-wrapper {
+    background-color: #ffffff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px 0 0 3px;
+}
+
+.google-btn-text {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 16px 10px 8px;
+}
+
+.google-btn-dark svg {
+    width: 18px;
+    height: 18px;
+}

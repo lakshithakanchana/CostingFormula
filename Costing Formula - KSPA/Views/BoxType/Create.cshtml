@@ -1,0 +1,250 @@
+﻿@model Costing_Formula___KSPA.Models.BoxType;
+
+@{
+    ViewData["Title"] = "Box Type Master - Add New Box Type";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Box Type Master - Add New Box Type</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row"><!-- Start Of: Form Row -->
+
+        <!-- Box type id Input Field -->
+        <div class="col-sm-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="BoxTypeId" class="form-label">Box type id</label>
+                <input type="text" class="form-control" asp-for="BoxTypeId" placeholder="System will generate for you" disabled>
+                <b><span class="text-danger" asp-validation-for="BoxTypeId"></span></b>
+            </div>
+        </div>
+
+        <!-- Box type code same as in Axpert Input Field -->
+        <div class="col-sm-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="BoxTypeCode" class="form-label">Box type code <b class="text-warning">(same as in Axpert)</b></label>
+                <input type="text" class="form-control" asp-for="BoxTypeCode" placeholder="Box type code same as in Axpert here">
+                <b><span class="text-danger" asp-validation-for="BoxTypeCode"></span></b>
+            </div>
+        </div>
+
+        <!-- No of Plys Input Field -->
+        <div class="col-sm-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="NoOfPlys" class="form-label">No of plys</label>
+                <input type="number" class="form-control" asp-for="NoOfPlys" placeholder="No of plys here">
+                <b><span class="text-danger" asp-validation-for="NoOfPlys"></span></b>
+            </div>
+        </div>
+
+        <!-- Box type Description Input Field -->
+        <div class="col-md-12">
+            <div class="mb-3  text-white">
+                <!-- mb-3 to add some margin between form-controls -->
+                <label asp-for="BoxTypeDesc" class="form-label">Box type description</label>
+                <input type="text" class="form-control" asp-for="BoxTypeDesc" placeholder="Box type description here">
+                <b><span class="text-danger" asp-validation-for="BoxTypeDesc"></span></b>
+            </div>
+        </div>
+
+        <!-- External Formulas Section -->
+        <div class="col-md-12 col-xxl-6">
+            <div class="row">
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>External</u></h2>
+                </div>
+
+                <!-- Formula For External Sheet Length Input Field -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ESheetLengthFormula" class="form-label">Formula for sheet length</label>
+                        <input type="text" class="form-control" asp-for="ESheetLengthFormula" placeholder="Formula for sheet length here">
+                        <b><span class="text-danger" asp-validation-for="ESheetLengthFormula"></span></b>
+                    </div>
+                </div>
+
+                <!-- Formula For External Sheet Length (If Sheet Length > Max Sheet Length) Input Field -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ESheetLengthFormulaIfSLExceeds" class="form-label">Formula for sheet length (If Sheet Length > Max Sheet Length)</label>
+                        <input type="text" class="form-control" asp-for="ESheetLengthFormulaIfSLExceeds" placeholder="Formula for sheet length (If Sheet Length > Max Sheet Length here">
+                        <b><span class="text-danger" asp-validation-for="ESheetLengthFormulaIfSLExceeds"></span></b>
+                    </div>
+                </div>
+
+                <!-- Formula For External Sheet Width Input Field -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ESheetWidthFormula" class="form-label">Formula for sheet width</label>
+                        <input type="text" class="form-control" asp-for="ESheetWidthFormula" placeholder="Formula for sheet width here">
+                        <b><span class="text-danger" asp-validation-for="ESheetWidthFormula"></span></b>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- End Of: External Formulas Section -->
+
+        <!-- Internal Formulas Section -->
+        <div class="col-md-12 col-xxl-6">
+            <div class="row">
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Internal</u></h2>
+                </div>
+
+                <!-- Formula For Internal Sheet Length Input Field -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ISheetLengthFormula" class="form-label">Formula for sheet length</label>
+                        <input type="text" class="form-control" asp-for="ISheetLengthFormula" placeholder="Formula for sheet length here">
+                        <b><span class="text-danger" asp-validation-for="ISheetLengthFormula"></span></b>
+                    </div>
+                </div>
+
+                <!-- Formula For Internal Sheet Length (If Sheet Length > Max Sheet Length) Input Field -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ISheetLengthFormulaIfSLExceeds" class="form-label">Formula for sheet length (If Sheet Length > Max Sheet Length)</label>
+                        <input type="text" class="form-control" asp-for="ISheetLengthFormulaIfSLExceeds" placeholder="Formula for sheet length (If Sheet Length > Max Sheet Length here">
+                        <b><span class="text-danger" asp-validation-for="ISheetLengthFormulaIfSLExceeds"></span></b>
+                    </div>
+                </div>
+
+                <!-- Formula For Internal Sheet Width Input Field -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="ISheetWidthFormula" class="form-label">Formula for sheet width</label>
+                        <input type="text" class="form-control" asp-for="ISheetWidthFormula" placeholder="Formula for sheet width here">
+                        <b><span class="text-danger" asp-validation-for="ISheetWidthFormula"></span></b>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- End Of: Internal Formulas Section -->
+
+        <div class="col-12 mt-3">
+
+            <div class="d-inline-block">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="Laminate">
+                    <label class="form-check-label" asp-for="Laminate">
+                        <b>Laminate?</b>
+                    </label>
+                    <b><span class="text-danger" asp-validation-for="Laminate"></span></b>
+                </div>
+            </div>
+
+            &nbsp;&nbsp;
+
+            <div class="d-inline-block">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="DieCut">
+                    <label class="form-check-label" asp-for="DieCut">
+                        <b>DieCut?</b>
+                    </label>
+                    <b><span class="text-danger" asp-validation-for="DieCut"></span></b>
+                </div>
+            </div>
+
+            &nbsp;&nbsp;
+
+            <div class="d-inline-block">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="DesignBox">
+                    <label class="form-check-label" asp-for="DesignBox">
+                        <b>DesignBox?</b>
+                    </label>
+                    <b><span class="text-danger" asp-validation-for="Laminate"></span></b>
+                </div>
+            </div>
+
+            &nbsp;&nbsp;
+
+            <div class="d-inline-block">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="Board">
+                    <label class="form-check-label" asp-for="Board">
+                        <b>Board?</b>
+                    </label>
+                    <b><span class="text-danger" asp-validation-for="Board"></span></b>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div><!-- End Of: Form Row -->
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

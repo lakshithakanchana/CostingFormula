@@ -1,0 +1,158 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.PolyCosting>;
+
+@{
+    ViewData["Title"] = "Poly Costing - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Polythene Quotations - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-primary btn-outline-light border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@* @if (Model.Count() > 0)
+{
+    //If there are 1 or more Poly Costings to show *@
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table id="polyCostingsTable" class="table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">ID</th>
+                                    <th class="text-nowrap" scope="col">Quotation No</th>
+                                    <th class="text-nowrap" scope="col">Doc Date</th>
+                                    <th class="text-nowrap" scope="col">Customer Name</th>
+                                    <th class="text-nowrap" scope="col">Cus. Code</th>
+                                    <th class="text-nowrap" scope="col">Item Name</th>
+                                    <th class="text-nowrap" scope="col">Qty</th>
+                                    <th class="text-nowrap" scope="col">Weight (Without Wastages)</th>
+                                    <th class="text-nowrap" scope="col">Currency</th>
+                                    <th class="text-nowrap" scope="col">Rate (Native)</th>
+                                    <th class="text-nowrap" scope="col">Rate (LKR)</th>
+                                    <th class="text-nowrap" scope="col">Sales Price (Native)</th>
+                                    <th class="text-nowrap" scope="col">Sales Price (LKR)</th>
+                                    <th class="text-nowrap" scope="col">Sales Rep.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+@* }
+else
+{
+    //If there are no Poly Costings to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no poly costings added yet!</h2>
+            <p>
+                Add one?
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+} *@
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Style default inputs
+                $('label > input').addClass("text-light bg-dark");
+                $('label > select').addClass("text-light bg-dark");
+
+                $('#polyCostingsTable').DataTable({
+                    serverSide: true,
+                    processing: true,
+                    scrollX: true,
+                    ajax: {
+                        url: '/PolyCosting/GetCostingsData',
+                        type: 'POST'
+                    },
+                    order: [[0, 'desc']], // Default sort by ID descending
+                    // Set custom page sizes (Value sent to server vs. Text shown to user)
+                    lengthMenu: [
+                        [10, 100, 500, 1000, 2000, 10000],
+                        ['10', '100', '500', '1,000', '2,000', '10,000']
+                    ],
+                    // lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    dom: 'lBfrtip',
+                    // dom: "<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4 text-center'B><'col-sm-12 col-md-4'f>>" +
+                    //      "<'row'<'col-sm-12'tr>>" +
+                    //      "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    buttons: [
+                        {
+                            extend: 'colvis',
+                            text: 'Show/Hide Columns',
+                            className: 'btn btn-secondary btn-sm ms-4 mb-2'
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: 'Export Visible to Excel',
+                            className: 'btn btn-success btn-sm ms-3 mb-2',
+                            exportOptions: {
+                                modifier: { page: 'current' },
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                            }
+                        }
+                    ],
+                    columns: [
+                        { data: 'id', name: 'Id', autoWidth: true },
+                        {
+                            data: 'quotationNo',
+                            name: 'QuotationNo',
+                            autoWidth: true,
+                            render: function(data, type, row) {
+                                return `<a href="/PolyCosting/View/${row.id}">${data}</a>`;
+                            }
+                        },
+                        { data: 'docDate', name: 'DocDate', autoWidth: true },
+                        { data: 'customerName', name: 'CustomerName', autoWidth: true },
+                        { data: 'customerCode', name: 'CustomerCode', autoWidth: true },
+                        { data: 'itemName', name: 'ItemName', autoWidth: true },
+                        { data: 'orderQty', name: 'OrderQty', autoWidth: true, className: "text-end" },
+                        { data: 'weight', name: 'Weight', autoWidth: true, className: "text-end" },
+                        { data: 'currencyCode', name: 'CurrencyCode', autoWidth: true },
+                        { data: 'rateNative', name: 'RateNative', autoWidth: true, className: "text-end" },
+                        { data: 'rateLkr', name: 'RateLkr', autoWidth: true, className: "text-end", orderable: false },
+                        { data: 'salesPriceNative', name: 'SalesPriceNative', autoWidth: true, className: "text-end" },
+                        { data: 'salesPriceLkr', name: 'SalesPriceLkr', autoWidth: true, className: "text-end", orderable: false },
+                        { data: 'salesRep', name: 'SalesRep', autoWidth: true }
+                    ],
+                    columnDefs: [
+                        {
+                            targets: [5, 7, 9, 10, 11, 12, 13], // Hidden by default (Item Name, Rates, Sales Price, Sales Rep)
+                            visible: false
+                        }
+                    ]
+                });
+            });
+        </script>
+    }
+}

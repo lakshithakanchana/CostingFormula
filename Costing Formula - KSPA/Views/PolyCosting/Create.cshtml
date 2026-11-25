@@ -1,0 +1,2624 @@
+﻿@model Costing_Formula___KSPA.Models.ViewModels.PolyCostingVM
+
+@{
+    ViewData["Title"] = "Create New Quotation";
+    ViewData["StypeHRef1"] = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css";
+    ViewData["StypeHRef2"] = "https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Create New Quotation - Polythene</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-primary btn-outline-light border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row">
+
+        <div class="col-md-12 mt-3">
+            <h2 class="h5 d-none"><u>Document Specification Section</u></h2>
+        </div>
+
+        <input type="hidden" asp-for="PolyCosting.PolyCostingId" />
+
+        <!-- Doc date -->
+        <div class="col-6 col-md-3">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PolyCosting.DateCreated" class="form-label">Doc date &ast;</label>
+                <input type="date" class="form-control" asp-for="PolyCosting.DateCreated" placeholder="Doc date" min=@(DateTime.Today.ToString("yyyy-MM-dd")) max=@(DateTime.Today.ToString("yyyy-MM-dd"))>
+                <b><span class="text-danger" asp-validation-for="PolyCosting.DateCreated"></span></b>
+            </div>
+        </div>
+
+        <!-- Quotation No -->
+        <div class="col-6 col-md-3">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PolyCosting.PolyCostingCode" class="form-label">Quatation No</label>
+                <input type="text" class="form-control" asp-for="PolyCosting.PolyCostingCode" placeholder="System will generate for you" disabled>
+                <b><span class="text-danger" asp-validation-for="PolyCosting.PolyCostingCode"></span></b>
+            </div>
+        </div>
+
+        <!-- Company Name -->
+        <div class="col-md-6">
+            <div class="mb-3 text-white">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PolyCosting.CompanyId" class="form-label">Company name &ast;</label>
+                <select class="form-select"
+                       
+                        asp-for="PolyCosting.CompanyId"
+                        asp-items="@Model.CompanyDropDown"
+                        tabindex="1">
+                    <option selected>-- select company --</option>
+                </select>
+                <b><span class="text-danger" asp-validation-for="PolyCosting.CompanyId"></span></b>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <hr class="bg-primary border-2 border-primary" />
+        </div>
+
+        <div class="col-md-12 mt-3">
+            <h2 class="h5"><u>Customer Detail Section</u></h2>
+        </div>
+
+        <div class="col-12">
+            <div class="row">
+                <!-- customer detail except address -->
+                <div class="col-md-6">
+                    <div class="row">
+                        <!-- Customer Name -->
+                        <div class="col-md-12">
+                            <div class="mb-3 text-white">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.CustomerId" class="form-label">Customer name &ast;</label>
+                                <select class="select2 form-select"
+                                       
+                                        asp-for="PolyCosting.CustomerId"
+                                        asp-items="@Model.CustomerDropDown"
+                                        tabindex="2">
+                                    <option selected>-- select customer --</option>
+                                </select>
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.CustomerId"></span></b>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End of customer derail except address -->
+                <!-- Customer Address Text Area -->
+                <div class="col-md-6">
+                    <div class="row d-none">
+                        <!-- Delivery address -->
+                        <div class="col-12">
+                            <div class="form-group mb-3 text-white">
+                                <label asp-for="PolyCosting.DeliveryAddress" class="form-label">Delivery address &ast;</label>
+                                <textarea class="form-control" asp-for="PolyCosting.DeliveryAddress" rows="4" tabindex="3"></textarea>
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.DeliveryAddress"></span></b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Customer Type -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="cusTypeInputF" class="form-label">Cus. type</label>
+                                <input type="text" class="form-control" id="cusTypeInputF" placeholder="Customer type" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Customer Currency (Code) -->
+                        <div class="col-6 col-md-4">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="cusCurrencyInputF" class="form-label">Cus. currency</label>
+                                <input type="text" class="form-control" id="cusCurrencyInputF" placeholder="Customer currency" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Exchange rate in LKR (Code) -->
+                        <div class="col-6 col-md-4">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="exRateInputF" class="form-label">Exchange rate</label>
+                                <input type="text" class="form-control" id="exRateInputF" placeholder="Exchange rate" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End of Customer Address Text Area -->
+            </div>
+        </div>
+
+        <!-- Poly Combination Section -->
+        <div class="col-md-12">
+            <div class="row">
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Poly Combination Section</u></h2>
+                </div>
+
+                <!-- Color -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label for="colorsSelectBx" class="form-label"><span class="text-warning">Filter by</span> color</label>
+                        <select class="form-select"
+                               
+                                id="colorsSelectBx"
+                                asp-items="@Model.ColorDropDown"
+                                tabindex="4">
+                            <option value="0">-- ALL --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Poly Material -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label for="polyMaterialSelectBx" class="form-label"><span class="text-warning">Filter by</span> p-mat.</label>
+                        <select class="form-select"
+                               
+                                id="polyMaterialSelectBx"
+                                asp-items="@Model.PolyMaterialDropDown"
+                                tabindex="5">
+                            <option value="0">-- ALL --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Combination Code -->
+                <div class="col-sm-6">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.PolyCombId" class="form-label">Poly-comb code &ast;</label>
+                        <select class="form-select select2"
+                               
+                                asp-for="PolyCosting.PolyCombId"
+                                asp-items="@Model.PolyCombinationDropDown"
+                                tabindex="6">
+                            <option value="0" selected>-- select --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.PolyCombId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Poly combination desc -->
+                <div class="col-12 d-none">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label for="polyCombInputF" class="form-label">Poly combination</label>
+                        <input type="text" class="form-control" id="polyCombInputF" placeholder="Poly combination" disabled>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Bag Type Details Section</u></h2>
+                </div>
+
+                <!-- Bag type -->
+                <div class="col-md-4">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.BagTypeId" class="form-label">Bag ty. / Reel ty. code &ast;</label>
+                        <select class="select2-adv-search form-select"
+                               
+                                asp-for="PolyCosting.BagTypeId"
+                                asp-items="@Model.BagTypeDropDown"
+                                tabindex="7">
+                            <option value="0" selected>-- select --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.BagTypeId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Product Finishing Type Input Field -->
+                <div class="col-6 col-md-2">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label for="productFinishingTypeInputF" class="form-label">Prod. fin. type</label>
+                        <input type="text" class="form-control" id="productFinishingTypeInputF" placeholder="Product finishing type" disabled>
+                    </div>
+                </div>
+
+                <!-- Raio group section: p_by_with, p_by_length -->
+                <div class="col-6 col-md-6">
+                    <label class="form-label mb-3">Printing direction:</label>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <div class="form-check mb-3">
+                                <input id="printByWidth" class="form-check-input" type="radio" for="BagType.PrintByWidthOrLength"
+                                       name="printByWOrL" disabled />
+                                <label class="form-check-label" for="printByWidth">
+                                    Print by <b>Width</b>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Print by length radio button -->
+                        <div class="col-sm-6 col-md-8 col-lg-9">
+                            <div class="form-check mb-3">
+                                <input id="printByLength" class="form-check-input" type="radio" for="BagType.PrintByWidthOrLength"
+                                       name="printByWOrL" disabled />
+                                <label class="form-check-label" for="printByLength">
+                                    Print by <b>Length</b>
+                                </label>
+                            </div>
+                            <b><span class="text-danger" for="BagType.PrintByWidthOrLength"></span></b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Order Specification Section</u></h2>
+                </div>
+
+                <!-- UOM for QTY -->
+                <div class="col-sm-3 d-none">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.OrderUomId" class="form-label">UOM <span class="text-warning">(for Qty)</span> &ast;</label>
+                        <select class="form-select"
+                               
+                                id="uomQtyOrKgSelectB"
+                                asp-items="@Model.OrderUomDropDown" disabled>
+                            <option value="0" selected>-- Unit --</option>
+                        </select>
+                        <input type="hidden" asp-for="PolyCosting.OrderUomId" />
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.OrderUomId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Special Instructions -->
+                <div class="col-12">
+                    <div class="form-group mb-3 text-white">
+                        <label asp-for="PolyCosting.SpecialInstructions" class="form-label">Special instructions</label>
+                        <textarea class="form-control" asp-for="PolyCosting.SpecialInstructions" rows="1"
+                                  placeholder="If any, special instructions can be put here." tabindex="9"></textarea>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.SpecialInstructions"></span></b>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- End of Procuct Specification Section -->
+
+        <!-- Product Messurement Section -->
+        <div class="col-12">
+            <div class="row">
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Product Measurement Section</u></h2>
+                </div>
+
+                <div class="col-12">
+                    <!-- Row: product measurement -->
+                    <div class="row">
+                        
+                        <!-- Selected UOM -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-3 text-white">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.MeasurementUomId" class="form-label text-warning fw-bold">Select UOM</label>
+                                <select class="form-select fw-bold"
+                                       
+                                        asp-for="PolyCosting.MeasurementUomId"
+                                        asp-items="@Model.LengthUomDropDown"
+                                        readonly
+                                        tabindex="10">
+                                    <option value="0" selected>-- UOM --</option>
+                                </select>
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.MeasurementUomId"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- System UOM -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label class="form-label text-warning fw-bold">System UOM</label>
+                                <input type="text" class="form-control text-warning fw-bold" value="cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Guage -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.Guage" class="form-label">Guage &ast;</label>
+                                <input type="text" class="form-control" asp-for="PolyCosting.Guage" placeholder="Guage in selected UOM" tabindex="11">
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.Guage"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Guage -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="guageInputF2" class="form-label">Guage</label>
+                                <input type="text" class="form-control" id="guageInputF2" placeholder="Guage" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Width -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.Width" class="form-label">Width (UOM) &ast;</label>
+                                <input type="text" class="form-control" asp-for="PolyCosting.Width" placeholder="Width in selected UOM" tabindex="12">
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.Width"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Width -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="widthCmInputF" class="form-label">Width (cm)</label>
+                                <input type="text" class="form-control" id="widthCmInputF" placeholder="Width in cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Length -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.Length" class="form-label">Length (UOM)</label>
+                                <input type="text" class="form-control" asp-for="PolyCosting.Length" placeholder="Length in selected UOM" tabindex="13">
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.Length"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Length -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="lengthCmInputF" class="form-label">Length (cm)</label>
+                                <input type="text" class="form-control" id="lengthCmInputF" placeholder="Length in cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Gusset -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.Gusset" class="form-label">Gusset (UOM)</label>
+                                <input type="text" class="form-control" asp-for="PolyCosting.Gusset" placeholder="Gusset in selected UOM" tabindex="14">
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.Gusset"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Gusset -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="gussetCmInputF" class="form-label">Gusset (cm)</label>
+                                <input type="text" class="form-control" id="gussetCmInputF" placeholder="Gusset in cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Flap Width -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.FlapWidth" class="form-label">Flap width (UOM)</label>
+                                <input type="text" class="form-control" asp-for="PolyCosting.FlapWidth" placeholder="Flap width in selected UOM" tabindex="15">
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.FlapWidth"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Flap Width -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="flapCmInputF" class="form-label">Flap width (cm)</label>
+                                <input type="text" class="form-control" id="flapCmInputF" placeholder="Flap width in cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Selected UOM -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <!-- d-none d-md-block -->
+                            <div class="mb-3 text-white">
+                                <!-- To add some margin between form-controls -->
+                                <label for="selected_uom" class="form-label text-warning fw-bold">Selected UOM</label>
+                                <input type="text" class="form-control text-warning fw-bold" id="selected_uom" disabled>
+                            </div>
+                        </div>
+
+                        <!-- System UOM -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none"><!-- d-none d-md-block -->
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label class="form-label text-warning fw-bold">System UOM</label>
+                                <input type="text" class="form-control text-warning fw-bold" value="cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Gusset -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.BottomGusset" class="form-label">Bottom gusset</label>
+                                <input type="text" class="form-control" asp-for="PolyCosting.BottomGusset" placeholder="Bottom gusset in selected UOM" tabindex="16">
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.BottomGusset"></span></b>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Gusset -->
+                        <div class="col-6 col-sm-4 col-md-3 d-none">
+                            <div class="mb-3">
+                                <!-- To add some margin between form-controls -->
+                                <label for="bottomGussetCmInputF" class="form-label">Bottom gusset (cm)</label>
+                                <input type="text" class="form-control" id="bottomGussetCmInputF" placeholder="Bottom gusset in cm" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Order Qty -->
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="mb-6">
+                                <!-- To add some margin between form-controls -->
+                                <label asp-for="PolyCosting.OrderQty" class="form-label">Order Qty &ast;</label>
+                                <input type="text" class="form-control" asp-for="PolyCosting.OrderQty" placeholder="Qty in the selected UOM" tabindex="16">
+                                <b><span class="text-danger" asp-validation-for="PolyCosting.OrderQty"></span></b>
+                            </div>
+                        </div>
+
+                    </div><!-- End of Row: product measurement -->
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Printing Detail Section</u></h2>
+                </div>
+
+                <!-- Printed? checkbox -->
+                <div class="col-sm-3">
+                    <div class="form-check mt-4 mb-3">
+                        <input class="form-check-input" asp-for="PolyCosting.Printed" tabindex="17" style="width: 1.5em; height: 1.5em;">
+                        <label class="form-check-label" asp-for="PolyCosting.Printed" style="font-size: 1.5em;">
+                            &nbsp;&nbsp;Printed?
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.Printed"></span></b>
+                    </div>
+                </div>
+
+                <!-- Without cylinder base? checkbox -->
+                <div class="col-6 d-none">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" value="" id="withoutCylinderBaseCheckB" disabled>
+                        <label class="form-check-label" for="withoutCylinderBaseCheckB">
+                            Without cylinder base?
+                        </label>
+                    </div>
+                </div>
+
+                <!-- No of colors -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.NoOfColors" class="form-label">No of colors</label>
+                        <input type="text" class="form-control" asp-for="PolyCosting.NoOfColors" placeholder="No of colors" tabindex="18">
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.NoOfColors"></span></b>
+                    </div>
+                </div>
+
+                <!-- Printing side -->
+                <div class="col-6 col-sm-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.NoOfPrintingSides" class="form-label">Printing sides count</label>
+                        <input type="text" class="form-control" asp-for="PolyCosting.NoOfPrintingSides" placeholder="Printing side" tabindex="19">
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.NoOfPrintingSides"></span></b>
+                    </div>
+                </div>
+
+                <!-- Print Type -->
+                <div class="col-sm-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.PrintTypeId" class="form-label">Print type</label>
+                        <select class="select2 form-select"
+                               
+                                asp-for="PolyCosting.PrintTypeId"
+                                asp-items="@Model.PrintTypeDropDown"
+                                tabindex="20">
+                            <option value="" selected>-- select print type --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.PrintTypeId"></span></b>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <h2 class="h5"><u>Cylinder Selection Section</u></h2>
+                </div>
+
+                <!-- Auto cylinder selection -->
+                <div class="col-md-12 col-xl-6 d-none">
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" asp-for="PolyCosting.AutoCylinderSelection" tabindex="21" checked>
+                        <label class="form-check-label" asp-for="PolyCosting.AutoCylinderSelection">
+                            Auto cylinder selection
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.AutoCylinderSelection"></span></b>
+                    </div>
+                </div>
+
+                <!-- Cylinder -->
+                <div class="col-md-4 col-xl-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.CylinderId" class="form-label">Cylinder</label>
+                        <select class="form-select"
+                               
+                                asp-for="PolyCosting.CylinderId"
+                                asp-items="@Model.CylinderCodeDropDown"
+                                tabindex="22">
+                            <option value="" selected>-- select cylinder --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.CylinderId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Cylinder size -->
+                <div class="col-6 col-md-4 col-xl-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label for="cylinderSizeCmInputF" class="form-label">Cylinder size <span class="text-warning">(cm)</span></label>
+                        <input type="text" class="form-control" id="cylinderSizeCmInputF" placeholder="Cylinder size" disabled>
+                    </div>
+                </div>
+
+                <!-- Turns -->
+                <div class="col-6 col-md-4 col-xl-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.Turns" class="form-label">Turns &ast;</label>
+                        <input style="border-color: yellow" type="text" class="form-control" asp-for="PolyCosting.Turns" placeholder="Turns" tabindex="23">
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.Turns"></span></b>
+                    </div>
+                </div>
+
+                <!-- Block -->
+                <div class="col-md-12 col-xl-3">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.BlockAvailability" class="form-label">Block</label>
+                        <select class="form-select"
+                                asp-for="PolyCosting.BlockAvailability"
+                                tabindex="24">
+                            <option value="0" selected>-- select Block --</option>
+                            <option value="1">New</option>
+                            <option value="2">Available</option>
+                            <option value="3">Balance Cut</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.BlockAvailability"></span></b>
+                    </div>
+                </div>
+
+                <!-- Area -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.Area" class="form-label">Area &ast;</label>
+                        <input type="text" class="form-control" asp-for="PolyCosting.Area" placeholder="Area" readonly>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.Area"></span></b>
+                    </div>
+                </div>
+
+                <!-- No of meters -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.NoOfMeters" class="form-label">No of meters &ast;</label>
+                        <input type="text" class="form-control" asp-for="PolyCosting.NoOfMeters" placeholder="No of meters" readonly>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.NoOfMeters"></span></b>
+                    </div>
+                </div>
+
+                <!-- Pre costing wastage % -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.PreCostingWastePercentage" class="form-label">
+                            Pre.C waste <span class="text-warning">&percnt;</span>
+                        </label>
+                        <input type="text" class="form-control" asp-for="PolyCosting.PreCostingWastePercentage" placeholder="&percnt; of PC wastage" tabindex="25">
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.PreCostingWastePercentage"></span></b>
+                    </div>
+                </div>
+
+                <!-- Weight -->
+                <div class="col-6 col-md-3">
+                    <div class="mb-3">
+                        <!-- To add some margin between form-controls -->
+                        <label id="weightOrQtyLabel" asp-for="PolyCosting.Weight" class="form-label">
+                            Weight <span class="text-warning">(kg)</span> &ast;
+                        </label>
+                        <input type="text" class="form-control" asp-for="PolyCosting.Weight" placeholder="Weight (kg)" readonly>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.Weight"></span></b>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt-3 d-none">
+                    <h2 class="h5"><u>Shipment Terms Selection</u></h2>
+                </div>
+                
+                <!-- Shipment Terms -->
+                <div class="col-md-12 d-none">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="PolyCosting.ShipmentTermId" class="form-label">Shipment Terms &ast;</label>
+                        <select class="form-select"
+                               
+                                asp-for="PolyCosting.ShipmentTermId"
+                                asp-items="@Model.ShipmentTermDropDown"
+                                tabindex="26">
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="PolyCosting.ShipmentTermId"></span></b>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- End of Product Messurement Section -->
+
+        <div class="col-12">
+            <hr class="bg-primary border-2 border-primary" />
+        </div>
+
+        <!-- Tabs for combination raw material, summary -->
+        <div class="col-md-12">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-white active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                            type="button" role="tab" aria-controls="profile" aria-selected="true" tabindex="27">
+                        Summary
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-white" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                            type="button" role="tab" aria-controls="home" aria-selected="false" tabindex="28">
+                        Raw Materials
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content border border-1 border-primary p-4" id="myTabContent">
+                <!-- Summary Tab -->
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="overflow-auto">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap text-center" style="min-width: 14em; width: 20%" scope="col">
+                                        <!-- Section Desc -->
+                                    </th>
+                                    <th class="text-nowrap" style="min-width: 12em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Unit</label>
+                                        </th>
+                                    <th class="text-nowrap text-center" style="min-width: 8em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Per Unit</label>
+                                        </th>
+                                    <th class="text-nowrap text-center" style="min-width: 8em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Total</label>
+                                        </th>
+                                    <th class="text-nowrap text-center" style="min-width: 8em; width: 20%" scope="col">
+                                        <label for="" class="form-label fw-bold">Per KG</label>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Weight Section -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Weight</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">kg</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="weightPerUnitInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="weightTotalInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="weightPerKgInputF" value="1.0000" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Meterial Cost Section -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Material Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="matCostPerUnitInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="matCostTotalInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="matCostPerKgInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Over Head Cost -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Over Head Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="overHeadCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="overHeadCostTotalInputF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="overHeadCostInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Block Cost -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Block Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="blockCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="PolyCosting.BlockCostTotal" style="border-color: yellow" tabindex="29">
+                                        <b><span class="text-danger" asp-validation-for="PolyCosting.BlockCostTotal"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="blockCostInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Other Costs -->
+                                <tr class="d-none">
+                                    <td>
+                                        <label for="" class="form-label">Other Costs</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="otherCostPerUnitInpurF" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="PolyCosting.OtherCostTotal" style="border-color: yellow"  tabindex="30">
+                                        <b><span class="text-danger" asp-validation-for="PolyCosting.OtherCostTotal"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="otherCostsInputF" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Total -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Total Cost</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="totalPerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="totalTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="totalPerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Profit Percentage -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Profit</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">&percnt;</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" value="25.00&percnt;" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" value="25.00&percnt;" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" value="25.00&percnt;" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Suggested sales price in LKR -->
+                                <tr class="d-none">
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (Suggested)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="salesPricePerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="salesPriceTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="salesPricePerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Suggested sales price in Native Currency -->
+                                <tr class="d-none">
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (Suggested)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold native-currency">Native Currency</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="PolyCosting.PerUnitSuggestedUnitPrice" readonly>
+                                        <b><span class="text-danger" asp-validation-for="PolyCosting.PerUnitSuggestedUnitPrice"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="nativeSalesPriceTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="nativeSalesPricePerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Adjustable sales price in Native Currency -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (Adjustable)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold native-currency">Native Currency</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" asp-for="PolyCosting.PerUnitAdjustableUnitPrice" style="border-color: yellow" tabindex="31">
+                                        <b><span class="text-danger" asp-validation-for="PolyCosting.PerUnitAdjustableUnitPrice"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPricePerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Adjustable sales price in LKR -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Sales Price (in LKR)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold">LKR</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceLkrPerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceLkrTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjSalesPriceLkrPerKg" disabled>
+                                    </td>
+                                </tr>
+                                <!-- Profit after adjusting -->
+                                <tr>
+                                    <td>
+                                        <label for="" class="form-label">Profit (Adjustable)</label>
+                                    </td>
+                                    <td>
+                                        <label class="form-label text-warning fw-bold native-currency">Native Currency</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjProfitPercentPerUnit" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjProfitPercentTotal" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" id="adjProfitPercentPerKg" disabled>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!-- Overflow auto div -->
+                </div><!-- End of Summary Tab -->
+                <!-- Combination row material tab -->
+                <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="overflow-auto">
+                        <table id="rawMaterialsTable" class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 12%;">Material</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 6em; width: 11%;">Percentage</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Latest Updated Price</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Duty</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Std. Consumption</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Pre Costng Waste</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Weight</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Unit Weight</label></th>
+                                    <th class="text-nowrap"><label for="" class="form-label fw-bold" style="min-width: 8em; width: 11%;">Unit Cost</label></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div><!-- End of Combination row material tab -->
+            </div>
+
+        </div><!-- End of Tabs for combination row material, summary -->
+        <!-- Section for the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit" id="submitButton" tabindex="32"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                        <div class="text-center">
+                            <b id="saveBtnErrorSpan"><span class="text-danger"> Save button is Disabled because the Profit Percentage is too low. Please increase the price!! </span></b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the submit button -->
+
+    </div>
+</form>
+
+@section Scripts{
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script type="text/javascript">
+
+        // Global Variables
+        const bagTypeJsonArr = @Html.Raw(ViewBag.bagTypeJsonStr);
+        const PolyCombJsonArr = @Html.Raw(ViewBag.polyCombinationJsonStr);
+        const itemCategoryJsonArr = @Html.Raw(ViewBag.itemCategoryJsonStr);
+        const cylinderJsonArr = @Html.Raw(ViewBag.cylinderJsonStr);
+
+        $(document).ready(function () {
+
+            const TURNS_VAL = $('#PolyCosting_Turns').val();
+            const PER_UNIT_ADJUSTABLE_UNITPRICE_VAL = $('#PolyCosting_PerUnitAdjustableUnitPrice').val();
+            const MEASUREMENT_UOM_VAL= $('#PolyCosting_MeasurementUomId').val();
+            const BLOCK_COST_TOTAL_VAL = $('#PolyCosting_BlockCostTotal').val();
+            const OTHER_COST_TOTAL_VAL = $('#PolyCosting_OtherCostTotal').val();
+
+            const CYLINDERSELECT_NOOFCOLORS_VS_WASTE_TOLARANCE = 0.1; //cm
+
+            $('#saveBtnErrorSpan').hide();
+
+            $('select.select2').select2({
+                theme: 'bootstrap-5'
+            });
+
+            $("select.select2-adv-search").select2({
+                matcher: matchCustom,
+                theme: 'bootstrap-5'
+            });
+
+            function matchCustom(params, data) {
+                // If there are no search terms, return all of the data
+                if ($.trim(params.term) === '') {
+                  return data;
+                }
+
+                var paramWordArray = params.term.split(" ");
+                var atleastOneWordPercent = false;
+                var allWordsPercent = true;
+
+                for(var i=0; i<paramWordArray.length; i++) {
+                    if (paramWordArray[i] !== '') {
+                        if (data.text.toUpperCase().indexOf(paramWordArray[i].toUpperCase()) > -1) {
+                            atleastOneWordPercent = true;
+                            allWordsPercent = allWordsPercent && true;
+                        } else {
+                            allWordsPercent = false;
+                        }
+                    }
+                }
+
+                if(atleastOneWordPercent && allWordsPercent) {
+                    return data;
+                }
+
+                // Return `null` if the term should not be displayed
+                return null;
+            }
+
+            // Customer Detail Section................................................................
+            var cusTypeInputF = $('#cusTypeInputF');
+            var cusCurrencyInputF = $('#cusCurrencyInputF');
+            var nativeCurrencyLabels = $('.native-currency');
+            var exRateInputF = $('#exRateInputF');
+            var deliAddressTextA = $('#PolyCosting_DeliveryAddress');
+
+            var customersJsonArr = @Html.Raw(ViewBag.customersJsonStr);
+
+            $("#PolyCosting_CustomerId").change(function () {
+                var customer = getObjectByIdProp(customersJsonArr, $(this).val());
+                if (customer !== null) {
+                    cusTypeInputF.val(customer.CustomerTypeDesc);
+                    cusCurrencyInputF.val(customer.CurrencyCode);
+                    nativeCurrencyLabels.html(customer.CurrencyCode);
+                    exRateInputF.val(customer.RateInLKR);
+                    deliAddressTextA.val(customer.CustomerAddress);
+                } else {
+                    cusTypeInputF.val('');
+                    cusCurrencyInputF.val('');
+                    nativeCurrencyLabels.html('Native Currency')
+                    exRateInputF.val('');
+                    deliAddressTextA.val('');
+                }
+                updateRawMaterialGrid_onChange();
+                updateAdjSalesPrice_onKeyup();
+            });
+            // run once above onChangeBody
+            var customer = getObjectByIdProp(customersJsonArr, $("#PolyCosting_CustomerId").val());
+            if (customer !== null) {
+                cusTypeInputF.val(customer.CustomerTypeDesc);
+                cusCurrencyInputF.val(customer.CurrencyCode);
+                nativeCurrencyLabels.html(customer.CurrencyCode);
+                exRateInputF.val(customer.RateInLKR);
+                deliAddressTextA.val(customer.CustomerAddress);
+            } else {
+                cusTypeInputF.val('');
+                cusCurrencyInputF.val('');
+                nativeCurrencyLabels.html('Native Currency');
+                exRateInputF.val('');
+                deliAddressTextA.val('');
+            }
+            updateRawMaterialGrid_onChange();
+            updateAdjSalesPrice_onKeyup();
+
+
+            // Poly Combination Detail Section.........................................................
+            var polyCombInputF = $('#polyCombInputF');
+
+            $("#PolyCosting_PolyCombId").change(function () {
+                var polyCombination = getObjectByIdProp(PolyCombJsonArr, $(this).val());
+                if (polyCombination !== null) {
+                    polyCombInputF.val(polyCombination.PolyCombDesc);
+                } else {
+                    polyCombInputF.val('');
+                }
+                updateRawMaterialGrid_onChange();
+                updateRawMaterialGrid_onChange();
+            });
+            // run once above onChangeBody
+            var polyCombination = getObjectByIdProp(PolyCombJsonArr, $("#PolyCosting_PolyCombId").val());
+            if (polyCombination !== null) {
+                polyCombInputF.val(polyCombination.PolyCombDesc);
+            } else {
+                polyCombInputF.val('');
+            }
+            updateRawMaterialGrid_onChange();
+            updateRawMaterialGrid_onChange();
+
+            // Filter For Poly Combination.............................................................
+            var colorsSelectBx = $('#colorsSelectBx');
+            var polyMaterialSelectBx = $('#polyMaterialSelectBx');
+
+            var fullPolyCombJsonArr = @Html.Raw(ViewBag.polyCombinationJsonStr);
+
+            // A. On color select box change filder.
+            colorsSelectBx.change(function () {
+                var optionsString = '';
+                var partialPolyCombJsonArr;
+                if ($(this).val() === "0" && polyMaterialSelectBx.val() === "0") {
+                    $("#PolyCosting_PolyCombId").html(function () {
+                        fullPolyCombJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.PolyCombDesc + " (" + currentValue.PolyCombCode + ")" + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--Update masters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                } else {
+                    partialPolyCombJsonArr = getObjectsByColorIdAndPolyMaterialIdProps(fullPolyCombJsonArr, colorsSelectBx.val(), polyMaterialSelectBx.val());
+                    $("#PolyCosting_PolyCombId").html(function () {
+                        partialPolyCombJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.PolyCombDesc + " (" + currentValue.PolyCombCode + ")" + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--check filters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                }
+            });
+            // B. On poly material select box change filder.
+            polyMaterialSelectBx.change(function () {
+                var optionsString = '';
+                if ($(this).val() === "0" && colorsSelectBx.val() === "0") {
+                    $("#PolyCosting_PolyCombId").html(function () {
+                        fullPolyCombJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.PolyCombDesc + " (" + currentValue.PolyCombCode + ")" + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--Update masters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                } else {
+                    partialPolyCombJsonArr = getObjectsByColorIdAndPolyMaterialIdProps(fullPolyCombJsonArr, colorsSelectBx.val(), polyMaterialSelectBx.val());
+                    $("#PolyCosting_PolyCombId").html(function () {
+                        partialPolyCombJsonArr.forEach(function (currentValue) {
+                            optionsString += '<option value="' + currentValue.Id + '">' + currentValue.PolyCombDesc + " (" + currentValue.PolyCombCode + ")" + "</option>"
+                        });
+                        if (optionsString === '')
+                            return `<option>--check filters, no data--</option>`;
+                        else
+                            return `<option>-- Select --</option>` + optionsString;
+                    });
+                }
+            });
+
+            // Bag Type Detail Section.................................................................
+            var bagTypeDescInputF = $('#bagTypeDescInputF'); //Bag type description
+            var productFinishingTypeInputF = $('#productFinishingTypeInputF'); //Product finishing type
+            var printByWidth = $('#printByWidth'); // Radio Btn
+            var printByLength = $('#printByLength'); // Radio Btn
+
+            $("#PolyCosting_BagTypeId").change(function () {
+                var bagType = getObjectByIdProp(bagTypeJsonArr, $(this).val());
+                if (bagType !== null) {
+                    if (bagType.PrintByWidthOrLength) {
+                        printByWidth.prop("checked", true);
+                        printByLength.prop("checked", false);
+                    } else {
+                        printByWidth.prop("checked", false);
+                        printByLength.prop("checked", true);
+                    }
+                    bagTypeDescInputF.val(bagType.BagTypeDesc);
+                    productFinishingTypeInputF.val(bagType.ProductFinishingTypeDesc);
+                    setWeightInputFs_onChange();
+                } else {
+                    printByWidth.prop("checked", false);
+                    printByLength.prop("checked", false);
+                    bagTypeDescInputF.val('');
+                    productFinishingTypeInputF.val('');
+                    setWeightInputFs_onChange();
+                }
+                setTurnsInputF_onChange();
+                setSheetSizeInputF_onChange();
+                setNoOfMetersInputF_onChange();
+                setCylinderAndFilterCylinderOptionsList_onChange();
+            });
+            // run once above onChangeBody
+            var bagType = getObjectByIdProp(bagTypeJsonArr, $("#PolyCosting_BagTypeId").val());
+            if (bagType !== null) {
+                if (bagType.PrintByWidthOrLength) {
+                    printByWidth.prop("checked", true);
+                    printByLength.prop("checked", false);
+                } else {
+                    printByWidth.prop("checked", false);
+                    printByLength.prop("checked", true);
+                }
+                bagTypeDescInputF.val(bagType.BagTypeDesc);
+                productFinishingTypeInputF.val(bagType.ProductFinishingTypeDesc);
+                setWeightInputFs_onChange();
+            } else {
+                printByWidth.prop("checked", false);
+                printByLength.prop("checked", false);
+                bagTypeDescInputF.val('');
+                productFinishingTypeInputF.val('');
+                setWeightInputFs_onChange();
+            }
+            setTurnsInputF_onChange();
+            setSheetSizeInputF_onChange();
+            setNoOfMetersInputF_onChange();
+
+            // Order Specification Section.............................................................
+            $('#PolyCosting_OrderQty').change(function () {
+                setNoOfMetersInputF_onChange();
+            });
+            // run once above onChangeBody
+            setNoOfMetersInputF_onChange();
+
+            // Cylinder Detail Section.................................................................
+
+            // Auto cylinder selection check box
+            $('#PolyCosting_AutoCylinderSelection').change(setCylinderAndFilterCylinderOptionsList_onChange);
+
+            // Cylinder select box on change
+            $("#PolyCosting_CylinderId").change(cylinderSelectB_onChange);
+            // run once above onChangeBody
+            cylinderSelectB_onChange();
+
+            // Waste % input field on change
+            $('#PolyCosting_PreCostingWastePercentage').change(function () {
+                setNoOfMetersInputF_onChange();
+            });
+            // run once above onChangeBody
+            setNoOfMetersInputF_onChange();
+
+            // Printing Detail Section.................................................................
+            var withoutCylinderBaseCheckB = $('#withoutCylinderBaseCheckB');
+
+            var printTypeJsonArr = @Html.Raw(ViewBag.printTypeJsonStr);
+
+            // Print type select box on change
+            $('#PolyCosting_PrintTypeId').change(function () {
+                var printType = getObjectByIdProp(printTypeJsonArr, $(this).val());
+                if (printType !== null) {
+                    withoutCylinderBaseCheckB.prop("checked", printType.WithoutCylinderBase);
+                } else {
+                    withoutCylinderBaseCheckB.prop("checked", false);
+                }
+                setNoOfMetersInputF_onChange();
+            });
+            // run once above onChangeBody
+            var printType = getObjectByIdProp(printTypeJsonArr, $('#PolyCosting_PrintTypeId').val());
+            if (printType !== null) {
+                withoutCylinderBaseCheckB.prop("checked", printType.WithoutCylinderBase);
+            } else {
+                withoutCylinderBaseCheckB.prop("checked", false);
+            }
+            setNoOfMetersInputF_onChange();
+
+            //Printed? checkbox on change
+            $('#PolyCosting_Printed').change(function () {
+                setNoOfMetersInputF_onChange();
+                setCylinderAndFilterCylinderOptionsList_onChange();
+            });
+            // run once above onChangeBody
+            setNoOfMetersInputF_onChange();
+            setCylinderAndFilterCylinderOptionsList_onChange();
+            
+            // No of colors onChange
+            $('#PolyCosting_NoOfColors').change(function() {
+                setCylinderAndFilterCylinderOptionsList_onChange();
+                setPreCostingWaste_onChange();
+            });
+            // run once above onChangeBody
+            setCylinderAndFilterCylinderOptionsList_onChange();
+            setPreCostingWaste_onChange();
+
+            // Printing sides count onChange
+            $('#PolyCosting_NoOfPrintingSides').change(function() {
+                setCylinderAndFilterCylinderOptionsList_onChange();
+            });
+
+            // Product Measurement Section..............................................................
+            var uomJsonArr = @Html.Raw(ViewBag.uomJsonStr);
+            var measurementUomSelectB = $('#PolyCosting_MeasurementUomId');
+            var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+
+            // Guage (UOM)
+            var guageInputF = $('#PolyCosting_Guage');
+            var guageInputF2 = $('#guageInputF2');
+
+            guageInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                guageInputF2.val(guageInputF.val());
+                setWeightInputFs_onChange();
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#PolyCosting_Guage').val()))) {
+                $('#PolyCosting_Guage').val(parseFloat($('#PolyCosting_Guage').val()).toFixed(4));
+            } else {
+                $('#PolyCosting_Guage').val("0.0000");
+            }
+            guageInputF2.val(guageInputF.val());
+            setWeightInputFs_onChange();
+
+            // Gusset (UOM)
+            var gussetInputF = $('#PolyCosting_Gusset');
+            var gussetCmInputF = $('#gussetCmInputF');
+
+            gussetInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if(uom !== null) {
+                    gussetCmInputF.val(
+                        (Number(gussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    gussetCmInputF.val('');
+                }
+                setSheetSizeInputF_onChange();
+                setNoOfMetersInputF_onChange();
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#PolyCosting_Gusset').val()))) {
+                $('#PolyCosting_Gusset').val(parseFloat($('#PolyCosting_Gusset').val()).toFixed(4));
+            } else {
+                $('#PolyCosting_Gusset').val("0.0000");
+            }
+            if(uom !== null) {
+                gussetCmInputF.val(
+                    (Number(gussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                gussetCmInputF.val('');
+            }
+            setSheetSizeInputF_onChange();
+            setNoOfMetersInputF_onChange();
+
+            // Flap width (UOM)
+            var flapInputF = $('#PolyCosting_FlapWidth');
+            var flapCmInputF = $('#flapCmInputF');
+
+            flapInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if(uom !== null) {
+                    flapCmInputF.val(
+                        (Number(flapInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    flapCmInputF.val('');
+                }
+                setSheetSizeInputF_onChange();
+                setNoOfMetersInputF_onChange();
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#PolyCosting_FlapWidth').val()))) {
+                $('#PolyCosting_FlapWidth').val(parseFloat($('#PolyCosting_FlapWidth').val()).toFixed(4));
+            } else {
+                $('#PolyCosting_FlapWidth').val("0.0000");
+            }
+            if(uom !== null) {
+                flapCmInputF.val(
+                    (Number(flapInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                flapCmInputF.val('');
+            }
+            setSheetSizeInputF_onChange();
+            setNoOfMetersInputF_onChange();
+
+            // Width (UOM)
+            var widthInputF = $('#PolyCosting_Width');
+            var widthCmInputF = $('#widthCmInputF');
+
+            widthInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if(uom !== null) {
+                    widthCmInputF.val(
+                        (Number(widthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    widthCmInputF.val('');
+                }
+                setTurnsInputF_onChange();
+                setSheetSizeInputF_onChange();
+                setNoOfMetersInputF_onChange();
+                setCylinderAndFilterCylinderOptionsList_onChange();
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#PolyCosting_Width').val()))) {
+                $('#PolyCosting_Width').val(parseFloat($('#PolyCosting_Width').val()).toFixed(4));
+            } else {
+                $('#PolyCosting_Width').val("0.0000");
+            }
+            if(uom !== null) {
+                widthCmInputF.val(
+                    (Number(widthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                widthCmInputF.val('');
+            }
+            setTurnsInputF_onChange();
+            setSheetSizeInputF_onChange();
+            setNoOfMetersInputF_onChange();
+            setCylinderAndFilterCylinderOptionsList_onChange();
+
+            // Length (UOM)
+            var lengthInputF = $('#PolyCosting_Length');
+            var lengthCmInputF = $('#lengthCmInputF');
+
+            lengthInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if(uom !== null) {
+                    lengthCmInputF.val(
+                        (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    lengthCmInputF.val('');
+                }
+                setTurnsInputF_onChange();
+                setSheetSizeInputF_onChange();
+                setNoOfMetersInputF_onChange();
+                setCylinderAndFilterCylinderOptionsList_onChange();
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#PolyCosting_Length').val()))) {
+                $('#PolyCosting_Length').val(parseFloat($('#PolyCosting_Length').val()).toFixed(4));
+            } else {
+                $('#PolyCosting_Length').val("0.0000");
+            }
+            if(uom !== null) {
+                lengthCmInputF.val(
+                    (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                lengthCmInputF.val('');
+            }
+            setTurnsInputF_onChange();
+            setSheetSizeInputF_onChange();
+            setNoOfMetersInputF_onChange();
+
+            // Bottom gusset
+            var bottomGussetInputF = $('#PolyCosting_BottomGusset');
+            var bottomGussetCmInputF = $('#bottomGussetCmInputF');
+
+            bottomGussetInputF.change(function () {
+                if (!isNaN(parseFloat($(this).val()))) {
+                    $(this).val(parseFloat($(this).val()).toFixed(4));
+                } else {
+                    $(this).val("0.0000");
+                }
+                var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+                if(uom !== null) {
+                    bottomGussetCmInputF.val(
+                        (Number(bottomGussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                } else {
+                    bottomGussetCmInputF.val('');
+                }
+                setSheetSizeInputF_onChange();
+                setNoOfMetersInputF_onChange();
+            });
+            // run once above onChangeBody
+            if (!isNaN(parseFloat($('#PolyCosting_BottomGusset').val()))) {
+                $('#PolyCosting_BottomGusset').val(parseFloat($('#PolyCosting_BottomGusset').val()).toFixed(4));
+            } else {
+                $('#PolyCosting_BottomGusset').val("0.0000");
+            }
+            if(uom !== null) {
+                bottomGussetCmInputF.val(
+                    (Number(bottomGussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                );
+            } else {
+                bottomGussetCmInputF.val('');
+            }
+            setSheetSizeInputF_onChange();
+            setNoOfMetersInputF_onChange();
+
+            // Uom for product mesurement on change
+            measurementUomSelectB.change(function () {
+                var uom = getObjectByIdProp(uomJsonArr, $(this).val());
+                $('#selected_uom').val(
+                    $(this).children("option:selected").text()
+                );
+                if (uom !== null) {
+                    if(gussetInputF.val() !== '') {
+                        gussetCmInputF.val(
+                            (Number(gussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if(flapInputF.val() !== '') {
+                        flapCmInputF.val(
+                            (Number(flapInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (widthInputF.val() !== '') {
+                        widthCmInputF.val(
+                            (Number(widthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (lengthInputF.val() !== '') {
+                        lengthCmInputF.val(
+                            (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (bottomGussetInputF.val() !== '') {
+                        bottomGussetCmInputF.val(
+                            (Number(bottomGussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                } else {
+                    gussetCmInputF.val('');
+                    flapCmInputF.val('');
+                    widthCmInputF.val('');
+                    lengthCmInputF.val('');
+                    bottomGussetCmInputF.val('');
+                }
+                // When widthCmInputF, lengthCmInputF onchange
+                setTurnsInputF_onChange();
+                // When gussetCmInputF, flapCmInputF, widthCmInputF, lengthCmInputF, bottomGussetCmInputF onchange
+                setSheetSizeInputF_onChange();
+                setNoOfMetersInputF_onChange();
+
+            });
+            // run once above onChangeBody
+            var uom = getObjectByIdProp(uomJsonArr, measurementUomSelectB.val());
+            $('#selected_uom').val(
+                measurementUomSelectB.children("option:selected").text()
+            );
+            if (uom !== null) {
+                if(gussetInputF.val() !== '') {
+                    gussetCmInputF.val(
+                        (Number(gussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+                if(flapInputF.val() !== '') {
+                    flapCmInputF.val(
+                        (Number(flapInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+                if (widthInputF.val() !== '') {
+                    widthCmInputF.val(
+                        (Number(widthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+                if (lengthInputF.val() !== '') {
+                    lengthCmInputF.val(
+                        (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+                if (bottomGussetInputF.val() !== '') {
+                    bottomGussetCmInputF.val(
+                        (Number(bottomGussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                    );
+                }
+            } else {
+                gussetCmInputF.val('');
+                flapCmInputF.val('');
+                widthCmInputF.val('');
+                lengthCmInputF.val('');
+                bottomGussetCmInputF.val('');
+            }
+            // When gussetCmInputF, flapCmInputF, widthCmInputF, lengthCmInputF, bottomGussetCmInputF onchange
+            setSheetSizeInputF_onChange();
+            setNoOfMetersInputF_onChange();
+            // When widthCmInputF, lengthCmInputF onchange
+            setTurnsInputF_onChange();
+
+            // On turns input field change ............................................................
+            $('#PolyCosting_Turns').change(function () {
+                setNoOfMetersInputF_onChange();
+            });
+            // run once above onChangeBody
+            setNoOfMetersInputF_onChange();
+
+            // Summary Tab Grid Section ...............................................................
+            var overHeadCost = @(ViewBag.OverHeadCost);
+            if (overHeadCost === 0) {
+                alert("Overhead cost have not updated! Please update it using the \"Item Category Price Update\" Transaction.\nItem Category Code = \"OHC\".");
+                $('#submitButton').prop("disabled", true);
+            }
+            $('#overHeadCostInputF').val(overHeadCost.toFixed(4));
+
+            var blockCost = @(ViewBag.BlockCost);
+            $('#blockCostInputF').val(blockCost.toFixed(4));
+
+            var otherCosts = @(ViewBag.OtherCosts);
+            $('#otherCostsInputF').val(otherCosts.toFixed(4));
+
+            // Block Cost Total onKeyUp
+            $('#PolyCosting_BlockCostTotal').keyup(updateSummaryGrid_onChange);
+            // Other Cost Total onKeyUp
+            $('#PolyCosting_OtherCostTotal').keyup(updateSummaryGrid_onChange);
+            // run once above onChangeBody
+            updateSummaryGrid_onChange();
+
+            // Adjustable Sales Price onKeyUp
+            $('#PolyCosting_PerUnitAdjustableUnitPrice').keyup(updateAdjSalesPrice_onKeyup);
+            // run once above onChangeBody
+            updateAdjSalesPrice_onKeyup();
+
+
+            // TO RUN AFTER ALL OTHER CODE________________________________________________________________________________________________________________________                                                                                                                                                   //
+            if(MEASUREMENT_UOM_VAL !== "" || MEASUREMENT_UOM_VAL !== "NaN" || MEASUREMENT_UOM_VAL !== "0.0000") {                                               //
+                $('#PolyCosting_MeasurementUomId').val(MEASUREMENT_UOM_VAL);                                                                                    //
+                var uom = getObjectByIdProp(uomJsonArr, MEASUREMENT_UOM_VAL);                                                                                   //
+                $('#selected_uom').val(                                                                                                                         //
+                    $('#PolyCosting_MeasurementUomId').children("option:selected").text()                                                                                                    //
+                );                                                                                                                                              //
+                if (uom !== null) {                                                                                                                             //
+                    if(gussetInputF.val() !== '') {                                                                                                             //
+                        gussetCmInputF.val(                                                                                                                     //
+                            (Number(gussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)                                                       //
+                        );
+                    }
+                    if(flapInputF.val() !== '') {
+                        flapCmInputF.val(
+                            (Number(flapInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (widthInputF.val() !== '') {
+                        widthCmInputF.val(
+                            (Number(widthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (lengthInputF.val() !== '') {
+                        lengthCmInputF.val(
+                            (Number(lengthInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                    if (bottomGussetInputF.val() !== '') {
+                        bottomGussetCmInputF.val(
+                            (Number(bottomGussetInputF.val()) * uom.ConversionMultiplierToSystemUom).toFixed(4)
+                        );
+                    }
+                } else {
+                    gussetCmInputF.val('');
+                    flapCmInputF.val('');
+                    widthCmInputF.val('');
+                    lengthCmInputF.val('');
+                    bottomGussetCmInputF.val('');
+                }                                                                                                                                               //
+                // When gussetCmInputF, flapCmInputF, widthCmInputF, lengthCmInputF, bottomGussetCmInputF onchange                                              //
+                setSheetSizeInputF_onChange();                                                                                                                  //
+                setNoOfMetersInputF_onChange();                                                                                                              //
+                // When widthCmInputF, lengthCmInputF onchange                                                                                                  //
+                setTurnsInputF_onChange();                                                                                                                      //
+            }                                                                                                                                                   //
+            if(TURNS_VAL !== "" || TURNS_VAL !== "NaN" || TURNS_VAL !== "0.0000") {                                                                             //
+                $('#PolyCosting_Turns').val(TURNS_VAL);                                                                                                         //
+                setNoOfMetersInputF_onChange();                                                                                                                 //
+            }                                                                                                                                                   //
+            if (BLOCK_COST_TOTAL_VAL !== "" || BLOCK_COST_TOTAL_VAL !== "NaN" || BLOCK_COST_TOTAL_VAL !== "0.0000") {                                           //
+                $('#PolyCosting_BlockCostTotal').val(BLOCK_COST_TOTAL_VAL);
+                updateSummaryGrid_onChange();
+            }
+            if(OTHER_COST_TOTAL_VAL !== "" || OTHER_COST_TOTAL_VAL !== "NaN" || OTHER_COST_TOTAL_VAL !== "0.0000") {                                            //
+                $('#PolyCosting_OtherCostTotal').val(OTHER_COST_TOTAL_VAL);
+                updateSummaryGrid_onChange();
+            }
+            if(PER_UNIT_ADJUSTABLE_UNITPRICE_VAL !== "" || PER_UNIT_ADJUSTABLE_UNITPRICE_VAL !== "NaN" || PER_UNIT_ADJUSTABLE_UNITPRICE_VAL !== "0.0000") {     //
+                $('#PolyCosting_PerUnitAdjustableUnitPrice').val(PER_UNIT_ADJUSTABLE_UNITPRICE_VAL);                                                            //
+                updateAdjSalesPrice_onKeyup();                                                                                                                  //
+            }                                                                                                                                                   //
+            //----------------------------------------------------------------------------------------------------------------------------------------------------
+
+            // Common Functions........................................................................
+            function getObjectByIdProp(json_array, Id) {
+                for (i = 0; i < json_array.length; i++) {
+                    if (json_array[i].Id == Id)
+                        return json_array[i];
+                }
+                return null;
+            }
+
+            function getObjectsByColorIdAndPolyMaterialIdProps(json_array, colorId, polyMaterialId) {
+                var sub_json_array = [];
+                if (polyMaterialId === "0") {
+                    for (i = 0; i < json_array.length; i++) {
+                        if (json_array[i].ColorId == colorId)
+                            sub_json_array.push(json_array[i]);
+                    }
+                    return sub_json_array;
+                } else if (colorId === "0") {
+                    for (i = 0; i < json_array.length; i++) {
+                        if (json_array[i].PolyMaterialId == polyMaterialId)
+                            sub_json_array.push(json_array[i]);
+                    }
+                    return sub_json_array;
+                }
+                for (i = 0; i < json_array.length; i++) {
+                    if (json_array[i].ColorId == colorId && json_array[i].PolyMaterialId == polyMaterialId)
+                        sub_json_array.push(json_array[i]);
+                }
+                return sub_json_array;
+            }
+
+            function getSheetSize() {
+                var bagTypeInputF = $('#PolyCosting_BagTypeId');
+
+                if (bagTypeInputF.val() !== "0") {
+
+                    var bagTypeObj = getObjectByIdProp(bagTypeJsonArr, bagTypeInputF.val());
+                    var sheetSizeFormula = bagTypeObj.SheetSizeFormula.toUpperCase();
+
+                    if (sheetSizeFormula.includes("L")) {
+                        if ($('#lengthCmInputF').val() === "") {
+                            sheetSizeFormula = "";
+                        } else {
+                            sheetSizeFormula = sheetSizeFormula.replace("L", $('#lengthCmInputF').val());
+                        }
+                    }
+                    if (sheetSizeFormula.includes("G")) {
+                        if ($('#gussetCmInputF').val() === "") {
+                            sheetSizeFormula = "";
+                        } else {
+                            sheetSizeFormula = sheetSizeFormula.replace("G", $('#gussetCmInputF').val());
+                        }
+                    }
+                    if (sheetSizeFormula.includes("F")) {
+                        if ($('#flapCmInputF').val() === "") {
+                            sheetSizeFormula = "";
+                        } else {
+                            sheetSizeFormula = sheetSizeFormula.replace("F", $('#flapCmInputF').val());
+                        }
+                    }
+                    if (sheetSizeFormula.includes("W")) {
+                        if ($('#widthCmInputF').val() === "") {
+                            sheetSizeFormula = "";
+                        } else {
+                            sheetSizeFormula = sheetSizeFormula.replace("W", $('#widthCmInputF').val());
+                        }
+                    }
+                    if (sheetSizeFormula.includes("B")) {
+                        if ($('#bottomGussetCmInputF').val() === "") {
+                            sheetSizeFormula = "";
+                        } else {
+                            sheetSizeFormula = sheetSizeFormula.replace("B", $('#bottomGussetCmInputF').val());
+                        }
+                    }
+
+                    var sheetSize;
+                    if (sheetSizeFormula === "") {
+                        return "";
+                    } else {
+                        return eval(sheetSizeFormula);
+                    }
+
+                } else {
+                    return "";
+                }
+            }
+
+            function setTurnsInputF_onChange() {
+
+                var turnsInputF = $('#PolyCosting_Turns');
+                var cylinderSizeCmInputF = $('#cylinderSizeCmInputF');
+                var lengthCmInputF = $('#lengthCmInputF');
+                var widthCmInputF = $('#widthCmInputF');
+
+                if (cylinderSizeCmInputF.val() === "" || cylinderSizeCmInputF.val() === "0" || cylinderSizeCmInputF.val() === 0) {
+                    turnsInputF.val('1.0000');
+                } else if (printByLength.prop("checked") == true) {
+                    turnsInputF.val(parseFloat((Number(lengthCmInputF.val()) / Number(cylinderSizeCmInputF.val())).toString()).toFixed(4));
+                } else if (printByWidth.prop("checked") == true) {
+                    turnsInputF.val(parseFloat((Number(widthCmInputF.val()) / Number(cylinderSizeCmInputF.val())).toString()).toFixed(4));
+                } else {
+                    turnsInputF = '';
+                }
+
+                setNoOfMetersInputF_onChange();
+            }
+
+            function setSheetSizeInputF_onChange() {
+
+                var areaInputF = $('#PolyCosting_Area');
+                var bagTypeSelectB = $('#PolyCosting_BagTypeId');
+
+                if (bagTypeSelectB.val() !== "0") {
+                    var bagTypeObj = getObjectByIdProp(bagTypeJsonArr, bagTypeSelectB.val());
+
+                    var formulaToCalcSArea = bagTypeObj.FormulaToCalcSArea.toUpperCase();
+                    if (formulaToCalcSArea.includes("L")) {
+                        if ($('#lengthCmInputF').val() === "") {
+                            formulaToCalcSArea = "";
+                        } else {
+                            formulaToCalcSArea = formulaToCalcSArea.replace("L", $('#lengthCmInputF').val());
+                        }
+                    }
+                    if (formulaToCalcSArea.includes("G")) {
+                        if ($('#gussetCmInputF').val() === "") {
+                            formulaToCalcSArea = "";
+                        } else {
+                            formulaToCalcSArea = formulaToCalcSArea.replace("G", $('#gussetCmInputF').val());
+                        }
+                    }
+
+                    if (formulaToCalcSArea.includes("F")) {
+                        if ($('#flapCmInputF').val() === "") {
+                            formulaToCalcSArea = "";
+                        } else {
+                            formulaToCalcSArea = formulaToCalcSArea.replace("F", $('#flapCmInputF').val());
+                        }
+                    }
+
+                    if (formulaToCalcSArea.includes("G")) {
+                        if ($('#gussetCmInputF').val() === "") {
+                            formulaToCalcSArea = "";
+                        } else {
+                            formulaToCalcSArea = formulaToCalcSArea.replace("G", $('#gussetCmInputF').val());
+                        }
+                    }
+
+                    if (formulaToCalcSArea.includes("W")) {
+                        if ($('#widthCmInputF').val() === "") {
+                            formulaToCalcSArea = "";
+                        } else {
+                            formulaToCalcSArea = formulaToCalcSArea.replace("W", $('#widthCmInputF').val());
+                        }
+                    }
+                    if (formulaToCalcSArea.includes("B")) {
+                        if ($('#bottomGussetCmInputF').val() === "") {
+                            formulaToCalcSArea = "";
+                        } else {
+                            formulaToCalcSArea = formulaToCalcSArea.replace("B", $('#bottomGussetCmInputF').val());
+                        }
+                    }
+
+                    if (formulaToCalcSArea.includes("G")) {
+                        if ($('#gussetCmInputF').val() === "") {
+                            formulaToCalcSArea = "";
+                        } else {
+                            formulaToCalcSArea = formulaToCalcSArea.replace("G", $('#gussetCmInputF').val());
+                        }
+                    }
+
+                    if (formulaToCalcSArea === "") {
+                        areaInputF.val("");
+                    } else {
+                        areaInputF.val(eval(formulaToCalcSArea).toFixed(4));
+                    }
+                } else {
+                    areaInputF.val("");
+                }
+
+            }
+
+            // Corrected
+            function setNoOfMetersInputF_onChange() {
+
+                var noOfMetersInputF = $('#PolyCosting_NoOfMeters');
+                var printByWidthRadioB = $('#printByWidth');   // Radio Btn
+                var printByLengthRadioB = $('#printByLength'); // Radio Btn
+                var productFinishingTypeInputF = $('#productFinishingTypeInputF');
+                var orderQtyInputF = $('#PolyCosting_OrderQty');
+                var guageInputF2 = $('#guageInputF2');
+                var printedCheckB = $('#PolyCosting_Printed');
+                var lengthCmInputF = $('#lengthCmInputF');
+                var widthCmInputF = $('#widthCmInputF');
+                var wastePercentInputF = $('#PolyCosting_PreCostingWastePercentage');
+                var withoutClinderBaseCheckB = $('#withoutCylinderBaseCheckB');
+                var cylinderSizeCmInputF = $('#cylinderSizeCmInputF');
+                var PolyCosting_Turns = $('#PolyCosting_Turns');
+
+                if (productFinishingTypeInputF.val().toLowerCase() === "bag type") {
+                    if (!printedCheckB.prop("checked")) {
+                        if (printByLengthRadioB.prop("checked")) {
+                            noOfMetersInputF.val(
+                                ((Number(lengthCmInputF.val()) * Number(orderQtyInputF.val())) / 100)
+                                    .toFixed(4)
+                            );
+                        } else if (printByWidthRadioB.prop("checked")) {
+                            noOfMetersInputF.val(
+                                ((Number(widthCmInputF.val()) * Number(orderQtyInputF.val())) / 100)
+                                    .toFixed(4)
+                            );
+                        } else {
+                            noOfMetersInputF.val("");
+                        }
+                    } else {
+                        if (withoutClinderBaseCheckB.prop("checked") === true) { // this condition to be replace with
+                            if (printByLengthRadioB.prop("checked")) {
+                                noOfMetersInputF.val(
+                                    ((Number(lengthCmInputF.val()) * Number(orderQtyInputF.val())) / 100)
+                                        .toFixed(4)
+                                );
+                            } else if (printByWidthRadioB.prop("checked")) {
+                                noOfMetersInputF.val(
+                                    ((Number(widthCmInputF.val()) * Number(orderQtyInputF.val())) / 100)
+                                        .toFixed(4)
+                                );
+                            } else {
+                                noOfMetersInputF.val("");
+                            }
+                        } else {
+                            noOfMetersInputF.val(
+                                ((Number(cylinderSizeCmInputF.val()) * Number(PolyCosting_Turns.val()) * Number(orderQtyInputF.val())) / 100)
+                                    .toFixed(4)
+                            );
+                        }
+                    }
+                } else if (productFinishingTypeInputF.val() !== "") {
+                    var sheetSize = getSheetSize();
+                    noOfMetersInputF.val(
+                        (Number(orderQtyInputF.val()) / (Number(guageInputF2.val()) * Number(sheetSize) * 0.0000046))
+                            .toFixed(4)
+                    );// This is only valid when order qty messured by qty. Discuss with Mr. Akila.
+                } else {
+                    noOfMetersInputF.val("");
+                }
+
+                setWeightInputFs_onChange();
+
+            }
+
+            function setWeightInputFs_onChange() {
+
+                var weightInputF = $('#PolyCosting_Weight');
+                var productFinishingTypeInputF = $('#productFinishingTypeInputF');
+                var guageInputF = $('#guageInputF2');
+                var bagTypeInputF = $('#PolyCosting_BagTypeId');
+                var noOfMetersInputF = $('#PolyCosting_NoOfMeters');
+                var orderQtyInputF = $('#PolyCosting_OrderQty');
+                var weightOrQtyLabel = $('#weightOrQtyLabel');
+                var orderUomSelectB = $('#uomQtyOrKgSelectB');
+                var uomQtyOrKgHiddenF = $('#PolyCosting_OrderUomId');
+
+                if (bagTypeInputF.val() !== "0") {
+                    var sheetSize = getSheetSize();
+
+                    if (productFinishingTypeInputF.val().toLowerCase() === "bag type") {
+                        weightInputF.val((Number(guageInputF.val()) * sheetSize * Number(noOfMetersInputF.val()) * 0.0000046).toFixed(4));
+                        weightOrQtyLabel.html(`Weight <span class="text-warning">(kg)</span>`);
+                        orderUomSelectB.val("1"); // Qty
+                        uomQtyOrKgHiddenF.val("1"); // Qty
+                    } else {
+                        weightInputF.val(Number(orderQtyInputF.val()).toFixed(4));
+                        weightOrQtyLabel.html(`Qty <span class="text-warning">(NOS)</span>`);
+                        orderUomSelectB.val("2"); // Kg
+                        uomQtyOrKgHiddenF.val("2"); // Kg
+                    }
+                } else {
+                    weightInputF.val("");
+                    weightOrQtyLabel.html(`Weight <span class="text-warning">(kg)</span>`);
+                    orderUomSelectB.val("0"); // Please Select one og Kg OR Qty
+                        uomQtyOrKgHiddenF.val("0"); // Please Select one og Kg OR Qty
+                }
+
+                updateRawMaterialGrid_onChange();
+            }
+
+            function updateRawMaterialGrid_onChange() {
+
+                var rawMaterialsTable = $('#rawMaterialsTable');
+                var polyCombinationSelectB = $('#PolyCosting_PolyCombId'); //1
+
+                if (polyCombinationSelectB.val() !== "0") {
+                    var polyCombObj = getObjectByIdProp(PolyCombJsonArr, polyCombinationSelectB.val());
+                    var polyCombItemCatBridgesArr = polyCombObj.PolyCombItemCatBridges; // Contains {Id: ItemCatIdHere, Percentage: PercentageHere, UnitPrice: price, UnitDuty: duty} array
+                    rawMaterialsTable.find('tbody').empty();
+                    for (var i = 0; i < polyCombItemCatBridgesArr.length; i++) {
+                        var itemCatObjet = getObjectByIdProp(itemCategoryJsonArr, polyCombItemCatBridgesArr[i].Id);
+                        var unitPrice = polyCombItemCatBridgesArr[i].UnitPrice;
+                        var unitDuty = polyCombItemCatBridgesArr[i].UnitDuty;
+
+                        // give alert if item category price has not updated
+                        if (unitPrice === 0) {
+                            alert("Unit Price Per Unit is 0 of the item category: " + itemCatObjet.ItemCategoryDesc +
+                                "\nFirst update the Item Category Price transaction!");
+                        }
+
+                        var weightInputF = $('#PolyCosting_Weight'); //2
+
+                        // set standard consumption
+                        var stdConsumption = 0.0000;
+                        if (weightInputF.val() !== "") {
+                            stdConsumption = (Number(weightInputF.val()) * Number(polyCombItemCatBridgesArr[i].Percentage) / 100).toFixed(4);
+                        }
+
+                        // set pre costing waste
+                        var preCostingWaste = 0.0000;
+                        var preCostingWastePercentInputF = $('#PolyCosting_PreCostingWastePercentage'); //3
+                        if (preCostingWastePercentInputF.val() !== "") {
+                            preCostingWaste = (Number(stdConsumption) * Number(preCostingWastePercentInputF.val()) / 100).toFixed(4);
+                        }
+
+                        // set category wise total weight in the grid
+                        var catWiseTotalWeight = 0.0000;
+                        catWiseTotalWeight = (Number(stdConsumption) + Number(preCostingWaste)).toFixed(4);
+
+                        // set category wise unit weight
+                        var catWiseUnitWeight = 0.0000;
+                        var orderQtyInputF = $('#PolyCosting_OrderQty'); //4
+                        if (orderQtyInputF.val() !== "") {
+                            catWiseUnitWeight = (Number(catWiseTotalWeight) / Number(orderQtyInputF.val())).toFixed(4);
+                        }
+
+                        // set unit cost
+                        var unitCost = 0.0000;
+                        var cusTypeInputF = $('#cusTypeInputF'); //5
+                        if (cusTypeInputF.val().toLowerCase() === "local") {
+                            unitCost = ((Number(unitPrice) + Number(unitDuty)) * Number(catWiseUnitWeight)).toFixed(4);
+                        } else {
+                            unitCost = (Number(unitPrice) * Number(catWiseUnitWeight)).toFixed(4);
+                        }
+
+                        rawMaterialsTable.find('tbody').append(
+                            `
+                                    <tr>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + itemCatObjet.ItemCategoryDesc + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + polyCombItemCatBridgesArr[i].Percentage + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + unitPrice + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + unitDuty + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + stdConsumption + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + preCostingWaste + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + catWiseTotalWeight + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="` + catWiseUnitWeight + `" disabled/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control unitCostInputFs" value="` + unitCost + `" disabled/>
+                                        </td>
+                                    </tr>`
+                        );
+                    }
+                } else {
+                    // set grid = ""
+                    rawMaterialsTable.find('tbody').empty();
+                }
+
+                updateSummaryGrid_onChange();
+            }
+
+            function updateSummaryGrid_onChange() {
+
+                // Weight section.................................................................................
+                var weightTotalInputF = $('#weightTotalInputF');
+                var weightPerUnitInputF = $('#weightPerUnitInputF');
+
+                var weightInputF = $('#PolyCosting_Weight'); //1
+                var pCWastePrecentInputF = $('#PolyCosting_PreCostingWastePercentage'); //2
+                var orderQtyInputF = $('#PolyCosting_OrderQty'); //3
+                var unitCostInputFs = $('.unitCostInputFs'); //4
+
+                // set weightTotal field
+                var weightTotal = 0;
+                if (weightInputF.val() !== "" || pCWastePrecentInputF.val() !== "") {
+                    weightTotal = Number(weightInputF.val()) * (100 + Number(pCWastePrecentInputF.val())) / 100;
+                    weightTotalInputF.val(weightTotal.toFixed(4)); // weightTotalInputF can be empty string
+                } else {
+                    weightTotalInputF.val("");
+                }
+
+                // set weightPerUnit input field
+                if (orderQtyInputF.val() !== "") {
+                    weightPerUnitInputF.val(
+                        ( weightTotal / Number(orderQtyInputF.val()) ).toFixed(4)
+                    );
+                } else {
+                    weightPerUnitInputF.val("");
+                }
+
+                // Material cost section.................................................................................
+                var matCostTotalInputF = $('#matCostTotalInputF');
+                var matCostPerUnitInputF = $('#matCostPerUnitInputF');
+                var matCostPerKgInputF = $('#matCostPerKgInputF');
+                var adjSalesPricePerUnit = $('#PolyCosting_PerUnitAdjustableUnitPrice');
+
+                if (unitCostInputFs.length !== 0) {
+                    var matCostTotal = 0;
+                    // set mat cost per unit
+                    for (var i = 0; i < unitCostInputFs.length; i++) {
+                        if (!isNaN(parseFloat($(unitCostInputFs[i]).val())))
+                            matCostTotal += Number($(unitCostInputFs[i]).val());
+                    }
+                    matCostPerUnitInputF.val(matCostTotal.toFixed(4));
+                    // set mat cost total
+                    if (orderQtyInputF.val() !== "0.0000") {
+                        matCostTotalInputF.val((matCostTotal * Number(orderQtyInputF.val())).toFixed(4));
+                    } else {
+                        matCostTotalInputF.val("0.0000");
+                    }
+                    // set mat cost per kg
+                    if (weightInputF.val() !== "0.0000") {
+                        matCostPerKgInputF.val((Number(orderQtyInputF.val()) * matCostTotal / weightTotal).toFixed(4)); // Correction: weight should be weightTotalInputF - corrected
+                    } else {
+                        matCostPerKgInputF.val("0.0000");
+                    }
+                } else {
+                    matCostTotalInputF.val("0.0000");
+                    matCostPerUnitInputF.val("0.0000");
+                    matCostPerKgInputF.val("0.0000");
+                }
+
+                // Overhead cost section.................................................................................
+                var overHeadCostInputF = $('#overHeadCostInputF');
+                var ohcTotal = Number(overHeadCostInputF.val()) * weightTotal;
+                $('#overHeadCostTotalInputF').val(ohcTotal.toFixed(4));
+                $('#overHeadCostPerUnitInpurF').val(
+                    (ohcTotal / Number(orderQtyInputF.val())).toFixed(4)
+                );
+
+                // Block cost section....................................................................................
+                var blockCostTotalInputF = $('#PolyCosting_BlockCostTotal');
+                $('#blockCostPerUnitInpurF').val(
+                    ( Number(blockCostTotalInputF.val()) / Number(orderQtyInputF.val()) ).toFixed(4)
+                );
+                $('#blockCostInputF').val(
+                    (Number(blockCostTotalInputF.val()) / weightTotal).toFixed(4)
+                );
+
+                // Other cost section....................................................................................
+                var otherCostTotalInputF = $('#PolyCosting_OtherCostTotal');
+                $('#otherCostPerUnitInpurF').val(
+                    ( Number(otherCostTotalInputF.val()) / Number(orderQtyInputF.val()) ).toFixed(4)
+                );
+                $('#otherCostsInputF').val(
+                    (Number(otherCostTotalInputF.val()) / weightTotal).toFixed(4)
+                );
+
+                // Total section.........................................................................................
+                var totalPerUnit = Number($('#matCostPerUnitInputF').val()) + Number($('#overHeadCostPerUnitInpurF').val())
+                    + Number($('#blockCostPerUnitInpurF').val()) + Number($('#otherCostPerUnitInpurF').val());
+                $('#totalPerUnit').val(
+                    totalPerUnit.toFixed(4)
+                );
+
+                var totalTotal = Number($('#matCostTotalInputF').val()) + Number($('#overHeadCostTotalInputF').val())
+                    + Number($('#PolyCosting_BlockCostTotal').val()) + Number($('#PolyCosting_OtherCostTotal').val());
+                $('#totalTotal').val(
+                    totalTotal.toFixed(4)
+                );
+
+                var totalPerKg = Number($('#matCostPerKgInputF').val()) + Number($('#overHeadCostInputF').val())
+                    + Number($('#blockCostInputF').val()) + Number($('#otherCostsInputF').val());
+                $('#totalPerKg').val(
+                    totalPerKg.toFixed(4)
+                );
+
+                var salesPricePerUnit = totalPerUnit * 125 / 100;
+                $('#salesPricePerUnit').val(salesPricePerUnit.toFixed(4));
+                var salesPriceTotal = totalTotal * 125 / 100;
+                $('#salesPriceTotal').val(salesPriceTotal.toFixed(4));
+                var salesPricePerKg = totalPerKg * 125 / 100;
+                $('#salesPricePerKg').val(salesPricePerKg.toFixed(4));
+
+                // new start: sales price in native currency
+                var exRateInputF = $('#exRateInputF');
+
+                var salesPricePerUnitInNativeC = salesPricePerUnit / Number(exRateInputF.val());
+                $('#PolyCosting_PerUnitSuggestedUnitPrice').val(
+                    salesPricePerUnitInNativeC.toFixed(4)
+                );
+                var salesPriceTotalInNativeC = salesPriceTotal / Number(exRateInputF.val());
+                $('#nativeSalesPriceTotal').val(
+                    salesPriceTotalInNativeC.toFixed(4)
+                );
+                var salesPricePerKgInNativeC = salesPricePerKg / Number(exRateInputF.val());
+                $('#nativeSalesPricePerKg').val(
+                    salesPricePerKgInNativeC.toFixed(4)
+                );
+
+                // Adjustable sales price (in native currency)
+                $('#PolyCosting_PerUnitAdjustableUnitPrice').val(salesPricePerUnitInNativeC.toFixed(4));
+                $('#adjSalesPriceTotal').val(salesPriceTotalInNativeC.toFixed(4));
+                $('#adjSalesPricePerKg').val(salesPricePerKgInNativeC.toFixed(4));
+
+                $('#adjProfitPercentPerUnit').val("25.00%");
+                $('#adjProfitPercentTotal').val("25.00%");
+                $('#adjProfitPercentPerKg').val("25.00%");
+
+                updateAdjSalesPrice_onKeyup();
+            }
+
+            function updateAdjSalesPrice_onKeyup() {
+                var weightTotal = Number($('#weightTotalInputF').val());
+                var adjSalesPricePerUnit = $('#PolyCosting_PerUnitAdjustableUnitPrice'); //1
+                var orderQtyInputF = $('#PolyCosting_OrderQty');
+                var weightInputF = $('#PolyCosting_Weight');
+                var totalPerUnit = $('#totalPerUnit');
+                var exRateInputF = $('#exRateInputF'); //2
+                var adjSalesPricePerKgInputF = $('#adjSalesPricePerKg');
+                var adjSalesPriceTotalInputF = $('#adjSalesPriceTotal');
+
+                var adjSalesPriceTotal = Number(adjSalesPricePerUnit.val()) * Number(orderQtyInputF.val());
+                adjSalesPriceTotalInputF.val(
+                    adjSalesPriceTotal.toFixed(4)
+                );
+
+                var adjSalesPricePerKg = adjSalesPriceTotal / weightTotal;
+                adjSalesPricePerKgInputF.val(
+                    adjSalesPricePerKg.toFixed(4)
+                );
+
+                if (!isNaN(parseFloat(exRateInputF.val()))) {
+                    var totalPerUnitInNativeC = Number(totalPerUnit.val()) / Number(exRateInputF.val());
+                    var percentageAfterAdj = (((Number(adjSalesPricePerUnit.val()) - totalPerUnitInNativeC) / totalPerUnitInNativeC) * 100).toFixed(2);
+                    if (Number(percentageAfterAdj) < 15.00 && (Number($('#PolyCosting_PolyCostingId').val()) === 0 || $('#PolyCosting_PolyCostingId').val() === '') && @(User.IsInRole(Costing_Formula___KSPA.Utility.Helper.Admin) ? "false" : "true")) {
+                        var adjSalesPricePerUnit_Val = (Math.trunc(115 * totalPerUnitInNativeC * 10000 / 100) / 10000).toString();
+                        $('#saveBtnErrorSpan').show();
+                        $('#submitButton').prop("disabled", true);
+                        // iziToast.warning({
+                        //     title: 'Warinig',
+                        //     message: 'Profit percentage is less than 15%. Please increase the unit price!',
+                        //     position: 'topRight',
+                        //     timeout: 15000
+                        // });
+                        //alert('Minimum allowed profit percentage is 15%. Therefore can\'t lower the unit price more than ' + adjSalesPricePerUnit_Val + ' !');
+                        //adjSalesPricePerUnit.val(adjSalesPricePerUnit_Val);
+                        //percentageAfterAdj = (((Number(adjSalesPricePerUnit.val()) - totalPerUnitInNativeC) / totalPerUnitInNativeC) * 100).toFixed(2);
+                        //updateAdjSalesPrice_onKeyup();
+                    }
+                    // elseif (Number(percentageAfterAdj) < 0.00 && (Number($('#PolyCosting_PolyCostingId').val()) === 0 || $('#PolyCosting_PolyCostingId').val() === '')) {
+                    //     var adjSalesPricePerUnit_Val = (Math.trunc(115 * totalPerUnitInNativeC * 10000 / 100) / 10000).toString();
+                    //     $('#saveBtnErrorSpan').show();
+                    //     $('#submitButton').prop("disabled", true);
+                    //     // iziToast.warning({
+                    //     //     title: 'Warinig',
+                    //     //     message: 'Profit percentage is less than 0%. Please increase the unit price!',
+                    //     //     position: 'topRight',
+                    //     //     timeout: 15000
+                    //     // });
+                    //     //alert('Minimum allowed profit percentage is 15%. Therefore can\'t lower the unit price more than ' + adjSalesPricePerUnit_Val + ' !');
+                    //     //adjSalesPricePerUnit.val(adjSalesPricePerUnit_Val);
+                    //     //percentageAfterAdj = (((Number(adjSalesPricePerUnit.val()) - totalPerUnitInNativeC) / totalPerUnitInNativeC) * 100).toFixed(2);
+                    //     //updateAdjSalesPrice_onKeyup();
+                    // } 
+                    else {
+                        $('#saveBtnErrorSpan').hide();
+                        $('#submitButton').prop("disabled", false);
+                    }
+                    $('#adjProfitPercentPerUnit').val(
+                        percentageAfterAdj + "%"
+                    );
+                    $('#adjProfitPercentTotal').val(
+                        percentageAfterAdj + "%"
+                    );
+                    $('#adjProfitPercentPerKg').val(
+                        percentageAfterAdj + "%"
+                    );
+
+                    $('#adjSalesPriceLkrPerUnit').val(
+                       ( adjSalesPricePerUnit.val() * exRateInputF.val() ).toFixed(4)
+                    );
+                    $('#adjSalesPriceLkrTotal').val(
+                        ( adjSalesPriceTotalInputF.val() * exRateInputF.val() ).toFixed(4)
+                    );
+                    $('#adjSalesPriceLkrPerKg').val(
+                        ( adjSalesPricePerKgInputF.val() * exRateInputF.val() ).toFixed(4)
+                    );
+                } else {
+                    $('#adjProfitPercentPerUnit').val("");
+                    $('#adjProfitPercentTotal').val("");
+                    $('#adjProfitPercentPerKg').val("");
+
+                    $('#adjSalesPriceLkrPerUnit').val("");
+                    $('#adjSalesPriceLkrTotal').val("");
+                    $('#adjSalesPriceLkrPerKg').val("");
+                }
+
+            }
+
+            function cylinderSelectB_onChange() {
+                var cylinderSizeCmInputF = $('#cylinderSizeCmInputF');
+
+                var cylinder = getObjectByIdProp(cylinderJsonArr, $("#PolyCosting_CylinderId").val());
+                if (cylinder !== null) {
+                    cylinderSizeCmInputF.val(cylinder.CylinderSizeCm);
+                } else {
+                    cylinderSizeCmInputF.val('');
+                }
+                setTurnsInputF_onChange();
+                setNoOfMetersInputF_onChange();
+            }
+
+            function setCylinderAndFilterCylinderOptionsList_onChange() {
+                var cylinderSelectB = $('#PolyCosting_CylinderId');
+                var turnsTextB = $('#PolyCosting_Turns');
+
+                var autoClinderSelectionCheckB = $('#PolyCosting_AutoCylinderSelection'); // 1
+                var printedCheckB = $('#PolyCosting_Printed'); // 2
+                var printByWidthRadioB = $('#printByWidth'); // 3
+                var printByLengthRadioB = $('#printByLength'); // 4
+                var widthCmInputF = $('#widthCmInputF'); // 5
+                var lengthCmInputF = $('#lengthCmInputF'); // 6
+                var noOfColorsInputF = $('#PolyCosting_NoOfColors'); // 7
+                var printingSidesCountInputF = $('#PolyCosting_NoOfPrintingSides'); // 8
+                //var cylinderJsonArr = cylinderJsonArr; //cylinderJsonArr is a global variable now.
+
+                var tempLength; // This is the product length if the bag type print by length OR the product width if the bag type print by width.
+
+                // calculating tempLength
+                if(printByWidthRadioB.is(':checked')) {
+                    tempLength = Number(widthCmInputF.val());
+                } else if(printByLengthRadioB.is(':checked')) {
+                    tempLength = Number(lengthCmInputF.val());
+                } else {
+                    tempLength = 0;
+                    if(printedCheckB.is(':checked')) {
+                        alert('Please, select the "Bag ty. / Reel ty. code" to search for suitable cylinders!!');
+                    }
+                }
+
+                var suitableClindersArray = [];
+                var minWastage = null;
+                var minWastingCylinder = null;
+                var turns = null;
+
+                // finding the lowest waste clinder and all suitable clinders list
+                if(tempLength !== 0 && autoClinderSelectionCheckB.is(':checked') && printedCheckB.is(':checked')) {
+                
+                    cylinderJsonArr.forEach(function(cylinder) {
+                    
+                        if(isNaN(parseInt(noOfColorsInputF.val())) || isNaN(parseInt(printingSidesCountInputF.val()))) {
+                            // show all cylinders, selected val = "-- select cylinder --".
+                            cylinderSelectB.empty();
+                            var allOptionsString = '<option value="" selected>-- select cylinder --</option>';
+                            cylinderJsonArr.forEach(function(cylinder) {
+                                allOptionsString += '<option value="' + cylinder.Id + '">' + cylinder.CylinderCode + '</option>';
+                            });
+                            cylinderSelectB.append(allOptionsString);
+                            cylinderSelectB_onChange();
+                            alert('Please, fill both "No of colors" and "Printing sides count" to find suitable cylinders!');
+                        } else if(cylinder.NoOfColors >= parseInt(noOfColorsInputF.val()) * parseInt(printingSidesCountInputF.val())) {
+
+                            suitableClindersArray.push(cylinder);
+
+                            if(minWastage === null || minWastingCylinder === null || turns === null) {
+                                var temp_minWastage = cylinder.CylinderSizeCm - tempLength / 2;
+                                if(temp_minWastage > 0) {
+                                    minWastage = temp_minWastage;
+                                    minWastingCylinder = cylinder;
+                                    turns = 2;
+                                } else {
+                                    temp_minWastage = cylinder.CylinderSizeCm - tempLength;
+                                    if(temp_minWastage > 0) {
+                                        minWastage = temp_minWastage;
+                                        minWastingCylinder = cylinder;
+                                        turns = 1;
+                                    } else {
+                                        temp_minWastage = cylinder.CylinderSizeCm - tempLength * 2 ;
+                                        if(temp_minWastage > 0) {
+                                            minWastage = temp_minWastage;
+                                            minWastingCylinder = cylinder;
+                                            turns = 1/2;
+                                        }
+                                    }
+                                }
+                            }
+
+                            const tolarance = CYLINDERSELECT_NOOFCOLORS_VS_WASTE_TOLARANCE;
+                            if(minWastage !== null || minWastingCylinder !== null || turns !== null) {
+                                var oneByTwoWaste = cylinder.CylinderSizeCm - tempLength / 2;
+                                if(oneByTwoWaste > 0) {
+                                    if(minWastage > oneByTwoWaste) {
+                                        minWastage = oneByTwoWaste;
+                                        minWastingCylinder = cylinder;
+                                        turns = 2;
+                                    } else if((minWastage - oneByTwoWaste < tolarance && minWastage - oneByTwoWaste > 0) || (oneByTwoWaste - minWastage < tolarance && oneByTwoWaste - minWastage > 0)) {
+                                        minWastage = oneByTwoWaste;
+                                        minWastingCylinder = cylinder;
+                                        turns = 2;
+                                    }
+                                }
+                                var oneWaste = cylinder.CylinderSizeCm - tempLength;
+                                if(oneWaste > 0) {
+                                    if(minWastage > oneWaste) {
+                                        minWastage = oneWaste;
+                                        minWastingCylinder = cylinder;
+                                        turns = 1;
+                                    } else if((minWastage - oneWaste < tolarance && minWastage - oneWaste > 0) || (oneWaste - minWastage < tolarance && oneWaste - minWastage > 0)) {
+                                        minWastage = oneWaste;
+                                        minWastingCylinder = cylinder;
+                                        turns = 1;
+                                    }
+                                }
+                                var twoWaste = cylinder.CylinderSizeCm - tempLength * 2;
+                                if(twoWaste > 0) {
+                                    if(minWastage > twoWaste) {
+                                        minWastage = twoWaste;
+                                        minWastingCylinder = cylinder;
+                                        turns = 1/2;
+                                    } else if((minWastage - twoWaste < tolarance && minWastage - twoWaste > 0) || (twoWaste - minWastage < tolarance && twoWaste - minWastage > 0)) {
+                                        minWastage = twoWaste;
+                                        minWastingCylinder = cylinder;
+                                        turns = 1/2;
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }); // foreach loop ends.
+
+                    if(minWastage !== null && minWastingCylinder !== null && turns !== null) {
+                    
+                        iziToast.success({
+                            title: 'Ok',
+                            message: 'A suitable cylinder found! Waste is just: ' + minWastage.toFixed(4) + " cm.",
+                            position: 'topRight',
+                            timeout: 15000
+                        });
+
+                        // set option list to cylinder select box
+                        cylinderSelectB.empty();
+                        var optionString = '';
+                        suitableClindersArray.forEach(function(cylinder) {
+                            optionString += '<option value="' + cylinder.Id + '">' + cylinder.CylinderCode + '</option>';
+                        });
+                        cylinderSelectB.append(optionString);
+                        // set selected value to cylinder select box
+                        cylinderSelectB.val(minWastingCylinder.Id);
+                        cylinderSelectB_onChange();
+                        // set turns
+                        turnsTextB.val(turns.toFixed(4));
+                        setNoOfMetersInputF_onChange();
+                    } else {
+                        // show all cylinders, selected val = "-- select cylinder --".
+                        cylinderSelectB.empty();
+                        var allOptionsString = '<option value="" selected>-- select cylinder --</option>';
+                        cylinderJsonArr.forEach(function(cylinder) {
+                            allOptionsString += '<option value="' + cylinder.Id + '">' + cylinder.CylinderCode + '</option>';
+                        });
+                        cylinderSelectB.append(allOptionsString);
+                        cylinderSelectB_onChange();
+                        alert("There is no suitable cylinders in the Cylinder Master yet!");
+                    }
+
+                } else {
+                    // show all cylinders, selected val = "-- select cylinder --".
+                    cylinderSelectB.empty();
+                    var allOptionsString = '<option value="" selected>-- select cylinder --</option>';
+                    cylinderJsonArr.forEach(function(cylinder) {
+                        allOptionsString += '<option value="' + cylinder.Id + '">' + cylinder.CylinderCode + '</option>';
+                    });
+                    cylinderSelectB.append(allOptionsString);
+                    cylinderSelectB_onChange();
+                }
+
+            }
+
+            function setPreCostingWaste_onChange() {
+                var preCostingWasteInputF = $('#PolyCosting_PreCostingWastePercentage');
+                var noOfColorsInputF = $('#PolyCosting_NoOfColors'); // 1
+                const preCostWasteMinFor0Colors = 5;
+
+                var noOfCols = Number(noOfColorsInputF.val());
+                if(noOfCols <= 1) {
+                    preCostingWasteInputF.val(
+                        preCostWasteMinFor0Colors * 1
+                    );
+                    preCostingWasteInputF.attr(
+                        'min',
+                        preCostWasteMinFor0Colors * 1
+                    );
+                } else if(noOfCols <= 2) {
+                    preCostingWasteInputF.val(
+                        preCostWasteMinFor0Colors * 2
+                    );
+                    preCostingWasteInputF.attr(
+                        'min',
+                        preCostWasteMinFor0Colors * 2
+                    );
+                } else if(noOfCols <= 3) {
+                    preCostingWasteInputF.val(
+                        preCostWasteMinFor0Colors * 3
+                    );
+                    preCostingWasteInputF.attr(
+                        'min',
+                        preCostWasteMinFor0Colors * 3
+                    );
+                } else if(noOfCols > 3) {
+                    preCostingWasteInputF.val(
+                        preCostWasteMinFor0Colors * 4
+                    );
+                    preCostingWasteInputF.attr(
+                        'min',
+                        preCostWasteMinFor0Colors * 4
+                    );
+                } else {
+                    preCostingWasteInputF.val(
+                        preCostWasteMinFor0Colors * 1
+                    );
+                    preCostingWasteInputF.attr(
+                        'min',
+                        preCostWasteMinFor0Colors * 1
+                    );
+                }
+                $("form").removeData("validator").removeData("unobtrusiveValidation");
+                //Parse the form again
+                $.validator.unobtrusive.parse($("form"));
+
+                setNoOfMetersInputF_onChange();
+            }
+
+        });
+
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

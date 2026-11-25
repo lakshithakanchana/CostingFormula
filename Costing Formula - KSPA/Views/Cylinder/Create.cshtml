@@ -1,0 +1,140 @@
+﻿@model Costing_Formula___KSPA.Models.Cylinder;
+
+@{
+    ViewData["Title"] = "Cylinder Master - Add New Cylinder";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Cylinder Master - Add New Cylinder</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+
+                <!-- Col for the Cy Id -->
+                <div class="col-md-4">
+                    <div class="mb-3  text-white"><!-- mb-3 to add some margin between form-controls -->
+                        <label class="form-label" asp-for="CylinderId">Cylinder ID</label>
+                        <input class="form-control text-warning fw-bold" type="text" asp-for="CylinderId" placeholder="System will generate for you" disabled />
+                        <b><span class="text-danger" asp-validation-for="CylinderId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Col for the Cy Code -->
+                <div class="col-md-8">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label class="form-label" asp-for="CylinderCode">Cylinder Code <span class="text-warning fw-bold">(As in Axpert)</span></label>
+                        <input class="form-control" type="text" asp-for="CylinderCode" />
+                        <b><span class="text-danger" asp-validation-for="CylinderCode"></span></b>
+                    </div>
+                </div>
+
+                <!-- Col for the Cy Desc -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label class="form-label" asp-for="CylinderDesc">Cylinder Description</label>
+                        <input class="form-control" type="text" asp-for="CylinderDesc" />
+                        <b><span class="text-danger" asp-validation-for="CylinderDesc"></span></b>
+                    </div>
+                </div>
+
+                <!-- Col for the No of col -->
+                <div class="col-md-4">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label class="form-label" asp-for="NoOfColors">No Of Colors</label>
+                        <input class="form-control" type="text" asp-for="NoOfColors" />
+                        <b><span class="text-danger" asp-validation-for="NoOfColors"></span></b>
+                    </div>
+                </div>
+
+                <!-- Col for the Cy size in cm -->
+                <div class="col-md-4">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label class="form-label" asp-for="CylinderSizeCm">Cylinder Size in <span class="text-warning">CM</span></label>
+                        <input class="form-control" type="text" asp-for="CylinderSizeCm" />
+                        <b><span class="text-danger" asp-validation-for="CylinderSizeCm"></span></b>
+                    </div>
+                </div>
+
+                <!-- Col for the No of pieces -->
+                <div class="col-md-4">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label class="form-label" asp-for="NoOfPieces">No Of Pieces</label>
+                        <input class="form-control" type="text" asp-for="NoOfPieces" />
+                        <b><span class="text-danger" asp-validation-for="NoOfPieces"></span></b>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

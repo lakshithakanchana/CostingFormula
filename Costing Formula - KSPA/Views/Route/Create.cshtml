@@ -1,0 +1,102 @@
+﻿@model Costing_Formula___KSPA.Models.Route;
+@{
+    ViewData["Title"] = "Route Master - Add New Route";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Route Master - Add New Route</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div class="row">
+
+        <!-- Route id Input Field -->
+        <div class="col-6 col-md-4">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="RouteId" class="form-label">Route Id</label>
+                <input type="text" class="form-control" asp-for="RouteId" placeholder="System will generate for you" disabled>
+                <b><span class="text-danger" asp-validation-for="RouteId"></span></b>
+            </div>
+        </div>
+        <!-- Route name Input Field -->
+        <div class="col-6 col-md-8">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="RouteName" class="form-label">Route name</label>
+                <input type="text" class="form-control" asp-for="RouteName" placeholder="Route name here">
+                <b><span class="text-danger" asp-validation-for="RouteName"></span></b>
+            </div>
+        </div>
+        <!-- Fixed excess Input Field -->
+        <div class="col-6">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="FixedExcess" class="form-label">Fixed excess</label>
+                <input type="number" class="form-control" asp-for="FixedExcess" placeholder="Fixed excess here">
+                <b><span class="text-danger" asp-validation-for="FixedExcess"></span></b>
+            </div>
+        </div>
+        <!-- Handling waste percent Input Field -->
+        <div class="col-6">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="HandlingWastePercent" class="form-label">Handling waste %</label>
+                <input type="text" class="form-control" asp-for="HandlingWastePercent" placeholder="Handling waste percentage here">
+                <b><span class="text-danger" asp-validation-for="HandlingWastePercent"></span></b>
+            </div>
+        </div>
+
+        <!-- Section for the submit button -->
+        <div class="col-md-12">
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
+

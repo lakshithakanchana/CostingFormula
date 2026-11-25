@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.CorruCombination>;
+
+@{
+    ViewData["Title"] = "Corru Combination Master - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Corru Combination Master - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+            <a class="btn btn-secondary border border-2" asp-action="ImportFromCsv"><i class="fa-regular fa-upload"></i> Import From CSV</a>
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+    //If there are 1 or more Poly Combinations to show
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Combination ID</th>
+                                    <th class="text-nowrap" scope="col">Combination Code <span class="text-warning">(As in Axpert)</span></th>
+                                    <th class="text-nowrap" scope="col">Color</th>
+                                    <th class="text-nowrap" scope="col">Plys</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var corruComb in Model)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap">@corruComb.CorruCombId</td>
+                                        <td class="text-nowrap"><a asp-action="View" asp-route-id="@corruComb.CorruCombId">@corruComb.CorruCombCode</a></td>
+                                        <td class="text-nowrap">@corruComb.Color!.ColorName </td>
+                                        <td class="text-nowrap">@corruComb.NoOfPlys</td>
+                                        <td class="text-nowrap">@corruComb.IsActive</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+}
+else
+{
+    //If there are no Poly Combinations to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no corru combinations added yet!</h2>
+            <p>
+                Add one?
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

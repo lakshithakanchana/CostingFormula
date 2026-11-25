@@ -1,0 +1,369 @@
+﻿@model List<Costing_Formula___KSPA.Models.BoxType>
+
+@{
+    ViewData["Title"] = "Box Type Master - Import CSV";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Box Type Master - Import CSV</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-12">
+        <label for="formFile" class="form-label">Please choose the csv file to import from...</label>&nbsp;<label>(<a href="@Url.Content("~/import-templates/BoxTypes.csv")">Click here to download the import template.</a>)</label>
+    </div>
+    <div class="col-sm-8">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="upload_file" accept=".csv">
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="mb-3 d-grid gap-2">
+            <button class="btn btn-primary" id="process_button"><i class="fa-regular fa-gears"></i> <b>Process</b></button>
+        </div>
+    </div>
+    <div class="col-12">
+        <hr class="bg-primary border-2 border-primary" />
+    </div>
+</div>
+
+<div class="row">
+    <form method="post" asp-action="ImportFromCsv">
+
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">Proceed CSV...</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Code</th>
+                                    <th class="text-nowrap" scope="col">Desc</th>
+                                    <th class="text-nowrap" scope="col">Plys</th>
+                                    <th class="text-nowrap" scope="col">ExtLengthFormula</th>
+                                    <th class="text-nowrap" scope="col">ExtLengthFormulaIfExceedsMaxLength</th>
+                                    <th class="text-nowrap" scope="col">ExtWidthFormula</th>
+                                    <th class="text-nowrap" scope="col">IntLengthFormula</th>
+                                    <th class="text-nowrap" scope="col">IntLengthFormulaIfExceedsMaxLength</th>
+                                    <th class="text-nowrap" scope="col">IntWidthFormula</th>
+                                    <th class="text-nowrap" scope="col">Laminate&quest;</th>
+                                    <th class="text-nowrap" scope="col">DieCut&quest;</th>
+                                    <th class="text-nowrap" scope="col">DesignBox&quest;</th>
+                                    <th class="text-nowrap" scope="col">Board&quest;</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <tr>
+                                    <td>
+                                        <input asp-for="@Model[0].BoxTypeCode" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].BoxTypeDesc" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].NoOfPlys" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].ESheetLengthFormula" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].ESheetLengthFormulaIfSLExceeds" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].ESheetWidthFormula" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].ISheetLengthFormula" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].ISheetLengthFormulaIfSLExceeds" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].ISheetWidthFormula" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].Laminate" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].DieCut" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].DesignBox" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].Board" />
+                                    </td>
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[0].IsActive" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+        <div class="col-12">
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/papaparse/dist/papaparse.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            document.getElementById('table-body').innerHTML = '';
+        });
+
+        const process_btn = document.getElementById('process_button')
+            .addEventListener('click', () => {
+                Papa.parse(document.getElementById('upload_file').files[0], {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        document.getElementById('table-body').innerHTML = '';
+                        add_input_rows(results.data);
+                    }
+                });
+            });
+
+        function add_input_rows(boxTypes) {
+            for (var i = 0; i < boxTypes.length; i++) {
+
+                var boxType = boxTypes[i];
+
+                var row_count = document.getElementById('table-body').childElementCount;
+                if (typeof boxType.Code === 'undefined') {
+                    alert('\"Code\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.Desc === 'undefined') {
+                    alert('\"Desc\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.Plys === 'undefined') {
+                    alert('\"Plys\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.ExtLengthFormula === 'undefined') {
+                    alert('\"ExtLengthFormula\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.ExtLengthFormulaIfExceedsMaxLength === 'undefined') {
+                    alert('\"ExtLengthFormulaIfExceedsMaxLength\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.ExtWidthFormula === 'undefined') {
+                    alert('\"ExtWidthFormula\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.IntLengthFormula === 'undefined') {
+                    alert('\"IntLengthFormula\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.IntLengthFormulaIfExceedsMaxLength === 'undefined') {
+                    alert('\"IntLengthFormulaIfExceedsMaxLength\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.IntWidthFormula === 'undefined') {
+                    alert('\"IntWidthFormula\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.Laminate === 'undefined') {
+                    alert('\"Laminate\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.DieCut === 'undefined') {
+                    alert('\"DieCut\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.DesignBox === 'undefined') {
+                    alert('\"DesignBox\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.Board === 'undefined') {
+                    alert('\"Board\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof boxType.Active === 'undefined') {
+                    alert('\"Active\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_laminate_checked;
+                if (boxType.Laminate.toLowerCase() == 'true' || boxType.Laminate == '1') {
+                    is_laminate_checked = 'checked';
+                } else if (boxType.Laminate.toLowerCase() == 'false' || boxType.Laminate == '0') {
+                    is_laminate_checked = '';
+                } else {
+                    alert(boxType.Laminate + ' is not valid value for the column \"Laminate\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_diecut_checked;
+                if (boxType.DieCut.toLowerCase() == 'true' || boxType.DieCut == '1') {
+                    is_diecut_checked = 'checked';
+                } else if (boxType.DieCut.toLowerCase() == 'false' || boxType.DieCut == '0') {
+                    is_diecut_checked = '';
+                } else {
+                    alert(boxType.DieCut + ' is not valid value for the column \"DieCut\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_designbox_checked;
+                if (boxType.DesignBox.toLowerCase() == 'true' || boxType.DesignBox == '1') {
+                    is_designbox_checked = 'checked';
+                } else if (boxType.DesignBox.toLowerCase() == 'false' || boxType.DesignBox == '0') {
+                    is_designbox_checked = '';
+                } else {
+                    alert(boxType.DesignBox + ' is not valid value for the column \"DesignBox\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_board_checked;
+                if (boxType.Board.toLowerCase() == 'true' || boxType.Board == '1') {
+                    is_board_checked = 'checked';
+                } else if (boxType.Board.toLowerCase() == 'false' || boxType.Board == '0') {
+                    is_board_checked = '';
+                } else {
+                    alert(boxType.Board + ' is not valid value for the column \"Board\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_active_checked;
+                if (boxType.Active.toLowerCase() == 'true' || boxType.Active == '1') {
+                    is_active_checked = 'checked';
+                } else if (boxType.Active.toLowerCase() == 'false' || boxType.Active == '0') {
+                    is_active_checked = '';
+                } else {
+                    alert(boxType.Active + ' is not valid value for the column \"Active\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                $('#table-body').append(
+                    `
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" data-val="true" data-val-required="The BoxTypeCode field is required." id="z`+ row_count + `__BoxTypeCode" name="[` + row_count + `].BoxTypeCode" value="` + boxType.Code + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BoxTypeCode" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" data-val="true" data-val-required="The BoxTypeDesc field is required." id="z`+ row_count + `__BoxTypeDesc" name="[` + row_count + `].BoxTypeDesc" value="` + boxType.Desc + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].BoxTypeDesc" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" data-val="true" data-val-required="The NoOfPlys field is required." id="z`+ row_count + `__NoOfPlys" name="[` + row_count + `].NoOfPlys" value="` + boxType.Plys + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].NoOfPlys" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="z`+ row_count + `__ESheetLengthFormula" name="[` + row_count + `].ESheetLengthFormula" value="` + boxType.ExtLengthFormula + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].ESheetLengthFormula" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="z`+ row_count + `__ESheetLengthFormulaIfSLExceeds" name="[` + row_count + `].ESheetLengthFormulaIfSLExceeds" value="` + boxType.ExtLengthFormulaIfExceedsMaxLength + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].ESheetLengthFormulaIfSLExceeds" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="z`+ row_count + `__ESheetWidthFormula" name="[` + row_count + `].ESheetWidthFormula" value="` + boxType.ExtWidthFormula + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].ESheetWidthFormula" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="z`+ row_count + `__ISheetLengthFormula" name="[` + row_count + `].ISheetLengthFormula" value="` + boxType.IntLengthFormula + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].ISheetLengthFormula" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="z`+ row_count + `__ISheetLengthFormulaIfSLExceeds" name="[` + row_count + `].ISheetLengthFormulaIfSLExceeds" value="` + boxType.IntLengthFormulaIfExceedsMaxLength + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].ISheetLengthFormulaIfSLExceeds" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="z`+ row_count + `__ISheetWidthFormula" name="[` + row_count + `].ISheetWidthFormula" value="` + boxType.IntWidthFormula + `" readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].ISheetWidthFormula" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td style="text-align: center">
+                            <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Laminate field is required." id="z`+ row_count + `__Laminate" name="[` + row_count + `].Laminate" value="true" ` + is_laminate_checked + ` readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].Laminate" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td style="text-align: center">
+                            <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The DieCut field is required." id="z`+ row_count + `__DieCut" name="[` + row_count + `].DieCut" value="true" ` + is_diecut_checked + ` readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].DieCut" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td style="text-align: center">
+                            <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The DesignBox field is required." id="z`+ row_count + `__DesignBox" name="[` + row_count + `].DesignBox" value="true" ` + is_designbox_checked + ` readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].DesignBox" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td style="text-align: center">
+                            <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The Board field is required." id="z`+ row_count + `__Board" name="[` + row_count + `].Board" value="true" ` + is_board_checked + ` readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].Board" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td style="text-align: center">
+                            <input class="form-check-input" type="checkbox" data-val="true" data-val-required="The IsActive field is required." id="z`+ row_count + `__IsActive" name="[` + row_count + `].IsActive" value="true" ` + is_active_checked + ` readonly>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].IsActive" data-valmsg-replace="true"></span></b>
+                        </td>
+                    </tr>
+                    `
+                );
+            }
+            $("form").removeData("validator").removeData("unobtrusiveValidation");
+            //Parse the form again
+            $.validator.unobtrusive.parse($("form"));
+        }
+
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

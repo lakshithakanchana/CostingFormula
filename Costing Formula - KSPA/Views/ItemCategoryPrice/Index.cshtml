@@ -1,0 +1,154 @@
+﻿@model List<Costing_Formula___KSPA.Models.ItemCategoryPrice>;
+
+@{
+    ViewData["Title"] = "Item Category Price Update Summarized View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Item Category Price Update Summarized View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+
+    IEnumerable<ItemCategoryPrice> noEffextiveICPs = Model.Where(rec => rec.IcpId == 0);
+    IEnumerable<ItemCategoryPrice> withEffextiveICPs = Model.Where(rec => rec.IcpId != 0);
+
+    if (noEffextiveICPs.Count() > 0)
+    {
+        //If there are 1 or more item categories do not having item category prices to show.
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="bd-callout bd-callout-danger bg-dark d-md-inline-block">
+                    <h2 class="h5">There are some item categories with no price(s) updated yet.</h2>
+                </div>
+                <!-- Card -->
+                <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                    <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                        <lable class="fw-bold">Please add at least one item category price for the following.</lable>
+                    </div>
+                    <div class="card-body text-white">
+                        <blockquote class="row">
+                            <table class="data-table table text-white" style="min-width: 98%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-nowrap" scope="col">Item Category ID</th>
+                                        <th class="text-nowrap" scope="col">Item Category Code <span class="text-warning">(As in Axpert)</span></th>
+                                        <th class="text-nowrap" scope="col">Item Category Description</th>
+                                        <th class="text-nowrap" scope="col">Is Poly Combination?</th>
+                                        <th class="text-nowrap" scope="col">Is Corru Combination?</th>
+                                        <th class="text-nowrap" scope="col">Unit Price <span class="text-warning">In Effect</span></th>
+                                        <th class="text-nowrap" scope="col">Duty Per Unit <span class="text-warning">In Effect</span></th>
+                                        <th class="text-nowrap" scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var iCP in noEffextiveICPs)
+                                    {
+                                        <tr>
+                                            <td class="text-nowrap">@iCP.ItemCatId</td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.ItemCategoryCode</td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.ItemCategoryDesc </td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.IsPolyComb</td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.IsCorruComb</td>
+                                            <td class="text-nowrap"><span class="text-warning">Not Available</span></td>
+                                            <td class="text-nowrap"><span class="text-warning">Not Available</span></td>
+                                            <td class="text-nowrap"><a class="btn btn-primary" asp-action="Create" asp-route-id="@iCP.ItemCatId" role="button"><i class="fa-regular fa-plus"></i> Add Unit Price/Duty</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </blockquote>
+                    </div>
+                </div> <!-- End of the card -->
+            </div>
+        </div>
+    }
+    if (withEffextiveICPs.Count() > 0)
+    {
+        //If there are 1 or more item categories having item category prices to show.
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="bd-callout bd-callout-success bg-dark d-md-inline-block">
+                    <h2 class="h5">Item categories with system choosen unit price/duty for today: @DateTime.Today.ToString("dd MMMM, yyyy")</h2>
+                </div>
+                <!-- Card -->
+                <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                    <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                        <lable class="fw-bold">Manage item category price/duty.</lable>
+                    </div>
+                    <div class="card-body text-white">
+                        <blockquote class="row">
+                            <table class="data-table table text-white" style="min-width: 98%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-nowrap" scope="col">Item Category ID</th>
+                                        <th class="text-nowrap" scope="col">Item Category Code <span class="text-warning">(As in Axpert)</span></th>
+                                        <th class="text-nowrap" scope="col">Item Category Description</th>
+                                        <th class="text-nowrap" scope="col">Is Poly Combination?</th>
+                                        <th class="text-nowrap" scope="col">Is Corru Combination?</th>
+                                        <th class="text-nowrap" scope="col">Unit Price <span class="text-warning">In Effect</span></th>
+                                        <th class="text-nowrap" scope="col">Duty Per Unit <span class="text-warning">In Effect</span></th>
+                                        <th class="text-nowrap" scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var iCP in withEffextiveICPs)
+                                    {
+                                        <tr>
+                                            <td class="text-nowrap">@iCP.ItemCatId</td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.ItemCategoryCode</td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.ItemCategoryDesc</td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.IsPolyComb</td>
+                                            <td class="text-nowrap">@iCP.ItemCategory.IsCorruComb</td>
+                                            <td class="text-nowrap">@iCP.UnitPrice</td>
+                                            <td class="text-nowrap">@iCP.UnitDuty</td>
+                                            <td class="text-nowrap">
+                                                <a class="btn btn-primary" asp-action="Create" asp-route-id="@iCP.ItemCatId" role="button"><i class="fa-regular fa-plus"></i> Add Unit Price/Duty</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </blockquote>
+                    </div>
+                </div> <!-- End of the card -->
+            </div>
+        </div>
+    }
+}
+else
+{
+                //If there are no currencies to show
+    <div class="row">
+        <div class="col-md-12 mb-5">
+            <h2 class="h4">There are no currencies added yet&iexcl;</h2>
+            <h3 class="h5">First add currencies and then come here to add exchange rates.</h3>
+            <p>
+                Add a currency?
+                <a class="btn btn-primary" asp-controller="Currency" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

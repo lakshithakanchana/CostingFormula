@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Costing_Formula___KSPA.Models.BoxType>;
+
+@{
+    ViewData["Title"] = "Box Types - List View";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Box Types - List View</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-primary btn-outline-light border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@if (Model.Count() > 0)
+{
+    //If there are 1 or more Box Types to show
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">List View</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table-sort-by-col-3 table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">ID</th>
+                                    <th class="text-nowrap" scope="col">Box Type Code</th>
+                                    <th class="text-nowrap" scope="col">Box Type Description</th>
+                                    <th class="text-nowrap" scope="col">Plys</th>
+                                    <th class="text-nowrap" scope="col">Length Formula - External</th>
+                                    <th class="text-nowrap" scope="col">Length Formula (If > Max Length) - External</th>
+                                    <th class="text-nowrap" scope="col">Width Formula - External</th>
+                                    <th class="text-nowrap" scope="col">Length Formula - Internal</th>
+                                    <th class="text-nowrap" scope="col">Length Formula (If > Max Length) - Internal</th>
+                                    <th class="text-nowrap" scope="col">Width Formula - Internal</th>
+                                    <th class="text-nowrap" scope="col">Laminate?</th>
+                                    <th class="text-nowrap" scope="col">Die Cut?</th>
+                                    <th class="text-nowrap" scope="col">Design Box?</th>
+                                    <th class="text-nowrap" scope="col">Board?</th>
+                                    <th class="text-nowrap" scope="col">Active?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var boxType in Model)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap">@boxType.BoxTypeId</td>
+                                        <td class="text-nowrap"><a asp-action="Update" asp-route-id="@boxType.BoxTypeId">@boxType.BoxTypeCode</a></td>
+                                        <td class="text-nowrap">@boxType.BoxTypeDesc</td>
+                                        <td class="text-nowrap">@boxType.NoOfPlys</td>
+                                        <td class="text-nowrap">@boxType.ESheetLengthFormula</td>
+                                        <td class="text-nowrap">@boxType.ESheetLengthFormulaIfSLExceeds</td>
+                                        <td class="text-nowrap">@boxType.ESheetWidthFormula</td>
+                                        <td class="text-nowrap">@boxType.ISheetLengthFormula</td>
+                                        <td class="text-nowrap">@boxType.ISheetLengthFormulaIfSLExceeds</td>
+                                        <td class="text-nowrap">@boxType.ISheetWidthFormula</td>
+                                        <td class="text-nowrap">@boxType.Laminate</td>
+                                        <td class="text-nowrap">@boxType.DieCut</td>
+                                        <td class="text-nowrap">@boxType.DesignBox</td>
+                                        <td class="text-nowrap">@boxType.Board</td>
+                                        <td class="text-nowrap">@boxType.IsActive</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+    </div>
+}
+else
+{
+    //If there are no Box Types to show
+    <div class="row">
+        <div class="col-md-12">
+            <h2>There are no box types added yet!</h2>
+            <p>
+                Add one?
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fa-regular fa-circle-plus"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

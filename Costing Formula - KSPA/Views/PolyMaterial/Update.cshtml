@@ -1,0 +1,98 @@
+﻿@model Costing_Formula___KSPA.Models.PolyMaterial;
+@{
+    ViewData["Title"] = "Poly Material Master - Edit";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Poly Material Master - Edit</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Update">
+    <div class="row">
+
+        <!-- Poly material id Input Field -->
+        <div class="col-md-5">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PolyMaterialId" class="form-label">Poly material id</label>
+                <input type="text" class="form-control" asp-for="PolyMaterialId" placeholder="System will generate for you" readonly>
+                <b><span class="text-danger" asp-validation-for="PolyMaterialId"></span></b>
+            </div>
+        </div>
+        <!-- Poly material code Input Field -->
+        <div class="col-md-7">
+            <div class="mb-3">
+                <!-- To add some margin between form-controls -->
+                <label asp-for="PolyMatCode" class="form-label">Poly material code <b class="text-warning">(same as in Axpert)</b></label>
+                <input type="text" class="form-control" asp-for="PolyMatCode" placeholder="Poly material code same as in Axpert here">
+                <b><span class="text-danger" asp-validation-for="PolyMatCode"></span></b>
+            </div>
+        </div>
+
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="IsActive">
+                        <label class="form-check-label" asp-for="IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+

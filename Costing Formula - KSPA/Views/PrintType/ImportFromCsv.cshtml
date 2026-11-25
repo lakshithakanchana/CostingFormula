@@ -1,0 +1,240 @@
+﻿@model List<Costing_Formula___KSPA.Models.PrintType>
+
+@{
+    ViewData["Title"] = "Print Type Master - Import CSV";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Print Type Master - Import CSV</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-12">
+        <label for="formFile" class="form-label">Please choose the csv file to import from...</label>&nbsp;<label>(<a href="@Url.Content("~/import-templates/PrintTypes.csv")">Click here to download the import template.</a>)</label>
+    </div>
+    <div class="col-sm-8">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="upload_file" accept=".csv">
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="mb-3 d-grid gap-2">
+            <button class="btn btn-primary" id="process_button"><i class="fa-regular fa-gears"></i> <b>Process</b></button>
+        </div>
+    </div>
+    <div class="col-12">
+        <hr class="bg-primary border-2 border-primary" />
+    </div>
+</div>
+
+<div class="row">
+    <form method="post" asp-action="ImportFromCsv">
+
+        <div class="col-md-12">
+            <!-- Card -->
+            <div class="card mb-3 shadow-sm border-primary text-white bg-dark">
+                <div class="card-header text-bg-primary border-primary bg-primary align-middle">
+                    <lable class="fw-bold">Proceed CSV...</lable>
+                </div>
+                <div class="card-body text-white">
+                    <blockquote class="row">
+                        <table class="data-table table text-white" style="min-width: 98%">
+                            <thead>
+                                <tr>
+                                    <th class="text-nowrap" scope="col">Print Type Code</th>
+                                    <th class="text-nowrap" scope="col">Print Type Description</th>
+                                    <th class="text-nowrap" scope="col">Print Percentage</th>
+                                    <th class="text-nowrap" scope="col">Consumption <i>l.cm<sup>-2</sup></i></th>
+                                    <th class="text-nowrap" scope="col">Without cylinder base&quest;</th>
+                                    <th class="text-nowrap" scope="col">Active&quest;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].PrintTypeCode" placeholder="Axpert print type code" readonly>
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].PrintTypeCode"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].PrintTypeDesc" placeholder="Description" readonly>
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].PrintTypeDesc"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].PrintPercentage" placeholder="Print percentage here" readonly>
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].PrintPercentage"></span></b>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" asp-for="@Model[0].ConsumptionLitrePerSqrCm" placeholder="Consumption l cm^(-2)" readonly>
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].ConsumptionLitrePerSqrCm"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" asp-for="@Model[0].WithoutCylinderBase" readonly>
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].WithoutCylinderBase"></span></b>
+                                    </td>
+                                    <td>
+                                        <input class="form-check-input" asp-for="@Model[0].IsActive" readonly>
+                                        <b><span class="text-danger" asp-validation-for="@Model[0].IsActive"></span></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </blockquote>
+                </div>
+            </div> <!-- End of the card -->
+        </div>
+        <div class="col-12">
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/papaparse/dist/papaparse.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            document.getElementById('table-body').innerHTML = '';
+        });
+
+        const process_btn = document.getElementById('process_button')
+            .addEventListener('click', () => {
+                Papa.parse(document.getElementById('upload_file').files[0], {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        document.getElementById('table-body').innerHTML = '';
+                        add_input_rows(results.data);
+                    }
+                });
+            });
+
+        function add_input_rows(printTypes) {
+            for (var i = 0; i < printTypes.length; i++) {
+
+                var printType = printTypes[i];
+
+                var row_count = document.getElementById('table-body').childElementCount;
+                if (typeof printType.Code === 'undefined') {
+                    alert('\"Code\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof printType.Description === 'undefined') {
+                    alert('\"Description\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof printType.Percentage === 'undefined') {
+                    alert('\"Percentage\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof printType.Consumption === 'undefined') {
+                    alert('\"Consumption\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof printType.WithoutCylinderBase === 'undefined') {
+                    alert('\"WithoutCylinderBase\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                if (typeof printType.Active === 'undefined') {
+                    alert('\"Active\" column is not available inside the imported csv file!');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_checked_withoutcylinderbase;
+                if (printType.WithoutCylinderBase.toLowerCase() == 'true' || printType.WithoutCylinderBase == '1') {
+                    is_checked_withoutcylinderbase = 'checked';
+                } else if (printType.WithoutCylinderBase.toLowerCase() == 'false' || printType.WithoutCylinderBase == '0') {
+                    is_checked_withoutcylinderbase = '';
+                } else {
+                    alert(printType.WithoutCylinderBase + ' is not valid value for the column \"WithoutCylinderBase\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                var is_checked;
+                if (printType.Active.toLowerCase() == 'true' || printType.Active == '1') {
+                    is_checked = 'checked';
+                } else if (printType.Active.toLowerCase() == 'false' || printType.Active == '0') {
+                    is_checked = '';
+                } else {
+                    alert(printType.Active + ' is not valid value for the column \"Active\"! Please correct and process again');
+                    document.getElementById('table-body').innerHTML = '';
+                    return;
+                }
+                $('#table-body').append(
+                    `
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" placeholder="Axpert print type code" readonly data-val="true" data-val-required="The PrintTypeCode field is required." id="z`+ row_count + `__PrintTypeCode" name="[` + row_count + `].PrintTypeCode" value="` + printType.Code + `">
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].PrintTypeCode" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" placeholder="Description" readonly data-val="true" data-val-required="The PrintTypeDesc field is required." id="z`+ row_count + `__PrintTypeDesc" name="[` + row_count + `].PrintTypeDesc" value="` + printType.Description + `">
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].PrintTypeDesc" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" placeholder="Print percentage here" readonly data-val="true" data-val-number="The field PrintPercentage must be a number." data-val-required="The PrintPercentage field is required." id="z`+ row_count + `__PrintPercentage" name="[` + row_count + `].PrintPercentage" value="` + printType.Percentage + `">
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].PrintPercentage" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" placeholder="Consumption l cm^(-2)" readonly data-val="true" data-val-number="The field ConsumptionLitrePerSqrCm must be a number." data-val-required="The ConsumptionLitrePerSqrCm field is required." id="z`+ row_count + `__ConsumptionLitrePerSqrCm" name="[` + row_count + `].ConsumptionLitrePerSqrCm" value="` + printType.Consumption + `">
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].ConsumptionLitrePerSqrCm" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input class="form-check-input" readonly type="checkbox" data-val="true" data-val-required="The WithoutCylinderBase field is required." id="z`+ row_count + `__WithoutCylinderBase" name="[` + row_count + `].WithoutCylinderBase" value="true" ` + is_checked_withoutcylinderbase + `>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].WithoutCylinderBase" data-valmsg-replace="true"></span></b>
+                        </td>
+                        <td>
+                            <input class="form-check-input" readonly type="checkbox" data-val="true" data-val-required="The IsActive field is required." id="z`+ row_count + `__IsActive" name="[` + row_count + `].IsActive" value="true" ` + is_checked + `>
+                            <b><span class="text-danger field-validation-valid" data-valmsg-for="[`+ row_count + `].IsActive" data-valmsg-replace="true"></span></b>
+                        </td>
+                    </tr>
+                    `
+                );
+                $("form").removeData("validator").removeData("unobtrusiveValidation");
+                //Parse the form again
+                $.validator.unobtrusive.parse($("form"));
+            }
+        }
+
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

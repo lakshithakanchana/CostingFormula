@@ -1,0 +1,198 @@
+﻿@model Costing_Formula___KSPA.Models.ViewModels.CustomerVM;
+
+@{
+    ViewData["Title"] = "Customer Master - Edit";
+}
+
+<!-- Row for the header level 1 -->
+<div class="row">
+    <div class="col-md-12">
+        <h1>Customer Master - Edit</h1>
+        <hr class="bg-primary border-2 border-primary" />
+        <br />
+    </div>
+</div><!-- End of the row for the header level 1 -->
+<!-- Ribbon for buttons -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-4">
+            <a class="btn btn-secondary border border-2" asp-action="Index"><i class="fa-regular fa-list-ol"></i> List View</a>
+            <a class="btn btn-secondary border border-2" asp-action="Create"><i class="fa-regular fa-circle-plus"></i> Add New</a>
+        </div>
+    </div>
+</div>
+
+@if (!Html.ViewData.ModelState.IsValid)
+{
+    <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+            <!-- Validation Summary Will Be Here -->
+            <div class="card text-danger mb-3 border border-danger border-2" style="background-color: rgba(255, 0, 0, 0.1);">
+                <div class="card-header fw-bold">There are some errors with the data, you entered!</div>
+                <div class="card-body validation-summary" asp-validation-summary="All">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form method="post" asp-action="Update">
+    <div class="row">
+
+        <!-- Section EXCEPT for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Form Sec 1: Rows for ccode, ctype, currency, company, email -->
+            <div class="row">
+                <!-- Col for customer id -->
+                <div class="col-md-4">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="Customer.CustomerId" class="form-label">Customer id</label>
+                        <input type="text" class="form-control" asp-for="Customer.CustomerId" placeholder="System will generate for you" readonly>
+                        <b><span class="text-danger" asp-validation-for="Customer.CustomerId"></span></b>
+                    </div>
+                </div>
+                <!-- Col for customer code -->
+                <div class="col-md-4">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="Customer.CustomerShortCode" class="form-label">Customer short code <b class="text-warning">(same as in Axpert)</b></label>
+                        <input type="text" class="form-control" asp-for="Customer.CustomerShortCode">
+                        <b><span class="text-danger" asp-validation-for="Customer.CustomerShortCode"></span></b>
+                    </div>
+                </div>
+                <!-- Col for customer type -->
+                <div class="col-md-4">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="Customer.CustomerTypeId" class="form-label">Customer type</label>
+                        <select class="form-select" asp-for="Customer.CustomerTypeId" asp-items="@Model.CustomerTypeDropDown">
+                            <option selected>-- select customer type --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="Customer.CustomerTypeId"></span></b>
+                    </div>
+                </div>
+                <!-- Col for currency -->
+                <div class="col-md-4">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="Customer.CurrencyId" class="form-label">Currency</label>
+                        <select class="form-select" asp-for="Customer.CurrencyId" asp-items="@Model.CurrencyDropDown">
+                            <option selected>-- select currency --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="Customer.CurrencyId"></span></b>
+                    </div>
+                </div>
+                <!-- Col for company -->
+                <div class="col-md-4">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="Customer.CompanyId" class="form-label">Company</label>
+                        <select class="form-select" asp-for="Customer.CompanyId" asp-items="@Model.CompanyDropDown">
+                            <option selected>-- select currency --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="Customer.CompanyId"></span></b>
+                    </div>
+                </div>
+                <!-- Col for email -->
+                <div class="col-md-4">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="Customer.Email" class="form-label">Customer Email</label>
+                        <input type="text" class="form-control" asp-for="Customer.Email">
+                        <b><span class="text-danger" asp-validation-for="Customer.Email"></span></b>
+                    </div>
+                </div>
+            </div><!-- Form Sec 2: Rows for ccode, ctype, currency, company, email -->
+
+            <div class="row">
+                <!-- Col for customer name -->
+                <div class="col-md-12">
+                    <div class="mb-3  text-white">
+                        <!-- mb-3 to add some margin between form-controls -->
+                        <label asp-for="Customer.CustomerName" class="form-label">Customer name</label>
+                        <input type="text" class="form-control" asp-for="Customer.CustomerName" placeholder="Customer name here">
+                        <b><span class="text-danger" asp-validation-for="Customer.CustomerName"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Address -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group mb-3 text-white">
+                        <label asp-for="Customer.CustomerAddress" class="form-label">Address</label>
+                        <textarea class="form-control" asp-for="Customer.CustomerAddress" rows="3"></textarea>
+                        <b><span class="text-danger" asp-validation-for="Customer.CustomerAddress"></span></b>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="bg-primary border-2 border-primary" />
+
+            <!-- Row for Sales rep details -->
+            <div class="row">
+
+                <!-- Sales rep selection box -->
+                <div class="col-sm-6">
+                    <div class="mb-3 text-white">
+                        <!-- To add some margin between form-controls -->
+                        <label asp-for="Customer.SRepId" class="form-label">Sales rep short name</label>
+                        <select class="form-select" asp-for="Customer.SRepId" asp-items="@Model.SRepDropDown">
+                            <option selected>-- Select sales rep --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="Customer.SRepId"></span></b>
+                    </div>
+                </div>
+
+                <!-- Sales coordinator -->
+                <div class="col-sm-6">
+                    <div class="mb-3 text-white">
+                        <label asp-for="Customer.SCoordinatorId" class="form-label">Sales coordinator short name</label>
+                        <select class="form-select" asp-for="Customer.SCoordinatorId" asp-items="@Model.SCoordinatorDropDown">
+                            <option selected>-- Select sales coordinator --</option>
+                        </select>
+                        <b><span class="text-danger" asp-validation-for="Customer.SCoordinatorId"></span></b>
+                    </div>
+                </div>
+
+            </div><!-- End of row for Sales rep details -->
+
+        </div><!-- Section EXCEPT for the active checkbox and the submit button -->
+        <!-- Section for the active checkbox and the submit button -->
+        <div class="col-md-12">
+
+            <!-- Row for the active checkbox -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="Customer.IsActive">
+                        <label class="form-check-label" asp-for="Customer.IsActive">
+                            <b>Active?</b>
+                        </label>
+                        <b><span class="text-danger" asp-validation-for="Customer.IsActive"></span></b>
+                    </div>
+                </div>
+            </div><!-- End of Row for the active checkbox -->
+            <!-- Row for the submit button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <hr class="bg-primary border-2 border-primary" />
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> <b>Save</b></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- End of the Section for the active checkbox and the submit button -->
+
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

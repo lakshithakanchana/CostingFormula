@@ -1,0 +1,13 @@
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<Costing_Formula___KSPA.Utility.ApplicationUser> signInManager
+@if(signInManager.IsSignedIn(User))
+{
+    <div class="d-flex">
+        <span class="nav-link text-white">@User.Identity.Name</span>&nbsp;<a class="btn btn-outline-light" asp-action="Logout" asp-controller="Account"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+}
+else
+{
+    <div class="d-flex">
+        <a class="btn btn-outline-light" asp-action="Login" asp-controller="Account"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+    </div>
+}
